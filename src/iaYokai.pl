@@ -38,8 +38,6 @@ initial(piece(north,kirin,[4,1])).
 
 initial(piece(north,koropokkuru,[3,1])).
 
-
-
 /*
 * Initial pieces position for the south player
 */
