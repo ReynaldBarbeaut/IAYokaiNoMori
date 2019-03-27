@@ -197,9 +197,9 @@ movePiece(piece(south,Name,[X,Y]),piece(south,Name,[X2,Y2])) :-
 /*
 * Promote an oni or a kodama
 */
-promote(piece(_,kodama,C),piece(_,kodamaSamourai,C)).
+promote(piece(Player,kodama,C),piece(Player,kodamaSamourai,C)).
 
-promote(piece(_,oni,C),piece(_,superOni,C)).
+promote(piece(Player,oni,C),piece(Player,superOni,C)).
 
 
 
