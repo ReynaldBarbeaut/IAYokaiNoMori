@@ -79,15 +79,11 @@ correctSquare([X,Y]) :- X > 0, X < 6, Y > 0, Y < 6.
 /*
 * Test if a move is correct
 */
-correctMove(piece(south,Name,C1),C2,Board) :-
+correctMove(piece(Player,_,C1),C2,Board) :-
         C1 \= C2,
-        \+(member(piece(south, Name, C2), Board)),
+        \+(member(piece(Player, _, C2), Board)),
         correctSquare(C2).
 
-correctMove(piece(north,Name,C1),C2,Board) :-
-        C1 \= C2,
-        \+(member(piece(north, Name, C2), Board)),
-        correctSquare(C2).
 
 /*
 * Test if there is an ennemy on the square
@@ -103,17 +99,17 @@ hasEnnemy(Player, C,Board) :-
 /*
 * Move on sides (common move for both sides)
 */
-movePiece(piece(_,Name,[X,Y]),piece(north,Name,[X2,Y]),Board) :-
+movePiece(piece(Player,Name,[X,Y]),piece(Player,Name,[X2,Y]),Board) :-
     Name \= kodama,
     Name \= oni,
     X2 is X + 1,
-    correctMove(piece(_,Name,[X,Y]),[X2,Y],Board).
+    correctMove(piece(Player,Name,[X,Y]),[X2,Y],Board).
 
-movePiece(piece(_,Name,[X,Y]),piece(_,Name,[X2,Y]),Board) :-
+movePiece(piece(Player,Name,[X,Y]),piece(Player,Name,[X2,Y]),Board) :-
     Name \= kodama,
     Name \= oni,
     X2 is X - 1,
-    correctMove(piece(_,Name,[X,Y]),[X2,Y],Board).
+    correctMove(piece(Player,Name,[X,Y]),[X2,Y],Board).
 
 /*
 * Move a north piece
@@ -209,7 +205,7 @@ movePiece(piece(south,Name,[X,Y]),piece(south,Name,[X2,Y2]),Board) :-
     (Name=oni;Name=koropokkuru),
     Y2 is Y + 1,
     X2 is X + 1,
-    correctMove(piece(south,Name,[X,Y]),[X2,Y],Board).
+    correctMove(piece(south,Name,[X,Y]),[X2,Y2],Board).
 
 movePiece(piece(south,Name,[X,Y]),piece(south,Name,[X2,Y2]),Board) :-
     (Name=oni;Name=koropokkuru),
@@ -228,6 +224,7 @@ promote(piece(Player,oni,C),piece(Player,superOni,C)).
 * Check is a placement of a piece is correct
 */
 correctPlacement(piece(Player,Name,C1),C2,Board) :-
+    Name \= kodama, Name \= koropokkuru,
     correctMove(piece(Player,Name,C1),C2,Board),
     \+hasEnnemy(Player,C2,Board).
 
@@ -239,4 +236,6 @@ correctPlacement(piece(Player,kodama,C1),[X,Y],Board) :-
     opponent(Player,Player2),
     lastLine(Player2,LastLine),
     Y \= LastLine.
+
+
 
