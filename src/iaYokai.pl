@@ -238,4 +238,26 @@ correctPlacement(piece(Player,kodama,C1),[X,Y],Board) :-
     Y \= LastLine.
 
 
+/*
+* Place a piece on the board
+*/
+place(Piece,C,LPieceTaken,Board,NewLPieceTaken,[Piece|Board]) :-
+    correctPlacement(Piece,C,Board),
+    delete(Piece,LPieceTaken,NewLPieceTaken).
+
+
+/*
+* Find a piece depending on its team and its coordinate
+*/
+
+findAndReturn(Player,Coordinate,[piece(Player,Name,Coordinate)|_],piece(Player,Name,Coordinate)).
+findAndReturn(Player,Coordinate,[_|List],P):-
+        findAndReturn(Player,Coordinate,List,P).
+/*
+* Capture an ennemy
+*/
+capture(Player,C,LPieceTaken,Board,NewLPieceTaken,NewBoard):-
+    findAndReturn(Player,C,Board,P1),
+    NewLPieceTaken is [P1|LPieceTaken],
+    delete(P1,Board,NewBoard).
 
