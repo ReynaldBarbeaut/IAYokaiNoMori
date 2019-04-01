@@ -74,7 +74,7 @@ lastLine(south,6).
 /*
 * Test if a square is correct
 */
-correctSquare([X,Y]) :- X > 0, X < 6, Y > 0, Y < 6.
+correctSquare([X,Y]) :- X > 0, X < 7, Y > 0, Y < 7.
 
 /*
 * Test if a move is correct
@@ -224,7 +224,7 @@ promote(piece(Player,oni,C),piece(Player,superOni,C)).
 * Check is a placement of a piece is correct
 */
 correctPlacement(piece(Player,Name,C1),C2,Board) :-
-    Name \= kodama, Name \= koropokkuru,
+    Name \= kodama,
     correctMove(piece(Player,Name,C1),C2,Board),
     \+hasEnnemy(Player,C2,Board).
 
@@ -239,11 +239,20 @@ correctPlacement(piece(Player,kodama,C1),[X,Y],Board) :-
 
 
 /*
+* Redefinition of delete due to some bug
+*/
+deleteNew(X,[X|R],R).
+deleteNew(X,[F|R],[F|S]) :-
+    deleteNew(X,R,S).
+        
+/*
 * Place a piece on the board
 */
-place(Piece,C,LPieceTaken,Board,NewLPieceTaken,[Piece|Board]) :-
+place(Piece,C,LPieceTaken,Board,NewLPieceTaken,NewBoard) :-
     correctPlacement(Piece,C,Board),
-    delete(Piece,LPieceTaken,NewLPieceTaken).
+    deleteNew(Piece,LPieceTaken,NewLPieceTaken),
+    Piece = piece(Player,Name,_),
+    NewBoard = [piece(Player,Name,C) | Board].
 
 
 /*
@@ -257,7 +266,8 @@ findAndReturn(Player,Coordinate,[_|List],P):-
 * Capture an ennemy
 */
 capture(Player,C,LPieceTaken,Board,NewLPieceTaken,NewBoard):-
-    findAndReturn(Player,C,Board,P1),
-    NewLPieceTaken is [P1|LPieceTaken],
-    delete(P1,Board,NewBoard).
+    findAndReturn(Player,C,Board,piece(Player2,Name,C2)),
+    Name \= koropokkuru,
+    NewLPieceTaken = [piece(Player2,Name,C2)|LPieceTaken],
+    delete(piece(piece(Player2,Name,C2),Name,C2),Board,NewBoard).
 

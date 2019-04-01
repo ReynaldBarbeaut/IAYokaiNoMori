@@ -216,4 +216,39 @@ test('movePiece_oni_KO',[all(C2==[])]):-
                                                                                 piece(south,kodama,[2,5])]).
 
 
+%Tests for correctPlacement predicate
+test('correctPlacement_OK',[true]):-
+    correctPlacement(piece(north,oni,[1,4]),[2,3],[piece(north,oni,[2,4]),piece(north,oni,[4,3])]),
+    correctPlacement(piece(north,kodama,[3,2]),[2,3],[piece(north,oni,[2,4]),piece(north,oni,[4,3])]),
+    correctPlacement(piece(north,kirin,[1,4]),[2,3],[piece(north,oni,[2,4]),piece(north,oni,[2,6])]),
+    correctPlacement(piece(north,oni,[1,4]),[2,3],[piece(north,oni,[2,4]),piece(north,oni,[1,1])]).
+
+test('correctPlacement_Kodama_OK',[true]):-
+    correctPlacement(piece(north,kodama,[1,4]),[2,3],[piece(south,kodama,[2,4]),piece(north,oni,[4,5])]),
+    correctPlacement(piece(south,kodama,[1,4]),[2,3],[piece(north,kodama,[2,4]),piece(north,oni,[4,5])]),
+    correctPlacement(piece(north,kodama,[1,4]),[2,1],[piece(north,oni,[2,4]),piece(north,oni,[4,5])]),
+    correctPlacement(piece(south,kodama,[1,4]),[2,6],[piece(north,oni,[2,4]),piece(north,oni,[4,5])]).
+
+test('correctPlacement_KO',[fail]):-
+    correctPlacement(piece(north,oni,[1,4]),[2,3],[piece(north,oni,[2,3]),piece(north,oni,[4,3])]),
+    correctPlacement(piece(north,oni,[3,2]),[2,3],[piece(south,oni,[2,3]),piece(north,oni,[4,3])]),
+    correctPlacement(piece(south,oni,[1,4]),[2,3],[piece(north,oni,[2,3]),piece(north,oni,[4,3])]),
+    correctPlacement(piece(south,oni,[3,2]),[2,3],[piece(south,oni,[2,3]),piece(north,oni,[4,3])]).
+
+test('correctPlacement_Kodama_KO',[fail]):-
+    correctPlacement(piece(north,kodama,[1,4]),[2,3],[piece(north,kodama,[1,4]),piece(north,oni,[4,5])]),
+    correctPlacement(piece(south,kodama,[1,4]),[2,3],[piece(south,kodama,[1,4]),piece(north,oni,[4,5])]),
+    correctPlacement(piece(north,kodama,[1,4]),[2,6],[piece(north,oni,[2,4]),piece(north,oni,[4,5])]),
+    correctPlacement(piece(south,kodama,[1,4]),[2,1],[piece(north,oni,[2,4]),piece(north,oni,[4,5])]).
+
+/*
+* Tests for place predicate
+*/
+
+test('place_OK',[true(NewLPieceTaken==[]), true(NewBoard==[piece(north,oni,[4,4])])]):-
+    place(piece(north,oni,[4,3]),[4,4],[piece(north,oni,[4,3])],[],NewLPieceTaken,NewBoard).
+
+
+
+
 :- end_tests(iaYokai).
