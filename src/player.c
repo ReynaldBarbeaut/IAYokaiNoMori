@@ -27,29 +27,34 @@
 
 int main(int argc, char **argv) {
 
-  TPartieReq partieReq;  /* structure pour l'envoi d'une demande de partie */
-  TPartieRep partieRep;  /* structure pour la réception à la suite d'une demande de partie */
-  TCoupReq coupReq;      /* structure pour l'envoi d'un coup */
-  TCoupRep coupRep;      /* structure pour la réception à la suite d'un coup */ 
+  TPartieReq partieReq;    /* structure pour l'envoi d'une demande de partie */
+  TPartieRep partieRep;    /* structure pour la réception à la suite d'une demande de partie */
+  TCoupReq coupReq;        /* structure pour l'envoi d'un coup */
+  TCoupRep coupRep;        /* structure pour la réception à la suite d'un coup */ 
 
-  int sock,                     /* descripteur de la socket locale */
-      port,                     /* variables de lecture */
-      err;                      /* code d'erreur */
-  char* ipMachServ;             /* pour solution inet_aton */
-  char* nomMachServ;            /* pour solution getaddrinfo */
-
+  int sock,                /* descripteur de la socket locale */
+      port,                /* variables de lecture */
+      err;                 /* code d'erreur */
+  char* ipMachServ;        /* pour solution inet_aton */
+  char* nomMachServ;       /* pour solution getaddrinfo */
+  char* nomJoueur;         /* nom de joueur */
+  char* nomAdvers;         /* nom de l'adversaire */
+  char sens;               /* sens du joueur : 'n' ou 's' */
+  bool termine = false;    /* détermine si une partie est terminée */
 
   struct addrinfo hints;   /* parametre pour getaddrinfo */
   struct addrinfo *result; /* les adresses obtenues par getaddrinfo */ 
 
   /* verification des arguments */
-  if (argc != 3) {
-    printf("usage : %s nom/IPServ port\n", argv[0]);
+  if (argc != 5) {
+    printf("usage : %s IPServ port nomJoueur\n", argv[0]);
     return -1;
   }
   
   ipMachServ = argv[1]; nomMachServ = argv[1];
   port = atoi(argv[2]);
+  nomJoueur = argv[3];
+  sens = argv[4][0];
 
   /* 
    * creation du socket
@@ -57,13 +62,15 @@ int main(int argc, char **argv) {
   sock = socketClient(nomMachServ, port);
   if (sock < 0) {
     perror("(client) erreur sur socketClient");
-    return -1;
+    return -2;
   }
 
   /* 
    * création de la structure pour l'envoi d'une demande de partie
    */
-  // TO DO
+  partieReq.idReq = PARTIE;
+  strncpy(partieReq.nomJoueur, nomJoueur, sizeof(partieReq.nomJoueur) - 1);
+  partieReq.piece = (sens == 'n' ? NORD : SUD);
 
   /* 
    * envoi de la demande de partie
@@ -72,9 +79,9 @@ int main(int argc, char **argv) {
   if (err <= 0) {
     perror("(client) erreur sur le send");
     shutdown(sock, SHUT_RDWR); close(sock);
-    return -5;
+    return -3;
   }
-  printf("(client) envoi realise\n");
+  printf("(client) envoi d'une demande de partie realise\n");
 
    /*
    * reception du retour suite à la demande de partie
@@ -83,19 +90,35 @@ int main(int argc, char **argv) {
   if (err <= 0) {
     perror("(client) erreur dans la reception");
     shutdown(sock, SHUT_RDWR); close(sock);
-    return -6;
+    return -4;
   }
 
   if (partieRep.err == ERR_OK) {
-    printf("(client) partie commencee");
+    if (partieRep.validSensTete == KO) {
+      if (sens == 'n') {
+        sens = 's';
+      } else {
+        sens = 'n';
+      }
+    }
+    printf("(client) partie commencee dans le sens %c avec l'adversaire %s\n", sens, partieRep.nomAdvers);
   }
   else {
-    printf("(client) erreur sur la demande de partie");
+    perror("(client) erreur sur la demande de partie");
+    shutdown(sock, SHUT_RDWR); close(sock);
+    return -5;
   }
   
-
-  // TO DO : boucle de jeu
-
+  for (int i = 0; i < 2; i++) {
+    while (!termine) {
+      /* 
+      * création de la structure pour l'envoi d'un coup
+      */
+      coupReq.idRequest = COUP;
+      coupReq.numPartie = i+1;
+      coupReq.typeCoup = DEPLACER;
+    }
+  }
 
   /* 
    * fermeture de la connexion et de la socket 
@@ -105,5 +128,3 @@ int main(int argc, char **argv) {
 
   return 0;
 }
- 
-
