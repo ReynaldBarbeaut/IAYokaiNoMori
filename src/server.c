@@ -17,9 +17,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <errno.h>
-#include "protocole.h"
-#include "fctCom.h"
-#include "validation.h"
+#include "../include/protocole.h"
+#include "../include/fctCom.h"
+#include "../include/validation.h"
 
 #define MAX_CL 2           /* nombre maximum de clients connectés */
 

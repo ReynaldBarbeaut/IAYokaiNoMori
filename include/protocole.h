@@ -79,7 +79,7 @@ typedef TCase TDeposerPiece;
  */
 
 /* Precision des types de coups */
-typedef enum { DEPLACER, DEPOSER,  AUCUN } TCoup;
+typedef enum { DEPLACER, DEPOSER, AUCUN } TCoup;
 
 /* Informations sur la piece a jouer */
 typedef enum { KODAMA, KODAMA_SAMOURAI, KIRIN, KOROPOKKURU, ONI, SUPER_ONI } TTypePiece;

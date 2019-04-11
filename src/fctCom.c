@@ -6,8 +6,8 @@
 #include <netinet/in.h>
 #include <errno.h>
 #include <arpa/inet.h>
-#include "protocole.h"
-#include "fctCom.h"
+#include "../include/protocole.h"
+#include "../include/fctCom.h"
 
 /*
  **********************************************************
