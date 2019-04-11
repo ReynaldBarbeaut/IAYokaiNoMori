@@ -99,17 +99,19 @@ hasEnnemy(Player, C,Board) :-
 /*
 * Move on sides (common move for both sides)
 */
-movePiece(piece(Player,Name,[X,Y]),piece(Player,Name,[X2,Y]),Board) :-
+movePiece(piece(Player,Name,[X,Y]),piece(Player,Name2,[X2,Y]),Board) :-
     Name \= kodama,
     Name \= oni,
     X2 is X + 1,
-    correctMove(piece(Player,Name,[X,Y]),[X2,Y],Board).
+    correctMove(piece(Player,Name,[X,Y]),[X2,Y],Board),
+    promote(piece(Player,Name,[X2,Y]),piece(_,Name2,_)).
 
-movePiece(piece(Player,Name,[X,Y]),piece(Player,Name,[X2,Y]),Board) :-
+movePiece(piece(Player,Name,[X,Y]),piece(Player,Name2,[X2,Y]),Board) :-
     Name \= kodama,
     Name \= oni,
     X2 is X - 1,
-    correctMove(piece(Player,Name,[X,Y]),[X2,Y],Board).
+    correctMove(piece(Player,Name,[X,Y]),[X2,Y],Board),
+    promote(piece(Player,Name,[X2,Y]),piece(_,Name2,_)).
 
 /*
 * Move a south piece
@@ -118,49 +120,55 @@ movePiece(piece(Player,Name,[X,Y]),piece(Player,Name,[X2,Y]),Board) :-
 /*
 * Move to the front
 */
-movePiece(piece(south,_,[X,Y]),piece(south,_,[X,Y2]),Board) :-
+movePiece(piece(south,Name,[X,Y]),piece(south,Name2,[X,Y2]),Board) :-
     Y2 is Y + 1,
-    correctMove(piece(south,_,[X,Y]),[X,Y2],Board).
+    correctMove(piece(south,_,[X,Y]),[X,Y2],Board),
+    promote(piece(south,Name,[X,Y2]),piece(_,Name2,_)).
 
 /*
 * Move to the front left and front right
 */
-movePiece(piece(south,Name,[X,Y]),piece(south,Name,[X2,Y2]),Board) :-
+movePiece(piece(south,Name,[X,Y]),piece(south,Name2,[X2,Y2]),Board) :-
     Name \= kodama,
     Y2 is Y + 1,
     X2 is X + 1,
-    correctMove(piece(south,Name,[X,Y]),[X2,Y2],Board).
+    correctMove(piece(south,Name,[X,Y]),[X2,Y2],Board),
+    promote(piece(south,Name,[X2,Y2]),piece(_,Name2,_)).
 
-movePiece(piece(south,Name,[X,Y]),piece(south,Name,[X2,Y2]),Board) :-
+movePiece(piece(south,Name,[X,Y]),piece(south,Name2,[X2,Y2]),Board) :-
     Name \= kodama,
     Y2 is Y + 1,
     X2 is X - 1,
-    correctMove(piece(south,Name,[X,Y]),[X2,Y2],Board).
+    correctMove(piece(south,Name,[X,Y]),[X2,Y2],Board),
+    promote(piece(south,Name,[X2,Y2]),piece(_,Name2,_)).
 
 /*
 * Move behind
 */
-movePiece(piece(south,Name,[X,Y]),piece(south,Name,[X,Y2]),Board) :-
+movePiece(piece(south,Name,[X,Y]),piece(south,Name2,[X,Y2]),Board) :-
     Name \= kodama,
     Name \= oni,
     Y2 is Y - 1,
-    correctMove(piece(south,Name,[X,Y]),[X,Y2],Board).
+    correctMove(piece(south,Name,[X,Y]),[X,Y2],Board),
+    promote(piece(south,Name,[X,Y2]),piece(_,Name2,_)).
 
 
 /*
 * Move to the back left and back right
 */
-movePiece(piece(south,Name,[X,Y]),piece(south,Name,[X2,Y2]),Board) :-
+movePiece(piece(south,Name,[X,Y]),piece(south,Name2,[X2,Y2]),Board) :-
     (Name=oni;Name=koropokkuru),
     Y2 is Y - 1,
     X2 is X + 1,
-    correctMove(piece(south,Name,[X,Y]),[X2,Y2],Board).
+    correctMove(piece(south,Name,[X,Y]),[X2,Y2],Board),
+    promote(piece(south,Name,[X2,Y2]),piece(_,Name2,_)).
 
-movePiece(piece(south,Name,[X,Y]),piece(south,Name,[X2,Y2]),Board) :-
+movePiece(piece(south,Name,[X,Y]),piece(south,Name2,[X2,Y2]),Board) :-
     (Name=oni;Name=koropokkuru),
     Y2 is Y - 1,
     X2 is X - 1,
-    correctMove(piece(south,Name,[X,Y]),[X2,Y2],Board).
+    correctMove(piece(south,Name,[X,Y]),[X2,Y2],Board),
+    promote(piece(south,Name,[X2,Y2]),piece(_,Name2,_)).
 
 /*
 * Move a north piece
@@ -169,68 +177,87 @@ movePiece(piece(south,Name,[X,Y]),piece(south,Name,[X2,Y2]),Board) :-
 /*
 * Move to the front
 */
-movePiece(piece(north,_,[X,Y]),piece(north,_,[X,Y2]),Board) :-
+movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X,Y2]),Board) :-
     Y2 is Y - 1,
-    correctMove(piece(north,_,[X,Y]),[X,Y2],Board).
+    correctMove(piece(north,_,[X,Y]),[X,Y2],Board),
+    promote(piece(north,Name,[X,Y2]),piece(_,Name2,_)).
 
 /*
 * Move to the front left and front right
 */
-movePiece(piece(north,Name,[X,Y]),piece(north,Name,[X2,Y2]),Board) :-
+movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X2,Y2]),Board) :-
     Name \= kodama,
     Y2 is Y - 1,
     X2 is X + 1,
-    correctMove(piece(north,Name,[X,Y]),[X2,Y2],Board).
+    correctMove(piece(north,Name,[X,Y]),[X2,Y2],Board),
+    promote(piece(north,Name,[X2,Y2]),piece(_,Name2,_)).
 
-movePiece(piece(north,Name,[X,Y]),piece(north,Name,[X2,Y2]),Board) :-
+movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X2,Y2]),Board) :-
     Name \= kodama,
     Y2 is Y - 1,
     X2 is X - 1,
-    correctMove(piece(north,Name,[X,Y]),[X2,Y2],Board).
+    correctMove(piece(north,Name,[X,Y]),[X2,Y2],Board),
+    promote(piece(north,Name,[X2,Y2]),piece(_,Name2,_)).
 
 /*
 * Move behind
 */
-movePiece(piece(north,Name,[X,Y]),piece(north,Name,[X,Y2]),Board) :-
+movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X,Y2]),Board) :-
     Name \= kodama,
     Name \= oni,
     Y2 is Y + 1,
-    correctMove(piece(north,Name,[X,Y]),[X,Y2],Board).
+    correctMove(piece(north,Name,[X,Y]),[X,Y2],Board),
+    promote(piece(north,Name,[X,Y2]),piece(_,Name2,_)).
 
 
 /*
 * Move to the back left and back right
 */
-movePiece(piece(north,Name,[X,Y]),piece(north,Name,[X2,Y2]),Board) :-
+movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X2,Y2]),Board) :-
     (Name=oni;Name=koropokkuru),
     Y2 is Y + 1,
     X2 is X + 1,
-    correctMove(piece(north,Name,[X,Y]),[X2,Y2],Board).
+    correctMove(piece(north,Name,[X,Y]),[X2,Y2],Board),
+    promote(piece(north,Name,[X2,Y2]),piece(_,Name2,_)).
 
-movePiece(piece(north,Name,[X,Y]),piece(north,Name,[X2,Y2]),Board) :-
+movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X2,Y2]),Board) :-
     (Name=oni;Name=koropokkuru),
     Y2 is Y + 1,
     X2 is X - 1,
-    correctMove(piece(north,Name,[X,Y]),[X2,Y2],Board).
+    correctMove(piece(north,Name,[X,Y]),[X2,Y2],Board),
+    promote(piece(north,Name,[X2,Y2]),piece(_,Name2,_)).
+
+/*
+* Check if a piece is in a promote area
+*/
+inPromoteArea(north,Y) :- (Y=1;Y=2).
+
+inPromoteArea(south,Y) :- (Y=5;Y=6).
 
 /*
 * Promote an oni or a kodama
 */
-promote(piece(Player,kodama,C),piece(Player,kodamaSamourai,C)).
+promote(piece(Player,kodama,[X,Y]),piece(Player,kodamaSamourai,[X,Y])) :-
+   inPromoteArea(Player,Y). 
 
-promote(piece(Player,oni,C),piece(Player,superOni,C)).
+promote(piece(Player,oni,[X,Y]),piece(Player,superOni,[X,Y])) :-
+   inPromoteArea(Player,Y).
+
+promote(Piece,Piece).
 
 /*
 * Check is a placement of a piece is correct
 */
-correctPlacement(piece(Player,Name,C1),C2,Board) :-
+correctPlacement(piece(Player,Name,_),C2,Board) :-
     Name \= kodama,
-    correctMove(piece(Player,Name,C1),C2,Board),
+    \+(member(piece(Player, _, C2), Board)),
+    correctSquare(C2),
     \+hasEnnemy(Player,C2,Board).
 
 %Correct placement for a kodama piece
-correctPlacement(piece(Player,kodama,C1),[X,Y],Board) :-
-    correctMove(piece(Player,kodama,C1),[X,Y],Board),
+correctPlacement(piece(Player,kodama,_),[X,Y],Board) :-
+    \+(member(piece(Player, _, [X,Y]), Board)),
+    correctSquare([X,Y]),
     \+hasEnnemy(Player,[X,Y],Board),
     \+(member(piece(Player, kodama, [X,_]), Board)),
     opponent(Player,Player2),
@@ -245,6 +272,16 @@ place(Piece,C,LPieceTaken,Board,NewLPieceTaken,NewBoard) :-
     delete(LPieceTaken,Piece,NewLPieceTaken),
     Piece = piece(Player,Name,_),
     NewBoard = [piece(Player,Name,C) | Board].
+
+
+/*
+* Demote a kodama samourai or a super oni
+*/
+demote(piece(Player,kodamaSamourai,C),piece(Player,kodama,C)).
+
+demote(piece(Player,superOni,C),piece(Player,oni,C)).
+
+demote(Piece,Piece).
 
 
 /*

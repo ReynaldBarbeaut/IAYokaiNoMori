@@ -87,30 +87,36 @@ test('hasEnnemy_KO',[fail]):-
 /*
 * Tests for the promote predicate
 */
-test('promote_OK',[true(X == piece(south,kodamaSamourai,[1,3]))]):-
+test('promote_OK',[true(X == piece(south,kodamaSamourai,[1,5]))]):-
+    promote(piece(south,kodama,[1,5]),X).
+
+test('promote_OK',[true(X == piece(south,superOni,[1,6]))]):-
+    promote(piece(south,oni,[1,6]),X).
+
+test('promote_OK',[true(X == piece(north,kodamaSamourai,[3,1]))]):-
+    promote(piece(north,kodama,[3,1]),X).
+
+test('promote_OK',[true(X == piece(north,superOni,[3,2]))]):-
+    promote(piece(north,oni,[3,2]),X).
+
+
+test('promote_OK',[true(X == piece(south,kodama,[1,3]))]):-
     promote(piece(south,kodama,[1,3]),X).
 
-test('promote_OK',[true(X == piece(south,superOni,[1,3]))]):-
-    promote(piece(south,oni,[1,3]),X).
+test('promote_OK',[true(X == piece(south,oni,[1,4]))]):-
+    promote(piece(south,oni,[1,4]),X).
 
-test('promote_OK',[true(X == piece(north,kodamaSamourai,[1,3]))]):-
-    promote(piece(north,kodama,[1,3]),X).
+test('promote_OK',[true(X == piece(south,kirin,[1,3]))]):-
+    promote(piece(south,kirin,[1,3]),X).
 
-test('promote_OK',[true(X == piece(north,superOni,[1,3]))]):-
-    promote(piece(north,oni,[1,3]),X).
+test('promote_OK',[true(X == piece(south,koropokkuru,[1,3]))]):-
+    promote(piece(south,koropokkuru,[1,3]),X).
 
+test('promote_OK',[true(X == piece(north,kirin,[1,3]))]):-
+    promote(piece(north,kirin,[1,3]),X).
 
-test('promote_KO',[fail]):-
-    promote(piece(south,kirin,[1,3]),_).
-
-test('promote_KO',[fail]):-
-    promote(piece(south,koropokkuru,[1,3]),_).
-
-test('promote_KO',[fail]):-
-    promote(piece(north,kirin,[1,3]),_).
-
-test('promote_KO',[fail]):-
-    promote(piece(north,koropokkuru,[1,3]),_).
+test('promote_OK',[true(X == piece(north,koropokkuru,[1,3]))]):-
+    promote(piece(north,koropokkuru,[1,3]),X).
 
 
 /*
@@ -246,13 +252,77 @@ test('correctPlacement_Kodama_KO',[fail]):-
 */
 
 test('place_OK',[true(NewLPieceTaken==[]), true(NewBoard==[piece(south,oni,[4,4])])]):-
-    place(piece(south,oni,[4,3]),[4,4],[piece(south,oni,[4,3])],[],NewLPieceTaken,NewBoard).
+    place(piece(south,oni,[_,_]),[4,4],[piece(south,oni,[_,_])],[],NewLPieceTaken,NewBoard).
+
+test('place_OK',[true(NewLPieceTaken==[]), true(NewBoard==[piece(south,kodama,[4,4])])]):-
+    place(piece(south,kodama,[_,_]),[4,4],[piece(south,kodama,[_,_])],[],NewLPieceTaken,NewBoard).
+
+test('place_OK',[true(NewLPieceTaken==[]), true(NewBoard==[piece(south,kodama,[5,3])])]):-
+    place(piece(south,kodama,[_,_]),[5,3],[piece(south,kodama,[_,_])],[],NewLPieceTaken,NewBoard).
 
 
-
-test('place_KO',[fail]):-
+test('place_south_KO',[fail]):-
     place(piece(south,kodama,[_,_]),[4,4],[piece(south,kodama,[_,_])],[piece(south,kodama,[4,2])],[],[]).
 
+test('place_south_KO',[fail]):-
+    place(piece(south,kodama,[_,_]),[6,4],[piece(south,kodama,[_,_])],[piece(south,kodama,[4,2])],[],[]).
+
+test('place_north_KO',[fail]):-
+    place(piece(north,kodama,[_,_]),[4,4],[piece(north,kodama,[_,_])],[piece(north,kodama,[4,2])],[],[]).
+
+test('place_north_KO',[fail]):-
+    place(piece(north,kodama,[_,_]),[1,4],[piece(north,kodama,[_,_])],[piece(north,kodama,[4,2])],[],[]).
+
+test('place_north_KO',[fail]):-
+    place(piece(north,oni,[_,_]),[4,4],[piece(north,oni,[_,_])],[piece(north,kodama,[4,4])],[],[]).
+
+test('place_north_KO',[fail]):-
+    place(piece(north,oni,[_,_]),[4,4],[piece(north,oni,[_,_])],[piece(south,kodama,[4,4])],[],[]).
+
+
+test('place_north_KO',[fail]):-
+    place(piece(north,oni,[_,_]),[0,4],[piece(north,oni,[_,_])],[piece(south,kodama,[4,4])],[],[]).
+
+test('place_north_KO',[fail]):-
+    place(piece(north,oni,[_,_]),[8,4],[piece(north,oni,[_,_])],[piece(south,kodama,[4,4])],[],[]).
+
+
+test('place_north_KO',[fail]):-
+    place(piece(north,oni,[_,_]),[-1,2],[piece(north,oni,[_,_])],[piece(south,kodama,[4,4])],[],[]).
+
+
+/*
+* Tests for demote predicate
+*/
+test('demote_OK',[true(X == piece(south,kodama,[1,3]))]):-
+    demote(piece(south,kodamaSamourai,[1,3]),X).
+
+test('demote_OK',[true(X == piece(south,oni,[1,3]))]):-
+    demote(piece(south,superOni,[1,3]),X).
+
+test('demote_OK',[true(X == piece(north,kodama,[1,3]))]):-
+    demote(piece(north,kodamaSamourai,[1,3]),X).
+
+test('demote_OK',[true(X == piece(north,oni,[1,3]))]):-
+    demote(piece(north,superOni,[1,3]),X).
+
+
+test('demote_OK',[true(X == piece(south,kirin,[1,3]))]):-
+    demote(piece(south,kirin,[1,3]),X).
+
+test('demote_OK',[true(X == piece(south,koropokkuru,[1,3]))]):-
+    demote(piece(south,koropokkuru,[1,3]),X).
+
+test('demote_OK',[true(X == piece(north,kirin,[1,3]))]):-
+    demote(piece(north,kirin,[1,3]),X).
+
+test('demote_OK',[true(X == piece(north,koropokkuru,[1,3]))]):-
+    demote(piece(north,koropokkuru,[1,3]),X).
+
+
+/*
+* Tests for find and return predicate
+*/
 
 
 :- end_tests(iaYokai).
