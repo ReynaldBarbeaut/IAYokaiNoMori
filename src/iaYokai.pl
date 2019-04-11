@@ -228,6 +228,13 @@ movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X2,Y2]),Board) :-
     promote(piece(north,Name,[X2,Y2]),piece(_,Name2,_)).
 
 /*
+* Get all possible moves of a piece
+*/
+possibleMoves(P,Board,LMoves) :-
+    findall(P2,movePiece(P,P2,Board),LMoves).
+
+
+/*
 * Check if a piece is in a promote area
 */
 inPromoteArea(north,Y) :- (Y=1;Y=2).
@@ -238,15 +245,15 @@ inPromoteArea(south,Y) :- (Y=5;Y=6).
 * Promote an oni or a kodama
 */
 promote(piece(Player,kodama,[X,Y]),piece(Player,kodamaSamourai,[X,Y])) :-
-   inPromoteArea(Player,Y). 
+   inPromoteArea(Player,Y),!. 
 
 promote(piece(Player,oni,[X,Y]),piece(Player,superOni,[X,Y])) :-
-   inPromoteArea(Player,Y).
+   inPromoteArea(Player,Y),!.
 
 promote(Piece,Piece).
 
 /*
-* Check is a placement of a piece is correct
+* Check if a placement of a piece is correct
 */
 correctPlacement(piece(Player,Name,_),C2,Board) :-
     Name \= kodama,
@@ -277,9 +284,9 @@ place(Piece,C,LPieceTaken,Board,NewLPieceTaken,NewBoard) :-
 /*
 * Demote a kodama samourai or a super oni
 */
-demote(piece(Player,kodamaSamourai,C),piece(Player,kodama,C)).
+demote(piece(Player,kodamaSamourai,C),piece(Player,kodama,C)):-!.
 
-demote(piece(Player,superOni,C),piece(Player,oni,C)).
+demote(piece(Player,superOni,C),piece(Player,oni,C)):-!.
 
 demote(Piece,Piece).
 
@@ -297,6 +304,12 @@ findAndReturn(Player,Coordinate,[_|List],P):-
 capture(Player,C,LPieceTaken,Board,NewLPieceTaken,NewBoard):-
     findAndReturn(Player,C,Board,piece(Player2,Name,C2)),
     Name \= koropokkuru,
-    NewLPieceTaken = [piece(Player2,Name,C2)|LPieceTaken],
+    demote(piece(Player2,Name,C2),Piece),
+    NewLPieceTaken = [Piece|LPieceTaken],
     delete(piece(piece(Player2,Name,C2),Name,C2),Board,NewBoard).
+
+/*
+* Test koropokkuru is check
+*/
+
 

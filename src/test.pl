@@ -42,11 +42,19 @@ test('correctSquare_OK',[true]):-
 
 
 test('correctSquare_KO',[fail]):-
-    correctSquare([0,2]),
-    correctSquare([6,4]),
-    correctSquare([-1,3]),
-    correctSquare([3,0]),
-    correctSquare([2,6]).
+    correctSquare([0,2]).
+
+test('correctSquare_KO',[fail]):-
+    correctSquare([8,4]).
+
+test('correctSquare_KO',[fail]):-
+    correctSquare([-1,3]).
+
+test('correctSquare_KO',[fail]):-
+    correctSquare([3,0]).
+
+test('correctSquare_KO',[fail]):-
+    correctSquare([2,7]).
 
 /*
 * Tests for the correctMove predicate
@@ -59,10 +67,18 @@ test('correctMove_OK',[true]):-
     correctMove(piece(south,kodama,[4,4]),[3,5],[piece(north,kodama,[3,5])]).
     
 test('correctMove_KO',[fail]):-
-    correctMove(piece(south,kodama,[4,4]),[4,4],[]),
-    correctMove(piece(south,kodama,[4,4]),[4,5],[piece(south,kodama,[4,5])]),
-    correctMove(piece(south,kodama,[4,4]),[0,5],[]),
-    correctMove(piece(south,kodama,[4,4]),[4,6],[]),
+    correctMove(piece(south,kodama,[4,4]),[4,4],[]).
+
+test('correctMove_KO',[fail]):-
+    correctMove(piece(south,kodama,[4,4]),[4,5],[piece(south,kodama,[4,5])]).
+
+test('correctMove_KO',[fail]):-
+    correctMove(piece(south,kodama,[4,4]),[0,5],[]).
+
+test('correctMove_KO',[fail]):-
+    correctMove(piece(south,kodama,[4,6]),[4,7],[]).
+
+test('correctMove_KO',[fail]):-
     correctMove(piece(south,kodama,[4,4]),[3,5],[piece(south,kodama,[3,5])]).
 
 /*
@@ -77,11 +93,21 @@ test('hasEnnemy_OK',[true]):-
     hasEnnemy(north, [1,3],[piece(north,koropokkuru,[4,3]),piece(north,kodama,[2,3]),piece(south,kodama,[1,3]),piece(north,kirin,[1,5])]).
        
 test('hasEnnemy_KO',[fail]):-
-    hasEnnemy(south, [1,3],[piece(south,kodama,[1,3])]),
-    hasEnnemy(north, [1,3],[piece(north,kirin,[1,3])]),
-    hasEnnemy(south, [2,4],[piece(south,oni,[2,4])]),
-    hasEnnemy(north, [1,3],[piece(north,superOni,[1,3])]),
-    hasEnnemy(south, [1,3],[piece(north,koropokkuru,[4,3]),piece(north,kodama,[2,3]),piece(south,kodama,[1,3]),piece(north,kirin,[1,5])]),
+    hasEnnemy(south, [1,3],[piece(south,kodama,[1,3])]).
+
+test('hasEnnemy_KO',[fail]):-
+    hasEnnemy(north, [1,3],[piece(north,kirin,[1,3])]).
+
+test('hasEnnemy_KO',[fail]):-
+    hasEnnemy(south, [2,4],[piece(south,oni,[2,4])]).
+
+test('hasEnnemy_KO',[fail]):-
+    hasEnnemy(north, [1,3],[piece(north,superOni,[1,3])]).
+
+test('hasEnnemy_KO',[fail]):-
+    hasEnnemy(south, [1,3],[piece(north,koropokkuru,[4,3]),piece(north,kodama,[2,3]),piece(south,kodama,[1,3]),piece(north,kirin,[1,5])]).
+
+test('hasEnnemy_KO',[fail]):-
     hasEnnemy(north, [1,3],[piece(north,koropokkuru,[4,3]),piece(north,kodama,[2,3]),piece(north,kodama,[1,3]),piece(north,kirin,[1,5])]).
 
 /*
@@ -127,12 +153,19 @@ test('correctPlacement_OK',[true]):-
     correctPlacement(piece(south,kodama,[3,3]),[3,4],[piece(south,kodama,[4,3])]).
 
 test('correctPlacement_KO',[fail]):-
-    correctPlacement(piece(south,koropokkuru,[3,3]),[3,4],[piece(south,kirin,[3,3])]),
-    correctPlacement(piece(south,kodama,[3,3]),[3,4],[piece(south,kodama,[3,5])]),
-    correctPlacement(piece(north,kodama,[3,3]),[3,4],[piece(north,kodama,[3,1])]),
-    correctPlacement(piece(north,kodama,[3,3]),[3,6],[piece(north,kodama,[4,1])]),
-    correctPlacement(piece(north,kodama,[3,3]),[3,4],[piece(north,kodama,[3,3])]),
-    correctPlacement(piece(north,kodama,[3,3]),[3,4],[piece(south,kodama,[3,1])]).
+    correctPlacement(piece(south,kodama,[3,3]),[3,4],[piece(south,kodama,[3,5])]).
+
+test('correctPlacement_KO',[fail]):-
+    correctPlacement(piece(north,kodama,[3,3]),[3,4],[piece(north,kodama,[3,1])]).
+
+test('correctPlacement_KO',[fail]):-
+    correctPlacement(piece(north,kodama,[3,3]),[3,7],[piece(north,kodama,[4,1])]).
+
+test('correctPlacement_KO',[fail]):-
+    correctPlacement(piece(north,kodama,[3,3]),[3,4],[piece(north,kodama,[3,3])]).
+
+test('correctPlacement_KO',[fail]):-
+    correctPlacement(piece(north,kodama,[3,3]),[3,1],[piece(south,kodama,[3,1])]).
 
 /*
 * Test for the movePiece predicate
@@ -163,6 +196,11 @@ test('movePiece_several_pieces_OK',[all(C2==[[4,4],[2,4],[3,3],[4,3],[2,3],[3,5]
 
 test('movePiece_several_pieces_OK',[all(C2==[[3,3],[4,3],[2,3],[3,5]])]):-
     movePiece(piece(north,kodamaSamourai,[3,4]),piece(north,kodamaSamourai,C2),[piece(north,kodama,[4,4]),piece(north,kodama,[2,4])]).
+
+
+test('movePiece_oni_OK',[all(P==[piece(north,superOni,[3,2]),piece(north,superOni,[4,2]),piece(north,superOni,[2,2]),piece(north,oni,[4,4]),piece(north,oni,[2,4]) ])]):-
+    movePiece(piece(north,oni,[3,3]),P,[]).
+
 
 test('movePiece_several_pieces_OK',[all(C2==[[4,3]])]):-
     movePiece(piece(north,kodamaSamourai,[3,4]),piece(north,kodamaSamourai,C2),[piece(north,kodama,[4,4]),
@@ -236,15 +274,27 @@ test('correctPlacement_Kodama_OK',[true]):-
     correctPlacement(piece(north,kodama,[1,4]),[2,6],[piece(south,oni,[2,4]),piece(south,oni,[4,5])]).
 
 test('correctPlacement_KO',[fail]):-
-    correctPlacement(piece(south,oni,[1,4]),[2,3],[piece(south,oni,[2,3]),piece(south,oni,[4,3])]),
-    correctPlacement(piece(south,oni,[3,2]),[2,3],[piece(north,oni,[2,3]),piece(south,oni,[4,3])]),
-    correctPlacement(piece(north,oni,[1,4]),[2,3],[piece(south,oni,[2,3]),piece(south,oni,[4,3])]),
+    correctPlacement(piece(south,oni,[1,4]),[2,3],[piece(south,oni,[2,3]),piece(south,oni,[4,3])]).
+
+test('correctPlacement_KO',[fail]):-
+    correctPlacement(piece(south,oni,[3,2]),[2,3],[piece(north,oni,[2,3]),piece(south,oni,[4,3])]).
+
+test('correctPlacement_KO',[fail]):-
+    correctPlacement(piece(north,oni,[1,4]),[2,3],[piece(south,oni,[2,3]),piece(south,oni,[4,3])]).
+
+test('correctPlacement_KO',[fail]):-
     correctPlacement(piece(north,oni,[3,2]),[2,3],[piece(north,oni,[2,3]),piece(south,oni,[4,3])]).
 
 test('correctPlacement_Kodama_KO',[fail]):-
-    correctPlacement(piece(south,kodama,[1,4]),[2,3],[piece(south,kodama,[1,4]),piece(south,oni,[4,5])]),
-    correctPlacement(piece(north,kodama,[1,4]),[2,3],[piece(north,kodama,[1,4]),piece(south,oni,[4,5])]),
-    correctPlacement(piece(south,kodama,[1,4]),[2,6],[piece(south,oni,[2,4]),piece(south,oni,[4,5])]),
+    correctPlacement(piece(south,kodama,[1,4]),[1,3],[piece(south,kodama,[1,3]),piece(south,oni,[4,5])]).
+
+test('correctPlacement_Kodama_KO',[fail]):-
+    correctPlacement(piece(north,kodama,[1,4]),[5,3],[piece(north,kodama,[5,3]),piece(south,oni,[4,5])]).
+
+test('correctPlacement_Kodama_KO',[fail]):-
+    correctPlacement(piece(south,kodama,[1,4]),[2,7],[piece(south,oni,[2,4]),piece(south,oni,[4,5])]).
+
+test('correctPlacement_Kodama_KO',[fail]):-
     correctPlacement(piece(north,kodama,[1,4]),[2,1],[piece(south,oni,[2,4]),piece(south,oni,[4,5])]).
 
 /*
