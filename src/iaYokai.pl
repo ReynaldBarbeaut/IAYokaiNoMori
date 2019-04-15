@@ -227,11 +227,48 @@ movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X2,Y2]),Board) :-
     correctMove(piece(north,Name,[X,Y]),[X2,Y2],Board),
     promote(piece(north,Name,[X2,Y2]),piece(_,Name2,_)).
 
+
+/*
+* Find a piece depending on its team and its coordinate
+*/
+
+findAndReturn(Player,Coordinate,[piece(Player,Name,Coordinate)|_],piece(Player,Name,Coordinate)).
+findAndReturn(Player,Coordinate,[_|List],P):-
+        findAndReturn(Player,Coordinate,List,P).
+
+/*
+* Capture an ennemy
+*/
+capture(Player,C,LPieceTaken,Board,NewLPieceTaken,NewBoard):-
+    opponent(Player,Player2),
+    findAndReturn(Player2,C,Board,piece(Player2,Name,C2)),
+    demote(piece(Player2,Name,C2),Piece),
+    NewLPieceTaken = [Piece|LPieceTaken],
+    delete(Board,piece(Player2,Name,C2),NewBoard).
+
+/*
+* Move and capture if there is an ennemy
+*/
+movement(piece(Player,Name,C1),Hand,Board,NewHand,NewBoard3,piece(Player,Name2,C2)):-
+    movePiece(piece(Player,Name,C1),piece(Player,Name2,C2),Board),
+    hasEnnemy(Player, C2,Board),
+    capture(Player,C2,Hand,Board,NewHand,NewBoard),
+    delete(NewBoard,piece(Player,Name,C1),NewBoard2),
+    NewBoard3 = [piece(Player,Name,C2)|NewBoard2].
+
+
+movement(piece(Player,Name,C1),Hand,Board,Hand,NewBoard2,piece(Player,Name2,C2)):-
+    movePiece(piece(Player,Name,C1),piece(Player,Name2,C2),Board),
+    \+hasEnnemy(Player, C2,Board),
+    delete(Board,piece(Player,Name,C1),NewBoard),
+    NewBoard2 = [piece(Player,Name,C2)|NewBoard].
+    
+
 /*
 * Get all possible moves of a piece
 */
-possibleMoves(P,Board,LMoves) :-
-    findall(P2,movePiece(P,P2,Board),LMoves).
+possibleMoves(P,Hand,Board,LMoves) :-
+    findall([NewHand,NewBoard,P2],movement(P,Hand,Board,NewHand,NewBoard,P2),LMoves).
 
 
 /*
@@ -251,6 +288,16 @@ promote(piece(Player,oni,[X,Y]),piece(Player,superOni,[X,Y])) :-
    inPromoteArea(Player,Y),!.
 
 promote(Piece,Piece).
+
+
+/*
+* Demote a kodama samourai or a super oni
+*/
+demote(piece(Player,kodamaSamourai,C),piece(Player,kodama,C)):-!.
+
+demote(piece(Player,superOni,C),piece(Player,oni,C)):-!.
+
+demote(Piece,Piece).
 
 /*
 * Check if a placement of a piece is correct
@@ -281,35 +328,37 @@ place(Piece,C,LPieceTaken,Board,NewLPieceTaken,NewBoard) :-
     NewBoard = [piece(Player,Name,C) | Board].
 
 
-/*
-* Demote a kodama samourai or a super oni
-*/
-demote(piece(Player,kodamaSamourai,C),piece(Player,kodama,C)):-!.
-
-demote(piece(Player,superOni,C),piece(Player,oni,C)):-!.
-
-demote(Piece,Piece).
-
 
 /*
-* Find a piece depending on its team and its coordinate
+* Check is an element to a list is in the second
 */
-
-findAndReturn(Player,Coordinate,[piece(Player,Name,Coordinate)|_],piece(Player,Name,Coordinate)).
-findAndReturn(Player,Coordinate,[_|List],P):-
-        findAndReturn(Player,Coordinate,List,P).
-/*
-* Capture an ennemy
-*/
-capture(Player,C,LPieceTaken,Board,NewLPieceTaken,NewBoard):-
-    findAndReturn(Player,C,Board,piece(Player2,Name,C2)),
-    Name \= koropokkuru,
-    demote(piece(Player2,Name,C2),Piece),
-    NewLPieceTaken = [Piece|LPieceTaken],
-    delete(piece(piece(Player2,Name,C2),Name,C2),Board,NewBoard).
+compareL(Player,[C|_], Board):-
+    member(piece(Player,koropokkuru,C), Board),!.
+compareL(Player,[_|L], Board):-
+    compareL(Player,L, Board).
 
 /*
-* Test koropokkuru is check
+* Test if a piece is in scope of opponent koropokkuru
 */
+inScope(piece(Player,Name,C),Board):-
+    findall(C2,
+            movePiece(piece(Player,Name,C),piece(_,_,C2),Board),
+            LC),
+    opponent(Player,Player2),
+    compareL(Player2,LC,Board).
+
+/*
+* Test if opponent korpokkuru is check
+*/
+check(Player,Board,[piece(Player,Name,C)|_]):-
+    inScope(piece(Player,Name,C),Board),!.
+check(Player,Board,[_|L]):-
+    check(Player,Board,L).
+        
+
+
+
+
+    
 
 
