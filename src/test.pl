@@ -77,7 +77,7 @@ test('correctMove_KO',[fail]):-
 
 test('correctMove_KO',[fail]):-
     correctMove(piece(south,kodama,[4,6]),[4,7],[]).
-
+https://github.com/ReynaldBarbeaut/IAYokaiNoMori.git
 test('correctMove_KO',[fail]):-
     correctMove(piece(south,kodama,[4,4]),[3,5],[piece(south,kodama,[3,5])]).
 
