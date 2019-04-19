@@ -56,7 +56,7 @@ initial(piece(north,koropokkuru,[3,6])).
 /*
 * Create the initial board
 */
-initial_board(Board) :-
+initialBoard(Board) :-
     findall(Piece, initial(Piece), Board).
 /*
 * Declare the opponent for each side
@@ -74,7 +74,7 @@ lastLine(north,6).
 /*
 * Test if a square is correct
 */
-correctSquare([X,Y]) :- X > 0, X < 7, Y > 0, Y < 7.
+correctSquare([X,Y]) :- X > 0, X < 6, Y > 0, Y < 7.
 
 /*
 * Test if a move is correct
@@ -82,6 +82,8 @@ correctSquare([X,Y]) :- X > 0, X < 7, Y > 0, Y < 7.
 correctMove(piece(Player,_,C1),C2,Board) :-
         C1 \= C2,
         \+(member(piece(Player, _, C2), Board)),
+        opponent(Player,Player2),
+        \+member(piece(Player2,koropokkuru,C2),Board),
         correctSquare(C2).
 
 
@@ -246,6 +248,7 @@ capture(Player,C,LPieceTaken,Board,NewLPieceTaken,NewBoard):-
     NewLPieceTaken = [Piece|LPieceTaken],
     delete(Board,piece(Player2,Name,C2),NewBoard).
 
+
 /*
 * Move and capture if there is an ennemy
 */
@@ -268,7 +271,7 @@ movement(piece(Player,Name,C1),Hand,Board,Hand,NewBoard2,piece(Player,Name2,C2))
 * Get all possible moves of a piece
 */
 possibleMoves(P,Hand,Board,LMoves) :-
-    findall([NewHand,NewBoard,P2],movement(P,Hand,Board,NewHand,NewBoard,P2),LMoves).
+    findall([NewHand,NewBoard,P,P2],movement(P,Hand,Board,NewHand,NewBoard,P2),LMoves).
 
 
 /*
@@ -293,11 +296,11 @@ promote(Piece,Piece).
 /*
 * Demote a kodama samourai or a super oni
 */
-demote(piece(Player,kodamaSamourai,C),piece(Player,kodama,C)):-!.
+demote(piece(Player,kodamaSamourai,C),piece(Player2,kodama,C)):-opponent(Player,Player2),!.
 
-demote(piece(Player,superOni,C),piece(Player,oni,C)):-!.
+demote(piece(Player,superOni,C),piece(Player2,oni,C)):-opponent(Player,Player2),!.
 
-demote(Piece,Piece).
+demote(piece(Player,Name,C),piece(Player2,Name,C)):-opponent(Player,Player2).
 
 /*
 * Check if a placement of a piece is correct
@@ -328,37 +331,144 @@ place(Piece,C,LPieceTaken,Board,NewLPieceTaken,NewBoard) :-
     NewBoard = [piece(Player,Name,C) | Board].
 
 
+/*
+* Check if a piece is in a list a C coordinates
+*/
+compareL(piece(_,_,C2),[C|_]):-
+    C2=C,!.
+compareL(Piece,[_|L]):-
+    compareL(Piece,L).
 
 /*
-* Check is an element to a list is in the second
+* Test if a piece is in scope of another opponent piece (to know if the piece will be take in next round)
 */
-compareL(Player,[C|_], Board):-
-    member(piece(Player,koropokkuru,C), Board),!.
-compareL(Player,[_|L], Board):-
-    compareL(Player,L, Board).
-
-/*
-* Test if a piece is in scope of opponent koropokkuru
-*/
-inScope(piece(Player,Name,C),Board):-
+inScope(Piece, piece(Player,Name,C),Board):-
     findall(C2,
             movePiece(piece(Player,Name,C),piece(_,_,C2),Board),
             LC),
-    opponent(Player,Player2),
-    compareL(Player2,LC,Board).
+    compareL(Piece,LC).
 
 /*
-* Test if opponent korpokkuru is check
+* Test if piece is in scope of one of an opponent piece
 */
-check(Player,Board,[piece(Player,Name,C)|_]):-
-    inScope(piece(Player,Name,C),Board),!.
-check(Player,Board,[_|L]):-
-    check(Player,Board,L).
-        
+inTake(Piece,Player,Board,[piece(Player2,Name,C)|_]):-
+    opponent(Player,Player3),
+    Player2 = Player3,
+    inScope(Piece,piece(Player2,Name,C),Board),!.
+inTake(Piece,Player,Board,[_|L]):-
+    inTake(Piece,Player,Board,L).
+
+/*
+* Points of a piece
+*/
+points(kodama,10).
+points(kodamaSamourai,20).
+points(oni,30).
+points(superOni,40).
+points(kirin,50).
+/*
+*Priority is given to the koropokkuru with that even if a piece has a chance to be taken,
+* it will still focus to capture the koropokkuru
+*/
+points(koropokkuru,100).
+
+/*
+* Compute distance between two points
+*/
+distance([X,Y],[X2,Y2],Dist):-
+    Dist is sqrt((X2-X)*(X2-X) + (Y2-Y)*(Y2-Y)). 
+
+/*
+* Compute the risked cost of a piece (if it is captured)
+*/
+riskedCost(piece(Player,Name,C),Board,0):-
+    \+inTake(piece(Player,Name,C),Player,Board,Board),!.
+
+riskedCost(piece(Player,Name,C),Board,Cost):-
+    inTake(piece(Player,Name,C),Player,Board,Board),
+    points(Name,Cost),!.
+
+/*
+* Return coordinate of a piece
+*/
+getCoordinate(Player,Name,[piece(Player,Name,Coordinate)|_],Coordinate).
+getCoordinate(Player,Name,[_|List],P):-
+        getCoordinate(Player,Name,List,P).
+
+/*
+* Compute points for a move
+*/
+
+computePoints([NewHand,_,_,piece(Player,Name2,C2)],Hand,Board,Cost):-
+    NewHand \= Hand,
+    NewHand = [piece(Player,Name3,_)|_],
+    points(Name3,Point),
+    opponent(Player,Player2),
+    getCoordinate(Player2,koropokkuru,Board,C3),
+    distance(C2,C3,Distance),
+    riskedCost(piece(Player,Name2,C2),Board,RiskedCost),
+    Cost is Point - Distance - RiskedCost.  
 
 
+computePoints([NewHand,_,_,piece(Player,Name2,C2)],Hand,Board,Cost):-
+    NewHand == Hand,
+    opponent(Player,Player2),
+    getCoordinate(Player2,koropokkuru,Board,C3),
+    distance(C2,C3,Distance),
+    riskedCost(piece(Player,Name2,C2),Board,RiskedCost),
+    Cost is 0 - Distance - RiskedCost. 
+
+/*
+* Go through a list of moves and keep the best one
+*/     
+bestFromList([],_,_,RecordMove,RecordCost,RecordMove,RecordCost):-!.
+
+bestFromList([Move|LMove],Hand,Board,_,CurrentBestCost,RecordMode,RecordCost):-
+    computePoints(Move,Hand,Board,NewCost),
+    NewCost > CurrentBestCost,
+    bestFromList(LMove,Hand,Board,Move,NewCost,RecordMode,RecordCost).
 
 
+bestFromList([Move|LMove],Hand,Board,CurrentBestMove,CurrentBestCost,RecordMode,RecordCost):-
+    computePoints(Move,Hand,Board,NewCost),
+    NewCost =< CurrentBestCost,
+    bestFromList(LMove,Hand,Board,CurrentBestMove,CurrentBestCost,RecordMode,RecordCost).
+
+/*
+* Compute best move of a piece.
+*/
+bestMove(P,Hand,Board,BestMove,BestCost):-
+    possibleMoves(P,Hand,Board,LMoves),
+    LMoves = [FirstMove | _],
+    computePoints(FirstMove,Hand,Board,FirstCost),
+    bestFromList(LMoves,Hand,Board,FirstMove,FirstCost,BestMove,BestCost).
+
+
+/*
+* Go through a piece's list of a side and compute the best move of each piece to return the best move 
+*/
+bestSideMoveList(_,_,[],_,BestMove,_,BestMove).
+
+bestSideMoveList(Player,Hand,[piece(Player2,_,_)|LPieces],Board,_,CurrentBestCost,BestMove):-  
+    Player \= Player2,
+    bestSideMoveList(Player,Hand,LPieces,Board,_,CurrentBestCost,BestMove).
+
+bestSideMoveList(Player,Hand,[piece(Player,Name,C)|LPieces],Board,_,CurrentBestCost,BestMove):-  
+    bestMove(piece(Player,Name,C),Hand,Board,NewBestMove,NewBestCost),
+    NewBestCost > CurrentBestCost,
+    bestSideMoveList(Player,Hand,LPieces,Board,NewBestMove,NewBestCost,BestMove).
+
+bestSideMoveList(Player,Hand,[piece(Player,Name,C)|LPieces],Board,CurrentBestMove,CurrentBestCost,BestMove):-  
+    bestMove(piece(Player,Name,C),Hand,Board,_,NewBestCost),
+    NewBestCost =< CurrentBestCost,
+    bestSideMoveList(Player,Hand,LPieces,Board,CurrentBestMove,CurrentBestCost,BestMove).
+
+/*
+*
+*/
+bestSideMove(Player,Hand,Board,BestMove) :-
+    bestSideMoveList(Player,Hand,Board,Board,[],-99,BestMove).   
     
+
 
 

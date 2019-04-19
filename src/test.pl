@@ -77,7 +77,7 @@ test('correctMove_KO',[fail]):-
 
 test('correctMove_KO',[fail]):-
     correctMove(piece(south,kodama,[4,6]),[4,7],[]).
-https://github.com/ReynaldBarbeaut/IAYokaiNoMori.git
+
 test('correctMove_KO',[fail]):-
     correctMove(piece(south,kodama,[4,4]),[3,5],[piece(south,kodama,[3,5])]).
 
@@ -344,29 +344,29 @@ test('place_north_KO',[fail]):-
 /*
 * Tests for demote predicate
 */
-test('demote_OK',[true(X == piece(south,kodama,[1,3]))]):-
+test('demote_OK',[true(X == piece(north,kodama,[1,3]))]):-
     demote(piece(south,kodamaSamourai,[1,3]),X).
 
-test('demote_OK',[true(X == piece(south,oni,[1,3]))]):-
+test('demote_OK',[true(X == piece(north,oni,[1,3]))]):-
     demote(piece(south,superOni,[1,3]),X).
 
-test('demote_OK',[true(X == piece(north,kodama,[1,3]))]):-
+test('demote_OK',[true(X == piece(south,kodama,[1,3]))]):-
     demote(piece(north,kodamaSamourai,[1,3]),X).
 
-test('demote_OK',[true(X == piece(north,oni,[1,3]))]):-
+test('demote_OK',[true(X == piece(south,oni,[1,3]))]):-
     demote(piece(north,superOni,[1,3]),X).
 
 
-test('demote_OK',[true(X == piece(south,kirin,[1,3]))]):-
+test('demote_OK',[true(X == piece(north,kirin,[1,3]))]):-
     demote(piece(south,kirin,[1,3]),X).
 
-test('demote_OK',[true(X == piece(south,koropokkuru,[1,3]))]):-
+test('demote_OK',[true(X == piece(north,koropokkuru,[1,3]))]):-
     demote(piece(south,koropokkuru,[1,3]),X).
 
-test('demote_OK',[true(X == piece(north,kirin,[1,3]))]):-
+test('demote_OK',[true(X == piece(south,kirin,[1,3]))]):-
     demote(piece(north,kirin,[1,3]),X).
 
-test('demote_OK',[true(X == piece(north,koropokkuru,[1,3]))]):-
+test('demote_OK',[true(X == piece(south,koropokkuru,[1,3]))]):-
     demote(piece(north,koropokkuru,[1,3]),X).
 
 
