@@ -22,37 +22,78 @@
  ***********************************************************
  */
 
-int traite_req_init(int sockTrans) {
+int traite_req_init(int splay1, int splay2) {
 	int err;
-	TPartieReq req;      /* structure pour l'envoi de la requ�te */
-	TPartieRep rep;      /* structure pour la r�ception de la r�ponse */
+	TPartieReq req1;      /* structure requete */
+	TPartieRep rep1;      /* structure reponse */
+	TPartieReq req2;
+	TPartieRep rep2;
 
 	/*
-	 * reception de la requ�te en provenance du client
+	 * reception de la requete en provenance de chaque client
 	 */
-	err = recv(sockTrans, &req, sizeof(TPartieReq), 0);
+	err = recv(splay1, &req1, sizeof(TPartieReq), 0);
 	if (err <= 0) {
 		perror("(serveur) erreur dans la reception");
-		shutdown(sockTrans, SHUT_RDWR); close(sockTrans);
+		shutdown(splay1, SHUT_RDWR); close(splay1);
 		return -6;
 	}
-	printf("(serveur) re�u requete init");
+	printf("(serveur) recu requete init");
+
+	err = recv(splay2, &req2, sizeof(TPartieReq), 0);
+	if (err <= 0) {
+		perror("(serveur) erreur dans la reception");
+		shutdown(splay2, SHUT_RDWR); close(splay2);
+		return -6;
+	}
+	printf("(serveur) recu requete init");
 
 	/*
 	 * traitement serveur
 	 */
-	// TO DO
+	if (req1.idReq != PARTIE) {
+		rep1.err = ERR_TYP;
+	}
+	else {
+		rep1.err = ERR_OK;
+	}
+
+	if (req2.idReq != PARTIE) {
+		rep2.err = ERR_TYP;
+	}
+	else {
+		rep2.err = ERR_OK;
+	}
+
+	rep1.validSensTete = OK;
+	if (req2.piece == req1.piece) {
+		rep2.validSensTete = KO;
+	} else {
+		rep2.validSensTete = OK;
+	}
+
+	strcpy(rep1.nomAdvers, req2.nomJoueur);
+	strcpy(rep2.nomAdvers, req1.nomJoueur);
+
 
 	 /*
-	  * envoi de la r�ponse
+	  * envoi des reponses
 	  */
-	err = send(sockTrans, &rep, sizeof(TPartieRep), 0);
+	err = send(splay1, &rep1, sizeof(TPartieRep), 0);
 	if (err <= 0) { // if (err != strlen(chaine)+1) {
 		perror("(serveur) erreur sur le send");
-		shutdown(sockTrans, SHUT_RDWR); close(sockTrans);
+		shutdown(splay1, SHUT_RDWR); close(splay1);
 		return -5;
 	}
-	printf("(serveur) envoi de la structure r�sultat r�alis�\n");
+	printf("(serveur) envoi de la reponse partie realise\n");
+
+	err = send(splay2, &rep2, sizeof(TPartieRep), 0);
+	if (err <= 0) { // if (err != strlen(chaine)+1) {
+		perror("(serveur) erreur sur le send");
+		shutdown(splay2, SHUT_RDWR); close(splay2);
+		return -5;
+	}
+	printf("(serveur) envoi de la reponse partie realise\n");
 
 	return 0;
 }
@@ -71,7 +112,7 @@ int traite_req_coup(int sockTrans) {
 		shutdown(sockTrans, SHUT_RDWR); close(sockTrans);
 		return -6;
 	}
-	printf("(serveur) re�u requete coup");
+	printf("(serveur) recu requete coup");
 
 	/*
 	 * traitement serveur
@@ -87,7 +128,7 @@ int traite_req_coup(int sockTrans) {
 		shutdown(sockTrans, SHUT_RDWR); close(sockTrans);
 		return -5;
 	}
-	printf("(serveur) envoi de la structure r�sultat r�alis�\n");
+	printf("(serveur) envoi de la reponse coup realise\n");
 
 	return 0;
 }

@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
 
   /* verification des arguments */
   if (argc != 5) {
-    printf("usage : %s IPServ port nomJoueur\n", argv[0]);
+    printf("usage : %s IPServ port nomJoueur sens\n", argv[0]);
     return -1;
   }
   

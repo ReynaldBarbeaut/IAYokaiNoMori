@@ -1,11 +1,11 @@
 /*
  **********************************************************
  *
- *  Programme : serveurCalcul.c
+ *  Programme : server.c
  *
- *  resume :    execute un calcul en réponse à une demande d'un client
+ *  resume :    serveur de jeu Yokau no-mori avec 2 joueurs
  *
- *  date :      8 / 01 / 18
+ *  date :      avril 2019
  *
  ***********************************************************
  */
@@ -19,9 +19,8 @@
 #include <errno.h>
 #include "../include/protocole.h"
 #include "../include/fctCom.h"
+#include "../include/fctServer.h"
 #include "../include/validation.h"
-
-#define MAX_CL 2           /* nombre maximum de clients connectés */
 
 int main(int argc, char** argv) {
   
@@ -29,13 +28,9 @@ int main(int argc, char** argv) {
   struct sockaddr_in addClient;	/* adresse de la socket client connectee */
 
   fd_set readSet;         /* ensemble de file descriptors */
-  int tSockCl[MAX_CL];    /* tableau de scokets de com */
-  int nbCl;               /* nombre de clients connectés */
-  int i, sizeAddr, sd, activity, max_sd, new_socket, empty;
-
-  for (i = 0; i < MAX_CL; i++) {   
-    tSockCl[i] = 0;   
-  }
+  int splay1, splay2;     /* scokets de com pour les 2 joueurs */
+  int sizeAddr;
+  bool termine;           /* indique si une partie est terminee */
   
   /*
    * verification des arguments
@@ -56,11 +51,47 @@ int main(int argc, char** argv) {
     return -2;
   }
 
-  // TO DO
+  /* 
+   * attente de connexion des 2 joueurs
+   */
+  splay1 = accept(sserv, (struct sockaddr *)&addClient, (socklen_t *)&sizeAddr);
+  splay2 = accept(sserv, (struct sockaddr *)&addClient, (socklen_t *)&sizeAddr);
+
+  /*******************/
+  /* DEBUT DE PARTIE */
+  /*******************/
+
+  /* 
+   * traitement des requêtes de partie
+   */
+  traite_req_init(splay1, splay2);
+
+
+  /*****************/
+  /* BOUCLE DE JEU */
+  /*****************/
+  for (int i = 1; i < 3; i++) {
+
+    /* 
+     * initialisation du plateau de jeu
+     */
+    initialiserPartie();
+    termine = false;
+
+    /********************/
+    /* BOUCLE DE PARTIE */
+    /********************/
+    while (!termine) {
+        traite_req_coup(splay1);
+        traite_req_coup(splay2);
+    }
+  }
 
   /* 
    * arret de la connexion
    */
+  shutdown(splay1, SHUT_RDWR); close(splay1);
+  shutdown(splay2, SHUT_RDWR); close(splay2);
   close(sserv);
   
   return 0;

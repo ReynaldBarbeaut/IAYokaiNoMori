@@ -1,2 +1,2 @@
-int traite_req_init(int sockTrans);
-int traite_req_coup(int sockTrans);
+int traite_req_init(int splay1, int splay2);
+int traite_req_coup(int splay);
