@@ -125,6 +125,8 @@ int main(int argc, char **argv) {
   
   for (int i = 1; i < 3; i++) {
 
+    printf("(client) debut de la partie %d\n", i);
+
     /* 
      * si on n'est pas le premier à jouer
      */

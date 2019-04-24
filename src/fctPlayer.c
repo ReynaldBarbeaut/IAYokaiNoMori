@@ -22,26 +22,26 @@
  */
 
 void cstrPiece(TPiece *p) {
-    p->sensTetePiece = NORD;
-    p->typePiece = KIRIN;
+    // p->sensTetePiece = NORD;
+    // p->typePiece = KIRIN;
 }
 
 void cstrParamsDepl(TDeplPiece *d) {
-    d->caseDep.c = B;
-    d->caseDep.l = SIX;
-    d->caseDep.c = B;
-    d->caseDep.l = CINQ;
+    // d->caseDep.c = B;
+    // d->caseDep.l = SIX;
+    // d->caseDep.c = B;
+    // d->caseDep.l = CINQ;
 }
 
 void cstrParamsDepos(TDeposerPiece *d) {
-    d->c = A;
-    d->l = CINQ;
+    // d->c = A;
+    // d->l = CINQ;
 }
 
 int cstrCoup(TCoupReq *r, int numPartie) {
     r->idRequest = COUP;
     r->numPartie = numPartie;
-    r->typeCoup = DEPLACER;
+    // r->typeCoup = DEPLACER;
 
     TPiece p;
     cstrPiece(&p);

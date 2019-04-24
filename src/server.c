@@ -30,7 +30,10 @@ int main(int argc, char** argv) {
   fd_set readSet;         /* ensemble de file descriptors */
   int splay1, splay2;     /* scokets de com pour les 2 joueurs */
   int sizeAddr;
+  int err;                /* code de retour des fonctions utilitaires du serveur */
   bool termine;           /* indique si une partie est terminee */
+  char sens;              /* sens de la tête du joueur dont la demande de partie
+                             est recue en premier */
   
   /*
    * verification des arguments
@@ -64,8 +67,11 @@ int main(int argc, char** argv) {
   /* 
    * traitement des requêtes de partie
    */
-  traite_req_init(splay1, splay2);
-
+  err = traite_req_init(splay1, splay2, &sens);
+  if (err < 0) {
+    perror("(serveur) erreur traitement requete init");
+    return -3;
+  }
 
   /*****************/
   /* BOUCLE DE JEU */
@@ -77,13 +83,59 @@ int main(int argc, char** argv) {
      */
     initialiserPartie();
     termine = false;
+    printf("Debut de la partie numero %d\n", i);
 
     /********************/
     /* BOUCLE DE PARTIE */
     /********************/
+    int j = 0;
     while (!termine) {
-        traite_req_coup(splay1);
-        traite_req_coup(splay2);
+        if (i == 1) {
+          if (j % 2 == 0) {
+            if (sens == 's') {
+              err = traite_req_coup(splay1, splay2, 1, i);
+            }
+            else {
+              err = traite_req_coup(splay2, splay1, 2, i);
+            }
+          }
+          else {
+            if (sens == 's') {
+              err = traite_req_coup(splay2, splay1, 2, i);
+            }
+            else {
+              err = traite_req_coup(splay1, splay2, 1, i);
+            }
+          }
+        }
+        if (i == 2) {
+          if (j % 2 == 0) {
+            if (sens == 's') {
+              err = traite_req_coup(splay2, splay1, 2, i);
+            }
+            else {
+              err = traite_req_coup(splay1, splay2, 1, i);
+            }
+          }
+          else {
+            if (sens == 's') {
+              err = traite_req_coup(splay1, splay2, 1, i);
+            }
+            else {
+              err = traite_req_coup(splay2, splay1, 2, i);
+            }
+          }
+        }
+
+        switch (err) {
+          case -1 : printf("TIMEOUT : fin de partie\n"); termine = true; break;
+          case 0 : termine = false; break;
+          case 1 : printf("Le joueur 1 gagne la partie !\n"); termine = true; break;
+          case 2 : printf("Le joueur 2 gagne la partie !\n"); termine = true; break;
+          case 3 : printf("Match nul pour cette partie !\n"); termine = true; break;
+          default : perror("(serveur) erreur traitement requete coup"); return -4; break;
+        }
+        j++;
     }
   }
 

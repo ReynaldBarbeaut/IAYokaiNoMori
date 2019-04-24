@@ -8,6 +8,9 @@
 #include <arpa/inet.h>
 #include "../include/protocole.h"
 #include "../include/fctServer.h"
+#include "../include/validation.h"
+
+#define TIME_MAX 6
 
 /*
  **********************************************************
@@ -22,7 +25,7 @@
  ***********************************************************
  */
 
-int traite_req_init(int splay1, int splay2) {
+int traite_req_init(int splay1, int splay2, char *sens) {
 	int err;
 	TPartieReq req1;      /* structure requete */
 	TPartieRep rep1;      /* structure reponse */
@@ -34,22 +37,22 @@ int traite_req_init(int splay1, int splay2) {
 	 */
 	err = recv(splay1, &req1, sizeof(TPartieReq), 0);
 	if (err <= 0) {
-		perror("(serveur) erreur dans la reception");
+		perror("(serveur - init) erreur sur la reception");
 		shutdown(splay1, SHUT_RDWR); close(splay1);
 		return -6;
 	}
-	printf("(serveur) recu requete init");
+	printf("(serveur - init) recu requete init\n");
 
 	err = recv(splay2, &req2, sizeof(TPartieReq), 0);
 	if (err <= 0) {
-		perror("(serveur) erreur dans la reception");
+		perror("(serveur - init) erreur sur la reception");
 		shutdown(splay2, SHUT_RDWR); close(splay2);
 		return -6;
 	}
-	printf("(serveur) recu requete init");
+	printf("(serveur - init) recu requete init\n");
 
 	/*
-	 * traitement serveur
+	 * traitement serveur - init
 	 */
 	if (req1.idReq != PARTIE) {
 		rep1.err = ERR_TYP;
@@ -75,60 +78,144 @@ int traite_req_init(int splay1, int splay2) {
 	strcpy(rep1.nomAdvers, req2.nomJoueur);
 	strcpy(rep2.nomAdvers, req1.nomJoueur);
 
+	if (req1.piece == SUD) {
+		*sens = 's';
+	}
+	else {
+		*sens = 'n';
+	}
 
 	 /*
 	  * envoi des reponses
 	  */
 	err = send(splay1, &rep1, sizeof(TPartieRep), 0);
 	if (err <= 0) { // if (err != strlen(chaine)+1) {
-		perror("(serveur) erreur sur le send");
+		perror("(serveur - init) erreur sur le send");
 		shutdown(splay1, SHUT_RDWR); close(splay1);
 		return -5;
 	}
-	printf("(serveur) envoi de la reponse partie realise\n");
+	printf("(serveur - init) envoi de la reponse partie realise\n");
 
 	err = send(splay2, &rep2, sizeof(TPartieRep), 0);
 	if (err <= 0) { // if (err != strlen(chaine)+1) {
-		perror("(serveur) erreur sur le send");
+		perror("(serveur - init) erreur sur le send");
 		shutdown(splay2, SHUT_RDWR); close(splay2);
 		return -5;
 	}
-	printf("(serveur) envoi de la reponse partie realise\n");
+	printf("(serveur - init) envoi de la reponse partie realise\n");
 
 	return 0;
 }
 
-int traite_req_coup(int sockTrans) {
+int traite_req_coup(int sCurrent, int sAdvers, int player, int partie) {
 	int err;
-	TCoupRep req;       /* structure pour l'envoi de la requ�te */
-	TCoupReq rep;      /* structure pour la r�ception de la r�ponse */
+	bool valid;
+	int ret = 0;			/* code de retour */
+	TCoupReq req;       	/* structure requete */
+	TCoupRep rep;       	/* structure reponse */
+	TPropCoup propCoup; 	/* structure propriete du coup */
 
 	/*
-	 * reception et affichage du calcul en provenance du client
+	 * application de la limite de temps pour le recv
 	 */
-	err = recv(sockTrans, &req, sizeof(TCoupReq), 0);
-	if (err <= 0) {
-		perror("(serveur) erreur dans la reception");
-		shutdown(sockTrans, SHUT_RDWR); close(sockTrans);
+	struct timeval timeout;      
+    timeout.tv_sec = TIME_MAX;
+    timeout.tv_usec = 0;
+
+    if (setsockopt(sCurrent, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout,
+	               sizeof(timeout)) < 0) {
+        perror("(serveur - coup) erreur sur setsockopt\n");
+		return -4;
+	}
+
+	/*
+	 * reception requete coup
+	 */
+	err = recv(sCurrent, &req, sizeof(TCoupReq), 0);
+	if (err <= 0 && err != -1) {
+		perror("(serveur - coup) erreur sur la reception");
+		printf("\n err : %d", err);
+		shutdown(sCurrent, SHUT_RDWR); close(sCurrent);
 		return -6;
 	}
-	printf("(serveur) recu requete coup");
+	if (err == -1) {
+		rep.validCoup = TIMEOUT;
+		printf("(serveur - coup) TIMEOUT pour le joueur %d\n", player);
+	}
 
 	/*
-	 * traitement serveur
+	 * traitement serveur - coup
 	 */
-	// TO DO
+	if (rep.validCoup == TIMEOUT) {
+		rep.err = ERR_COUP;
+		rep.propCoup = PERDU;
+		ret = -1;
+	}
+	else {
+		printf("(serveur - coup) recu requete coup\n");
+		if (req.idRequest == PARTIE) {
+			rep.err = ERR_TYP;
+		}
+		if (req.numPartie != partie) {
+			rep.err = ERR_PARTIE;
+		}
 
-	 /*
-	  * envoi du r�sulat du calcul
-	  */
-	err = send(sockTrans, &rep, sizeof(TCoupRep), 0);
+		valid = validationCoup(player, req, &propCoup);
+		if (!valid) {
+			rep.err = ERR_COUP;
+			rep.validCoup = TRICHE;
+		}
+		else {
+			rep.err = ERR_OK;
+			rep.validCoup = VALID;
+			rep.propCoup = propCoup;
+
+			if (propCoup == CONT) {
+				ret = 0;
+			}
+			else if (propCoup == GAGNE) {
+				ret = player;
+			}
+			else if (propCoup == PERDU) {
+				ret = (player == 1 ? 2 : 1);
+			}
+		}
+	}
+	
+	/*
+	 * envoi reponse coup au joueur courant
+	 */
+	err = send(sCurrent, &rep, sizeof(TCoupRep), 0);
 	if (err <= 0) {
-		perror("(serveur) erreur sur le send");
-		shutdown(sockTrans, SHUT_RDWR); close(sockTrans);
+		perror("(serveur - coup) erreur sur le send");
+		shutdown(sCurrent, SHUT_RDWR); close(sCurrent);
 		return -5;
 	}
-	printf("(serveur) envoi de la reponse coup realise\n");
+	printf("(serveur - coup) envoi de la reponse coup au joueur courant realise\n");
 
-	return 0;
+	/*
+	 * envoi reponse coup au joueur adverse
+	 */
+	err = send(sAdvers, &rep, sizeof(TCoupRep), 0);
+	if (err <= 0) {
+		perror("(serveur - coup) erreur sur le send");
+		shutdown(sAdvers, SHUT_RDWR); close(sAdvers);
+		return -5;
+	}
+	printf("(serveur - coup) envoi de la reponse coup au joueur adverse realise\n");
+
+	/*
+	 * envoi coup joue au joueur adverse
+	 */
+	if (rep.validCoup == VALID && rep.propCoup == CONT) { 
+		err = send(sAdvers, &req, sizeof(TCoupReq), 0);
+		if (err <= 0) {
+			perror("(serveur - coup) erreur sur le send");
+			shutdown(sAdvers, SHUT_RDWR); close(sAdvers);
+			return -5;
+		}
+		printf("(serveur - coup) envoi du coup joue au joueur adverse realise\n");
+	}
+
+	return ret;
 }
