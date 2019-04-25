@@ -9,6 +9,7 @@
 :-use_module(library(clpfd)).
 :-use_module(library(plunit)).
 :-use_module(library(lists)).
+:-use_module(library(between)).
 
 % Flag to display a long list
 :-set_prolog_flag(toplevel_print_options,
@@ -241,11 +242,11 @@ findAndReturn(Player,Coordinate,[_|List],P):-
 /*
 * Capture an ennemy
 */
-capture(Player,C,LPieceTaken,Board,NewLPieceTaken,NewBoard):-
+capture(Player,C,Hand,Board,NewHand,NewBoard):-
     opponent(Player,Player2),
     findAndReturn(Player2,C,Board,piece(Player2,Name,C2)),
     demote(piece(Player2,Name,C2),Piece),
-    NewLPieceTaken = [Piece|LPieceTaken],
+    NewHand = [Piece|Hand],
     delete(Board,piece(Player2,Name,C2),NewBoard).
 
 
@@ -265,14 +266,6 @@ movement(piece(Player,Name,C1),Hand,Board,Hand,NewBoard2,piece(Player,Name2,C2))
     \+hasEnnemy(Player, C2,Board),
     delete(Board,piece(Player,Name,C1),NewBoard),
     NewBoard2 = [piece(Player,Name,C2)|NewBoard].
-    
-
-/*
-* Get all possible moves of a piece
-*/
-possibleMoves(P,Hand,Board,LMoves) :-
-    findall([NewHand,NewBoard,P,P2],movement(P,Hand,Board,NewHand,NewBoard,P2),LMoves).
-
 
 /*
 * Check if a piece is in a promote area
@@ -301,34 +294,6 @@ demote(piece(Player,kodamaSamourai,C),piece(Player2,kodama,C)):-opponent(Player,
 demote(piece(Player,superOni,C),piece(Player2,oni,C)):-opponent(Player,Player2),!.
 
 demote(piece(Player,Name,C),piece(Player2,Name,C)):-opponent(Player,Player2).
-
-/*
-* Check if a placement of a piece is correct
-*/
-correctPlacement(piece(Player,Name,_),C2,Board) :-
-    Name \= kodama,
-    \+(member(piece(Player, _, C2), Board)),
-    correctSquare(C2),
-    \+hasEnnemy(Player,C2,Board).
-
-%Correct placement for a kodama piece
-correctPlacement(piece(Player,kodama,_),[X,Y],Board) :-
-    \+(member(piece(Player, _, [X,Y]), Board)),
-    correctSquare([X,Y]),
-    \+hasEnnemy(Player,[X,Y],Board),
-    \+(member(piece(Player, kodama, [X,_]), Board)),
-    opponent(Player,Player2),
-    lastLine(Player2,LastLine),
-    Y \= LastLine.
-        
-/*
-* Place a piece on the board
-*/
-place(Piece,C,LPieceTaken,Board,NewLPieceTaken,NewBoard) :-
-    correctPlacement(Piece,C,Board),
-    delete(LPieceTaken,Piece,NewLPieceTaken),
-    Piece = piece(Player,Name,_),
-    NewBoard = [piece(Player,Name,C) | Board].
 
 
 /*
@@ -435,6 +400,13 @@ bestFromList([Move|LMove],Hand,Board,CurrentBestMove,CurrentBestCost,RecordMode,
     bestFromList(LMove,Hand,Board,CurrentBestMove,CurrentBestCost,RecordMode,RecordCost).
 
 /*
+* Get all possible moves of a piece
+*/
+possibleMoves(P,Hand,Board,LMoves) :-
+    findall([NewHand,NewBoard,P,P2],movement(P,Hand,Board,NewHand,NewBoard,P2),LMoves).
+
+
+/*
 * Compute best move of a piece.
 */
 bestMove(P,Hand,Board,BestMove,BestCost):-
@@ -447,28 +419,140 @@ bestMove(P,Hand,Board,BestMove,BestCost):-
 /*
 * Go through a piece's list of a side and compute the best move of each piece to return the best move 
 */
-bestSideMoveList(_,_,[],_,BestMove,_,BestMove).
+bestSideMoveList(_,_,[],_,BestMove,BestCost,BestMove,BestCost).
 
-bestSideMoveList(Player,Hand,[piece(Player2,_,_)|LPieces],Board,_,CurrentBestCost,BestMove):-  
+bestSideMoveList(Player,Hand,[piece(Player2,_,_)|LPieces],Board,_,CurrentBestCost,BestMove,BestCost):-  
     Player \= Player2,
-    bestSideMoveList(Player,Hand,LPieces,Board,_,CurrentBestCost,BestMove).
+    bestSideMoveList(Player,Hand,LPieces,Board,_,CurrentBestCost,BestMove,BestCost).
 
-bestSideMoveList(Player,Hand,[piece(Player,Name,C)|LPieces],Board,_,CurrentBestCost,BestMove):-  
+bestSideMoveList(Player,Hand,[piece(Player,Name,C)|LPieces],Board,_,CurrentBestCost,BestMove,BestCost):-  
     bestMove(piece(Player,Name,C),Hand,Board,NewBestMove,NewBestCost),
     NewBestCost > CurrentBestCost,
-    bestSideMoveList(Player,Hand,LPieces,Board,NewBestMove,NewBestCost,BestMove).
+    bestSideMoveList(Player,Hand,LPieces,Board,NewBestMove,NewBestCost,BestMove,BestCost).
 
-bestSideMoveList(Player,Hand,[piece(Player,Name,C)|LPieces],Board,CurrentBestMove,CurrentBestCost,BestMove):-  
+bestSideMoveList(Player,Hand,[piece(Player,Name,C)|LPieces],Board,CurrentBestMove,CurrentBestCost,BestMove,BestCost):-  
     bestMove(piece(Player,Name,C),Hand,Board,_,NewBestCost),
     NewBestCost =< CurrentBestCost,
-    bestSideMoveList(Player,Hand,LPieces,Board,CurrentBestMove,CurrentBestCost,BestMove).
+    bestSideMoveList(Player,Hand,LPieces,Board,CurrentBestMove,CurrentBestCost,BestMove,BestCost).
 
 /*
-*
+* Compute the best move of a side
 */
-bestSideMove(Player,Hand,Board,BestMove) :-
-    bestSideMoveList(Player,Hand,Board,Board,[],-99,BestMove).   
+bestSideMove(Player,Hand,Board,BestMove,BestCost) :-
+    bestSideMoveList(Player,Hand,Board,Board,[],-1000,BestMove,BestCost).   
+
+
+/*
+* Give all the free square of the board
+*/
+freeSquare(Board,LSquare):- 
+    findall([X,Y],(between(1,5,X),between(1,6,Y),\+member(piece(_,_,[X,Y]),Board)),LSquare).
+
+/*
+* Check if a placement of a piece is correct
+*/
+correctPlacement(piece(_,Name,_),C2,Board) :-
+    Name \= kodama,
+    \+(member(piece(_, _, C2), Board)),
+    correctSquare(C2).
+
+/*
+*Correct placement for a kodama piece
+*/
+correctPlacement(piece(Player,kodama,_),[X,Y],Board) :-
+    \+(member(piece(_, _, [X,Y]), Board)),
+    correctSquare([X,Y]),
+    \+(member(piece(Player, kodama, [X,_]), Board)),
+    opponent(Player,Player2),
+    lastLine(Player2,LastLine),
+    Y \= LastLine.
+        
+/*
+* Place a piece on the board
+*/
+place(Piece,C,Hand,Board,NewHand,NewBoard) :-
+    correctPlacement(Piece,C,Board),
+    delete(Hand,Piece,NewHand),
+    Piece = piece(Player,Name,_),
+    NewBoard = [piece(Player,Name,C) | Board].
+       
+
+/*
+* Get the best piece of a hand
+*/
+bestPiece([],CurrentBestPiece,_,CurrentBestPiece).
+
+bestPiece([piece(_,Name,_)|Hand],CurrentBestPiece,CurrentBestPoint,BestPiece):-
+        points(Name,Point),
+        Point =< CurrentBestPoint,
+        bestPiece(Hand,CurrentBestPiece,CurrentBestPoint,BestPiece). 
+
+bestPiece([piece(Player,Name,C)|Hand],_,CurrentBestPoint,BestPiece):-
+        points(Name,Point),
+        Point > CurrentBestPoint,
+        bestPiece(Hand,piece(Player,Name,C),Point,BestPiece).  
+
+/*
+* Placement computation
+*/ 
+computePlacementPoint(piece(Player,Name,C),Board,Cost):-
+    opponent(Player,Player2),
+    getCoordinate(Player2,koropokkuru,Board,C3),
+    distance(C,C3,Distance),
+    riskedCost(piece(Player,Name,C),Board,RiskedCost),
+    Cost is 0 - Distance - RiskedCost. 
+
+
+/*
+* Compute the best placement with a list of square
+*/
+
+bestPlacementComputation([],_,_,BestPlacement,BestCost,BestPlacement,BestCost).
+
+bestPlacementComputation([C | LSquare],piece(Player,Name,_),Board,CurrentBestPlacement,CurrentBestCost,BestPlacement,BestCost):-
+    computePlacementPoint(piece(Player,Name,C),Board,Cost),
+    Cost =< CurrentBestCost,
+    bestPlacementComputation(LSquare,piece(Player,Name,_),Board,CurrentBestPlacement,CurrentBestCost,BestPlacement,BestCost).
+
+bestPlacementComputation([C | LSquare],piece(Player,Name,_),Board,_,CurrentBestCost,BestPlacement,BestCost):-
+    computePlacementPoint(piece(Player,Name,C),Board,Cost),
+    Cost > CurrentBestCost,
+    bestPlacementComputation(LSquare,piece(Player,Name,_),Board,piece(Player,Name,C),Cost,BestPlacement,BestCost).
+
+/*
+* Return the best placement with the best piece of the hand
+*/
+bestPlacement([],_,_,_,-1000):-!.
+
+bestPlacement(Hand,Board,NewHand,BestPlacement,BestCost):-
+    Hand = [P | _],
+    bestPiece(Hand,P,-1000,BestPiece),
+    delete(Hand,BestPiece,NewHand),
+    freeSquare(Board,LSquare),
+    bestPlacementComputation(LSquare,BestPiece,Board,BestPiece,-1000,BestPlacement,BestCost),!.
+
+
+/*
+* Give the best action to do with information
+*/
+bestAction(Player,Board, Hand, NewBoard, NewHand, capture, P, P2) :-
+    bestSideMove(Player,Hand,Board,BestMove,BestCost),
+    bestPlacement(Hand,Board,_,_,BestPlacementCost),
+    BestCost >= BestPlacementCost,
+    BestMove = [NewHand,NewBoard,P,P2],
+    NewHand \= Hand,!.
     
+bestAction(Player,Board, Hand, NewBoard, NewHand, move, P, P2) :-
+    bestSideMove(Player,Hand,Board,BestMove,BestCost),
+    bestPlacement(Hand,Board,_,_,BestPlacementCost),
+    BestCost >= BestPlacementCost,
+    BestMove = [NewHand,NewBoard,P,P2],
+    NewHand == Hand,!.
 
 
+bestAction(Player,Board, Hand, [BestPlacement | Board], NewHand, placement, BestPlacement, BestPlacement) :-
+    bestSideMove(Player,Hand,Board,_,BestCost),
+    bestPlacement(Hand,Board,NewHand,BestPlacement,BestPlacementCost),
+    BestCost < BestPlacementCost,
+    NewHand == Hand,!.
 
