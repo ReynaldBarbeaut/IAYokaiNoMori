@@ -83,8 +83,6 @@ correctSquare([X,Y]) :- X > 0, X < 6, Y > 0, Y < 7.
 correctMove(piece(Player,_,C1),C2,Board) :-
         C1 \= C2,
         \+(member(piece(Player, _, C2), Board)),
-        opponent(Player,Player2),
-        \+member(piece(Player2,koropokkuru,C2),Board),
         correctSquare(C2).
 
 
@@ -245,6 +243,7 @@ findAndReturn(Player,Coordinate,[_|List],P):-
 capture(Player,C,Hand,Board,NewHand,NewBoard):-
     opponent(Player,Player2),
     findAndReturn(Player2,C,Board,piece(Player2,Name,C2)),
+    Name \= koropokkuru,
     demote(piece(Player2,Name,C2),Piece),
     NewHand = [Piece|Hand],
     delete(Board,piece(Player2,Name,C2),NewBoard).
@@ -535,6 +534,21 @@ bestPlacement(Hand,Board,NewHand,BestPlacement,BestCost):-
 /*
 * Give the best action to do with information
 */
+
+bestAction(Player,Board, Hand, NewBoard, NewHand, capture, P, P2) :-
+    getCoordinate(Player,koropokkuru,Board,C),
+    inTake(piece(Player,koropokkuru,C),Player,Board,Board),
+    bestMove(piece(Player,koropokkuru,C),Hand,Board,BestMove,_),
+    BestMove = [NewHand,NewBoard,P,P2],
+    NewHand \= Hand,!.
+
+bestAction(Player,Board, Hand, NewBoard, NewHand, move, P, P2) :-
+    getCoordinate(Player,koropokkuru,Board,C),
+    inTake(piece(Player,koropokkuru,C),Player,Board,Board),
+    bestMove(piece(Player,koropokkuru,C),Hand,Board,BestMove,_),
+    BestMove = [NewHand,NewBoard,P,P2],
+    NewHand == Hand,!.
+
 bestAction(Player,Board, Hand, NewBoard, NewHand, capture, P, P2) :-
     bestSideMove(Player,Hand,Board,BestMove,BestCost),
     bestPlacement(Hand,Board,_,_,BestPlacementCost),
