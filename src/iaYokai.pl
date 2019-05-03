@@ -535,36 +535,36 @@ bestPlacement(Hand,Board,NewHand,BestPlacement,BestCost):-
 * Give the best action to do with information
 */
 
-bestAction(Player,Board, Hand, NewBoard, NewHand, capture, P, P2) :-
+bestAction(Player,Board, Hand, capture, P, P2) :-
     getCoordinate(Player,koropokkuru,Board,C),
     inTake(piece(Player,koropokkuru,C),Player,Board,Board),
     bestMove(piece(Player,koropokkuru,C),Hand,Board,BestMove,_),
-    BestMove = [NewHand,NewBoard,P,P2],
+    BestMove = [NewHand,_,P,P2],
     NewHand \= Hand,!.
 
-bestAction(Player,Board, Hand, NewBoard, NewHand, move, P, P2) :-
+bestAction(Player,Board, Hand, move, P, P2) :-
     getCoordinate(Player,koropokkuru,Board,C),
     inTake(piece(Player,koropokkuru,C),Player,Board,Board),
     bestMove(piece(Player,koropokkuru,C),Hand,Board,BestMove,_),
-    BestMove = [NewHand,NewBoard,P,P2],
+    BestMove = [NewHand,_,P,P2],
     NewHand == Hand,!.
 
-bestAction(Player,Board, Hand, NewBoard, NewHand, capture, P, P2) :-
+bestAction(Player,Board, Hand, capture, P, P2) :-
     bestSideMove(Player,Hand,Board,BestMove,BestCost),
     bestPlacement(Hand,Board,_,_,BestPlacementCost),
     BestCost >= BestPlacementCost,
-    BestMove = [NewHand,NewBoard,P,P2],
+    BestMove = [NewHand,_,P,P2],
     NewHand \= Hand,!.
     
-bestAction(Player,Board, Hand, NewBoard, NewHand, move, P, P2) :-
+bestAction(Player,Board, Hand, move, P, P2) :-
     bestSideMove(Player,Hand,Board,BestMove,BestCost),
     bestPlacement(Hand,Board,_,_,BestPlacementCost),
     BestCost >= BestPlacementCost,
-    BestMove = [NewHand,NewBoard,P,P2],
+    BestMove = [NewHand,_,P,P2],
     NewHand == Hand,!.
 
 
-bestAction(Player,Board, Hand, [BestPlacement | Board], NewHand, placement, BestPlacement, BestPlacement) :-
+bestAction(Player,Board, Hand, placement, BestPlacement, BestPlacement) :-
     bestSideMove(Player,Hand,Board,_,BestCost),
     bestPlacement(Hand,Board,NewHand,BestPlacement,BestPlacementCost),
     BestCost < BestPlacementCost,
