@@ -10,28 +10,55 @@
  ***********************************************************
  */
 public class TCoupRep {
-    private TCodeRep code;
-    private boolean val;//Permet de savoir si un coup était valide
+    private int code;           /* 200 : ERR_OK
+                                   400 : ERR_PARTIE, 
+                                   403 : ERR_COUP,
+                                   405 : ERR_TYP,
+                                   500 : ERR_SHUT (fin de partie) */
 
+    private boolean val;        /* Permet de savoir si un coup était valide */
 
-    public TCoupRep(TCodeRep code, boolean val){
+    public TCoupRep(int code, boolean val) {
         this.code = code;
         this.val = val;
     }
 
-    public boolean isVal() {
-        return val;
+    public int getCode() {
+        return this.code;
     }
 
-    public TCodeRep getCode() {
-        return code;
-    }
-
-    public void setCode(TCodeRep code) {
+    public void setCode(int code) {
         this.code = code;
+    }
+
+    public boolean isVal() {
+        return this.val;
+    }
+
+    public boolean getVal() {
+        return this.val;
     }
 
     public void setVal(boolean val) {
         this.val = val;
     }
+
+    public TCoupRep code(int code) {
+        this.code = code;
+        return this;
+    }
+
+    public TCoupRep val(boolean val) {
+        this.val = val;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+            " code='" + getCode() + "'" +
+            ", val='" + isVal() + "'" +
+            "}";
+    }
+
 }
