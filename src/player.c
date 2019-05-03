@@ -36,7 +36,8 @@ int main(int argc, char **argv) {
 
   int sock,                /* descripteur de la socket locale */
       port,                /* variables de lecture */
-      err;                 /* code d'erreur */
+      err,                 /* code d'erreur */
+      sizeAddr;
   char* ipMachServ;        /* pour solution inet_aton */
   char* nomMachServ;       /* pour solution getaddrinfo */
   char* nomJoueur;         /* nom de joueur */
@@ -47,7 +48,18 @@ int main(int argc, char **argv) {
                               -1 : perdu ; 0 : nul ; 1 : gagne */
 
   struct addrinfo hints;   /* parametre pour getaddrinfo */
-  struct addrinfo *result; /* les adresses obtenues par getaddrinfo */ 
+  struct addrinfo *result; /* les adresses obtenues par getaddrinfo */
+
+  struct sockaddr_in addServ;	    /* adresse socket connex serveur */
+  struct sockaddr_in addClient;	/* adresse de la socket client connectee */
+
+  int sockServ = socketServeur(port);
+  if (sockServ < 0) {
+      perror("(client - fctPlayer) erreur sur socketClient");
+      return -1;
+  }
+
+  int spIA = accept(sockServ, (struct sockaddr *)&addClient, (socklen_t *)&sizeAddr);
 
   /* verification des arguments */
   if (argc != 5) {
@@ -165,7 +177,7 @@ int main(int argc, char **argv) {
         return -4;
       }
 
-      err = enregCoupA(&coupReqA);
+      err = enregCoupA(spIA, &coupReqA);
       if (err < 0) {
         perror("(client) erreur lors de l'enregistrement du coup adverse");
         shutdown(sock, SHUT_RDWR); close(sock);
@@ -181,7 +193,7 @@ int main(int argc, char **argv) {
       /* 
        * création de la structure pour l'envoi d'un coup
        */
-      err = cstrCoup(&coupReq, i);
+      err = cstrCoup(spIA, &coupReq, i);
       if (err < 0) {
         perror("(client) erreur lors de la construction du coup");
         shutdown(sock, SHUT_RDWR); close(sock);
@@ -287,7 +299,7 @@ int main(int argc, char **argv) {
         return -4;
       }
 
-      err = enregCoupA(&coupReqA);
+      err = enregCoupA(spIA, &coupReqA);
       if (err < 0) {
         perror("(client) erreur lors de l'enregistrement du coup adverse");
         shutdown(sock, SHUT_RDWR); close(sock);

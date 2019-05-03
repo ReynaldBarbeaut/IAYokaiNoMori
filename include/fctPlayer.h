@@ -14,11 +14,8 @@
 
 #include "protocole.h"
 
-void cstrPiece(TPiece *p);
-void cstrParamsDepl(TDeplPiece *d);
-void cstrParamsDepos(TDeposerPiece *d);
-int cstrCoup(TCoupReq *r, int numPartie);
+int cstrCoup(int socket, TCoupReq *r, int numPartie);
 
-int enregCoupA(TCoupReq *c);
+int enregCoupA(int socket, TCoupReq *c);
 
 void finDuJeu();
