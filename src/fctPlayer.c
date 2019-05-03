@@ -46,47 +46,48 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
         default : perror("(client - fctPlayer) erreur reception action"); return -1;
     }
 
-    /* 
-     * reception du sens de la piece depuis l'IA
-     */
-    int sensPiece;
-	err = recv(spIA, &sensPiece, sizeof(int), 0);
-	if (err <= 0) {
-	  perror("(client - fctPlayer) erreur sur le recv");
-	  shutdown(spIA, SHUT_RDWR);
-	  return -4;
-	}
-	sensPiece = ntohl(sensPiece);
-    
-    if (sensPiece == 0 || sensPiece == 1) {
-        r->piece.sensTetePiece = (sensPiece == 0 ? NORD : SUD);
-    } else {
-        perror("(client - fctPlayer) erreur reception sens piece"); return -1;
-    }
-
-    /* 
-     * reception du type de piece depuis l'IA
-     */
-    int typePiece;
-	err = recv(spIA, &typePiece, sizeof(int), 0);
-	if (err <= 0) {
-	  perror("(client - fctPlayer) erreur sur le recv");
-	  shutdown(spIA, SHUT_RDWR);
-	  return -4;
-	}
-	typePiece = ntohl(typePiece);
-
-    switch (typePiece) {
-        case 0 : r->piece.typePiece = KODAMA; break;
-        case 1 : r->piece.typePiece = KODAMA_SAMOURAI; break;
-        case 2 : r->piece.typePiece = KIRIN; break;
-        case 3 : r->piece.typePiece = KOROPOKKURU; break;
-        case 4 : r->piece.typePiece = ONI; break;
-        case 5 : r->piece.typePiece = SUPER_ONI; break;
-        default : perror("(client - fctPlayer) erreur reception type piece"); return -1;
-    }
-
     if (r->typeCoup == DEPLACER) { // si le coup est un déplacement
+
+        /* 
+         * reception du sens de la piece depuis l'IA
+         */
+        int sensPiece;
+        err = recv(spIA, &sensPiece, sizeof(int), 0);
+        if (err <= 0) {
+        perror("(client - fctPlayer) erreur sur le recv");
+        shutdown(spIA, SHUT_RDWR);
+        return -4;
+        }
+        sensPiece = ntohl(sensPiece);
+        
+        if (sensPiece == 0 || sensPiece == 1) {
+            r->piece.sensTetePiece = (sensPiece == 0 ? NORD : SUD);
+        } else {
+            perror("(client - fctPlayer) erreur reception sens piece"); return -1;
+        }
+
+        /* 
+         * reception du type de piece depuis l'IA
+         */
+        int typePiece;
+        err = recv(spIA, &typePiece, sizeof(int), 0);
+        if (err <= 0) {
+        perror("(client - fctPlayer) erreur sur le recv");
+        shutdown(spIA, SHUT_RDWR);
+        return -4;
+        }
+        typePiece = ntohl(typePiece);
+
+        switch (typePiece) {
+            case 0 : r->piece.typePiece = KODAMA; break;
+            case 1 : r->piece.typePiece = KODAMA_SAMOURAI; break;
+            case 2 : r->piece.typePiece = KIRIN; break;
+            case 3 : r->piece.typePiece = KOROPOKKURU; break;
+            case 4 : r->piece.typePiece = ONI; break;
+            case 5 : r->piece.typePiece = SUPER_ONI; break;
+            default : perror("(client - fctPlayer) erreur reception type piece"); return -1;
+        }
+
         /* 
          * reception de la colonne de la case initiale depuis l'IA
          */
@@ -169,6 +170,47 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
 
 
     else if (r->typeCoup == DEPOSER) { // si le coup est un dépôt
+
+        /* 
+         * reception du sens de la piece depuis l'IA
+         */
+        int sensPiece;
+        err = recv(spIA, &sensPiece, sizeof(int), 0);
+        if (err <= 0) {
+        perror("(client - fctPlayer) erreur sur le recv");
+        shutdown(spIA, SHUT_RDWR);
+        return -4;
+        }
+        sensPiece = ntohl(sensPiece);
+        
+        if (sensPiece == 0 || sensPiece == 1) {
+            r->piece.sensTetePiece = (sensPiece == 0 ? NORD : SUD);
+        } else {
+            perror("(client - fctPlayer) erreur reception sens piece"); return -1;
+        }
+
+        /* 
+         * reception du type de piece depuis l'IA
+         */
+        int typePiece;
+        err = recv(spIA, &typePiece, sizeof(int), 0);
+        if (err <= 0) {
+        perror("(client - fctPlayer) erreur sur le recv");
+        shutdown(spIA, SHUT_RDWR);
+        return -4;
+        }
+        typePiece = ntohl(typePiece);
+
+        switch (typePiece) {
+            case 0 : r->piece.typePiece = KODAMA; break;
+            case 1 : r->piece.typePiece = KODAMA_SAMOURAI; break;
+            case 2 : r->piece.typePiece = KIRIN; break;
+            case 3 : r->piece.typePiece = KOROPOKKURU; break;
+            case 4 : r->piece.typePiece = ONI; break;
+            case 5 : r->piece.typePiece = SUPER_ONI; break;
+            default : perror("(client - fctPlayer) erreur reception type piece"); return -1;
+        }
+
         /* 
          * reception de la colonne de la case depuis l'IA
          */
@@ -214,11 +256,230 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
 }
 
 int enregCoupA(int spIA, TCoupReq *c) {
+
+    int err;
+
+    /* 
+     * envoi boooleen partie non terminee
+     */
+    int term = 0;
+    int reqN = htonl(term);
+    err = send(spIA, &term, sizeof(int), 0);
+    if (err <= 0) {
+        perror("(client - fctPlayer) erreur sur le send");
+        shutdown(spIA, SHUT_RDWR); close(spIA);
+        return -3;
+    }
+
+    /* 
+     * envoi action adverse à l'IA
+     */
+    int action;
+    switch (c->typeCoup) {
+        case DEPLACER : action = 0; break;
+        case DEPOSER : action = 1; break;
+        case AUCUN : action = 2; break;
+        default : perror("(client - fctPlayer) enreg coup adverse : erreur type coup"); return -1;
+    }
+    action = htonl(action);
+    err = send(spIA, &action, sizeof(int), 0);
+    if (err <= 0) {
+        perror("(client - fctPlayer) erreur sur le send");
+        return -3;
+    }
+
     if (c->typeCoup == DEPLACER) {
 
+        /* 
+         * envoi sens tete piece adverse à l'IA
+         */
+        int sensPiece;
+        switch (c->piece.sensTetePiece) {
+            case NORD : sensPiece = 0; break;
+            case SUD : sensPiece = 1; break;
+            default : perror("(client - fctPlayer) enreg coup adverse : erreur sens piece"); return -1;
+        }
+        sensPiece = htonl(sensPiece);
+        err = send(spIA, &sensPiece, sizeof(int), 0);
+        if (err <= 0) {
+            perror("(client - fctPlayer) erreur sur le send");
+            return -3;
+        }
+
+        /* 
+         * envoi type piece adverse à l'IA
+         */
+        int typePiece;
+        switch (c->piece.typePiece) {
+            case KODAMA :           typePiece = 0; break;
+            case KODAMA_SAMOURAI :  typePiece = 1; break;
+            case KIRIN :            typePiece = 2; break;
+            case KOROPOKKURU :      typePiece = 3; break;
+            case ONI :              typePiece = 4; break;
+            case SUPER_ONI :        typePiece = 5; break;
+            default : perror("(client - fctPlayer) enreg coup adverse : erreur type piece"); return -1;
+        }
+        typePiece = htonl(typePiece);
+        err = send(spIA, &typePiece, sizeof(int), 0);
+        if (err <= 0) {
+            perror("(client - fctPlayer) erreur sur le send");
+            return -3;
+        }
+
+        /* 
+         * envoi colonne case init adverse à l'IA
+         */
+        int caseICol;
+        switch (c->params.deplPiece.caseDep.c) {
+            case 'A' : caseICol = 0; break;
+            case 'B' : caseICol = 1; break;
+            case 'C' : caseICol = 2; break;
+            case 'D' : caseICol = 3; break;
+            case 'E' : caseICol = 4; break;
+            default : perror("(client - fctPlayer) enreg coup adverse : erreur colonne case init"); return -1;
+        }
+        caseICol = htonl(caseICol);
+        err = send(spIA, &caseICol, sizeof(int), 0);
+        if (err <= 0) {
+            perror("(client - fctPlayer) erreur sur le send");
+            return -3;
+        }
+
+        /* 
+         * envoi ligne case init adverse à l'IA
+         */
+        int caseILg;
+        switch (c->params.deplPiece.caseDep.c) {
+            case UN :       caseILg = 1; break;
+            case DEUX :     caseILg = 2; break;
+            case TROIS :    caseILg = 3; break;
+            case QUATRE :   caseILg = 4; break;
+            case CINQ :     caseILg = 5; break;
+            case SIX :      caseILg = 6; break;
+            default : perror("(client - fctPlayer) enreg coup adverse : erreur ligne case init"); return -1;
+        }
+        caseILg = htonl(caseILg);
+        err = send(spIA, &caseILg, sizeof(int), 0);
+        if (err <= 0) {
+            perror("(client - fctPlayer) erreur sur le send");
+            return -3;
+        }
+
+        /* 
+         * envoi colonne case finale adverse à l'IA
+         */
+        int caseFCol;
+        switch (c->params.deplPiece.caseArr.c) {
+            case 'A' : caseFCol = 0; break;
+            case 'B' : caseFCol = 1; break;
+            case 'C' : caseFCol = 2; break;
+            case 'D' : caseFCol = 3; break;
+            case 'E' : caseFCol = 4; break;
+            default : perror("(client - fctPlayer) enreg coup adverse : erreur colonne case finale"); return -1;
+        }
+        caseFCol = htonl(caseFCol);
+        err = send(spIA, &caseFCol, sizeof(int), 0);
+        if (err <= 0) {
+            perror("(client - fctPlayer) erreur sur le send");
+            return -3;
+        }
+
+        /* 
+         * envoi ligne case finale adverse à l'IA
+         */
+        int caseFLg;
+        switch (c->params.deplPiece.caseArr.c) {
+            case UN :       caseFLg = 1; break;
+            case DEUX :     caseFLg = 2; break;
+            case TROIS :    caseFLg = 3; break;
+            case QUATRE :   caseFLg = 4; break;
+            case CINQ :     caseFLg = 5; break;
+            case SIX :      caseFLg = 6; break;
+            default : perror("(client - fctPlayer) enreg coup adverse : erreur ligne case finale"); return -1;
+        }
+        caseFLg = htonl(caseFLg);
+        err = send(spIA, &caseFLg, sizeof(int), 0);
+        if (err <= 0) {
+            perror("(client - fctPlayer) erreur sur le send");
+            return -3;
+        }
     } 
     else if (c->typeCoup == DEPOSER) {
-        
+
+        /* 
+         * envoi sens tete piece adverse à l'IA
+         */
+        int sensPiece;
+        switch (c->piece.sensTetePiece) {
+            case NORD : sensPiece = 0; break;
+            case SUD : sensPiece = 1; break;
+            default : perror("(client - fctPlayer) enreg coup adverse : erreur sens piece"); return -1;
+        }
+        sensPiece = htonl(sensPiece);
+        err = send(spIA, &sensPiece, sizeof(int), 0);
+        if (err <= 0) {
+            perror("(client - fctPlayer) erreur sur le send");
+            return -3;
+        }
+
+        /* 
+         * envoi type piece adverse à l'IA
+         */
+        int typePiece;
+        switch (c->piece.typePiece) {
+            case KODAMA :           typePiece = 0; break;
+            case KODAMA_SAMOURAI :  typePiece = 1; break;
+            case KIRIN :            typePiece = 2; break;
+            case KOROPOKKURU :      typePiece = 3; break;
+            case ONI :              typePiece = 4; break;
+            case SUPER_ONI :        typePiece = 5; break;
+            default : perror("(client - fctPlayer) enreg coup adverse : erreur type piece"); return -1;
+        }
+        typePiece = htonl(typePiece);
+        err = send(spIA, &typePiece, sizeof(int), 0);
+        if (err <= 0) {
+            perror("(client - fctPlayer) erreur sur le send");
+            return -3;
+        }
+
+        /* 
+         * envoi colonne case adverse à l'IA
+         */
+        int caseICol;
+        switch (c->params.deplPiece.caseDep.c) {
+            case 'A' : caseICol = 0; break;
+            case 'B' : caseICol = 1; break;
+            case 'C' : caseICol = 2; break;
+            case 'D' : caseICol = 3; break;
+            case 'E' : caseICol = 4; break;
+            default : perror("(client - fctPlayer) enreg coup adverse : erreur colonne case depos"); return -1;
+        }
+        caseICol = htonl(caseICol);
+        err = send(spIA, &caseICol, sizeof(int), 0);
+        if (err <= 0) {
+            perror("(client - fctPlayer) erreur sur le send");
+            return -3;
+        }
+
+        /* 
+         * envoi ligne case adverse à l'IA
+         */
+        int caseILg;
+        switch (c->params.deplPiece.caseDep.c) {
+            case UN :       caseILg = 1; break;
+            case DEUX :     caseILg = 2; break;
+            case TROIS :    caseILg = 3; break;
+            case QUATRE :   caseILg = 4; break;
+            case CINQ :     caseILg = 5; break;
+            case SIX :      caseILg = 6; break;
+            default : perror("(client - fctPlayer) enreg coup adverse : erreur ligne case depos"); return -1;
+        }
+        caseILg = htonl(caseILg);
+        err = send(spIA, &caseILg, sizeof(int), 0);
+        if (err <= 0) {
+            perror("(client - fctPlayer) erreur sur le send");
+            return -3;
+        }
     }
     else if (c->typeCoup == AUCUN) {
         
