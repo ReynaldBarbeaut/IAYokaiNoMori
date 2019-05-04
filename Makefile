@@ -8,6 +8,7 @@ CC          = gcc
 CFLAG       = -Wall
 PROG_NAME1  = player
 PROG_NAME2  = server
+JC			= javac
 
 SRC_DIR     = ./src
 BUILD_DIR   = ./build
@@ -20,7 +21,7 @@ OBJ_LIST1    = $(subst $(SRC_DIR),$(BUILD_DIR),$(OBJ_UTIL1))
 OBJ_LIST2    = $(subst $(SRC_DIR),$(BUILD_DIR),$(OBJ_UTIL2))
 # OBJ_LIST    = $(BUILD_DIR)/$(notdir $(SRC_LIST:.c=.o))
 
-.PHONY: all clean $(PROG_NAME1) $(PROG_NAME2) compile1 compile2
+.PHONY: all clean $(PROG_NAME1) $(PROG_NAME2) compile1 compile2 compile3
 
 all: $(PROG_NAME1) $(PROG_NAME2)
 
@@ -29,6 +30,9 @@ compile1:
 
 compile2: 
 	$(CC) -c $(SRC_LIST2)
+	
+compile3:
+	$(JC) $(SRC_DIR)/*.java
 
 $(PROG_NAME1): compile1 move1
 	$(CC) $(CFLAG) $(OBJ_LIST1) -o $(BIN_DIR)/$@

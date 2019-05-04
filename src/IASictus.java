@@ -27,28 +27,31 @@ public class IASictus {
 	private int error;
 	private String type;
 	private Piece p1,p2;
+	private String pathToPlFile;
 	
-	public IASictus() {
+	public IASictus(String pathToPlFile) {
+		this.pathToPlFile = pathToPlFile;
 		sp = null;
-		error = 1;
-	}
-	
-	//Cette méthode prend un prédicat et choisit la meilleure action possible
-	public int searchSolution(String predicate) {	
-		type = "";
-		p1 = null;
-		p2 = null;
+		error = 0;
 		try {
 			// Création et chargement du fichier
 			sp = new SICStus(null);
-			sp.load("./iaYokai.pl");
+			sp.load(pathToPlFile);
 		
 		}catch (SPException e) {
 			System.err.println("Exception SICStus Prolog : " + e);
 			e.printStackTrace();
-			return -1;
+			error = -1;
 		}
-		
+	}
+	
+	//Cette méthode prend un prédicat et choisit la meilleure action possible
+	public void searchSolution(String predicate) {	
+		error = 0;
+		type = "";
+		p1 = null;
+		p2 = null;
+	
 		//Cette HashMap sert à stocker les résultats
 		HashMap results = new HashMap();
 		        
@@ -62,19 +65,21 @@ public class IASictus {
 			
 			//On stocke les informations utiles
 			type = results.get("Type").toString();
-			p1 = stringToPiece(results.get("P1").toString());
-			p2 = stringToPiece(results.get("P2").toString());
+			if(type.equals("placement") || type.equals("capture") || type.equals("move")) {
+				p1 = stringToPiece(results.get("P1").toString());
+				p2 = stringToPiece(results.get("P2").toString());
+				error = 1;
+			}
 			  
 			//Fermeture de la requête et traitement des exception
 			qu.close();
 		}catch (SPException e) {
 			System.err.println("Exception prolog\n" + e);
-			return -2;
+			error = -1;
 		}catch (Exception e) {
 			System.err.println("Other exception : " + e);
-			return -3;
+			error = -2;
 		}     
-		return 1;
 	}
 	
 	
@@ -101,6 +106,10 @@ public class IASictus {
 	
 	public Piece getP2() {
 		return p2;
+	}
+	
+	public int getError() {
+		return error;
 	}
 	
 	
