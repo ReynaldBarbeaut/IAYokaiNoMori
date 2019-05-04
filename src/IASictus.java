@@ -94,6 +94,19 @@ public class IASictus {
 		return new Piece(team,name,col,lig);		
 	}
 	
+	public int typeToInt() {
+		switch(type) {
+		case "move":
+			return 0;
+		case "capture":
+			return 0;
+		case "placement":
+			return 1;
+		default:
+			return 2;
+		}
+	}
+	
 	//Différents getter
 	
 	public String getType() {

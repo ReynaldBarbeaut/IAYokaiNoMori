@@ -24,30 +24,34 @@ public class lPieces {
 	public void initBoard() {
 		lPieces = new ArrayList<Piece>();
 		
-		lPieces.add(new Piece("south","kodama",'B',3));
-		lPieces.add(new Piece("south","kodama",'C',3));
-		lPieces.add(new Piece("south","kodama",'D',3));
+		lPieces.add(new Piece("south","kodama",'2',3));
+		lPieces.add(new Piece("south","kodama",'3',3));
+		lPieces.add(new Piece("south","kodama",'4',3));
 		
-		lPieces.add(new Piece("south","oni",'A',1));
-		lPieces.add(new Piece("south","oni",'E',1));
+		lPieces.add(new Piece("south","oni",'1',1));
+		lPieces.add(new Piece("south","oni",'5',1));
 		
-		lPieces.add(new Piece("south","kirin",'B',1));
-		lPieces.add(new Piece("south","kirin",'D',1));
+		lPieces.add(new Piece("south","kirin",'2',1));
+		lPieces.add(new Piece("south","kirin",'4',1));
 		
-		lPieces.add(new Piece("south","koropokkuru",'C',1));
+		lPieces.add(new Piece("south","koropokkuru",'3',1));
 		
 		
-		lPieces.add(new Piece("north","kodama",'B',4));
-		lPieces.add(new Piece("north","kodama",'C',4));
-		lPieces.add(new Piece("north","kodama",'D',4));
+		lPieces.add(new Piece("north","kodama",'2',4));
+		lPieces.add(new Piece("north","kodama",'3',4));
+		lPieces.add(new Piece("north","kodama",'4',4));
 		
-		lPieces.add(new Piece("north","oni",'A',6));
-		lPieces.add(new Piece("north","oni",'E',6));
+		lPieces.add(new Piece("north","oni",'1',6));
+		lPieces.add(new Piece("north","oni",'5',6));
 		
-		lPieces.add(new Piece("north","kirin",'B',6));
-		lPieces.add(new Piece("north","kirin",'D',6));
+		lPieces.add(new Piece("north","kirin",'2',6));
+		lPieces.add(new Piece("north","kirin",'4',6));
 		
-		lPieces.add(new Piece("north","koropokkuru",'C',6));		
+		lPieces.add(new Piece("north","koropokkuru",'3',6));		
+	}
+	
+	public void erase() {
+		lPieces.removeAll(lPieces);
 	}
 	
 	@Override

@@ -13,7 +13,7 @@ public class Piece {
 	
 	private String team; // Equipe : north ou south
 	private String name; // Nom : un parmis tout ceux disponibles
-	private char col; // Colonne entre A et E
+	private int col; // Colonne entre 1 et 5
 	private int lig; // Ligne entre 1 et 6
 	
 	public Piece(String team, String name, char col, int lig) {
@@ -23,10 +23,26 @@ public class Piece {
 		this.lig = lig;
 	}
 	
+	public int nameToInt() {
+		switch(name) {
+			case "kodama":
+				return 0;
+			case "kodamaSamourai":
+				return 1;
+			case "kirin":
+				return 2;
+			case "koropokkuru":
+				return 3;
+			case "oni":
+				return 4;
+			default:
+				return 5;
+		}
+	}
 	
 	@Override
 	public String toString() {
-		return "piece("+team+","+name+"["+((int) col-64)+","+lig+"])";
+		return "piece("+team+","+name+"["+col+","+lig+"])";
 	}
 	
 	//Différent getter et setter
@@ -56,7 +72,7 @@ public class Piece {
 		return name;
 	}
 	
-	public char getCol() {
+	public int getCol() {
 		return col;
 	}
 	
