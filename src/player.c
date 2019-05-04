@@ -99,7 +99,9 @@ int main(int argc, char **argv) {
   err = send(sock, &partieReq, sizeof(TPartieReq), 0);
   if (err <= 0) {
     perror("(client) erreur sur le send");
-    shutdown(sock, SHUT_RDWR); close(sock);
+    shutdown(sock, SHUT_RDWR); close(sock); 
+    shutdown(spIA, SHUT_RDWR); close(spIA); 
+    close(sockServ);
     return -3;
   }
   printf("(client) envoi d'une demande de partie realise\n");
@@ -110,7 +112,9 @@ int main(int argc, char **argv) {
   err = recv(sock, &partieRep, sizeof(TPartieRep), 0);
   if (err <= 0) {
     perror("(client) erreur dans la reception");
-    shutdown(sock, SHUT_RDWR); close(sock);
+    shutdown(sock, SHUT_RDWR); close(sock); 
+    shutdown(spIA, SHUT_RDWR); close(spIA); 
+    close(sockServ);
     return -4;
   }
 
@@ -126,7 +130,9 @@ int main(int argc, char **argv) {
   }
   else {
     perror("(client) erreur sur la demande de partie\nfin de partie");
-    shutdown(sock, SHUT_RDWR); close(sock);
+    shutdown(sock, SHUT_RDWR); close(sock); 
+    shutdown(spIA, SHUT_RDWR); close(spIA); 
+    close(sockServ);
     return -5;
   }
 
@@ -150,7 +156,9 @@ int main(int argc, char **argv) {
       err = recv(sock, &coupRepA, sizeof(TCoupRep), 0);
       if (err <= 0) {
         perror("(client) erreur dans la reception");
-        shutdown(sock, SHUT_RDWR); close(sock);
+        shutdown(sock, SHUT_RDWR); close(sock); 
+        shutdown(spIA, SHUT_RDWR); close(spIA); 
+        close(sockServ);
         return -4;
       }
 
@@ -173,14 +181,16 @@ int main(int argc, char **argv) {
       err = recv(sock, &coupReqA, sizeof(TCoupReq), 0);
       if (err <= 0) {
         perror("(client) erreur dans la reception");
-        shutdown(sock, SHUT_RDWR); close(sock);
+        shutdown(sock, SHUT_RDWR); close(sock); 
+        shutdown(spIA, SHUT_RDWR); close(spIA); 
+        close(sockServ);
         return -4;
       }
 
       err = enregCoupA(spIA, &coupReqA);
       if (err < 0) {
         perror("(client) erreur lors de l'enregistrement du coup adverse");
-        shutdown(sock, SHUT_RDWR); close(sock);
+        shutdown(spIA, SHUT_RDWR); close(spIA);
         return -5;
       }
     }
@@ -196,7 +206,9 @@ int main(int argc, char **argv) {
       err = cstrCoup(spIA, &coupReq, i);
       if (err < 0) {
         perror("(client) erreur lors de la construction du coup");
-        shutdown(sock, SHUT_RDWR); close(sock);
+        shutdown(sock, SHUT_RDWR); close(sock); 
+        shutdown(spIA, SHUT_RDWR); close(spIA); 
+        close(sockServ);
         return -6;
       }
 
@@ -206,7 +218,9 @@ int main(int argc, char **argv) {
       err = send(sock, &coupReq, sizeof(TCoupReq), 0);
       if (err <= 0) {
         perror("(client) erreur sur le send");
-        shutdown(sock, SHUT_RDWR); close(sock);
+        shutdown(sock, SHUT_RDWR); close(sock); 
+        shutdown(spIA, SHUT_RDWR); close(spIA); 
+        close(sockServ);
         return -3;
       }
       printf("(client) envoi du coup realise\n");
@@ -217,7 +231,9 @@ int main(int argc, char **argv) {
       err = recv(sock, &coupRep, sizeof(TCoupRep), 0);
       if (err <= 0) {
         perror("(client) erreur dans la reception");
-        shutdown(sock, SHUT_RDWR); close(sock);
+        shutdown(sock, SHUT_RDWR); close(sock); 
+        shutdown(spIA, SHUT_RDWR); close(spIA); 
+        close(sockServ);
         return -4;
       }
 
@@ -256,7 +272,9 @@ int main(int argc, char **argv) {
       err = recv(sock, &coupRepA, sizeof(TCoupRep), 0);
       if (err <= 0) {
         perror("(client) erreur dans la reception");
-        shutdown(sock, SHUT_RDWR); close(sock);
+        shutdown(sock, SHUT_RDWR); close(sock); 
+        shutdown(spIA, SHUT_RDWR); close(spIA); 
+        close(sockServ);
         return -4;
       }
 
@@ -295,14 +313,18 @@ int main(int argc, char **argv) {
       err = recv(sock, &coupReqA, sizeof(TCoupReq), 0);
       if (err <= 0) {
         perror("(client) erreur dans la reception");
-        shutdown(sock, SHUT_RDWR); close(sock);
+        shutdown(sock, SHUT_RDWR); close(sock); 
+        shutdown(spIA, SHUT_RDWR); close(spIA); 
+        close(sockServ);
         return -4;
       }
 
       err = enregCoupA(spIA, &coupReqA);
       if (err < 0) {
         perror("(client) erreur lors de l'enregistrement du coup adverse");
-        shutdown(sock, SHUT_RDWR); close(sock);
+        shutdown(sock, SHUT_RDWR); close(sock); 
+        shutdown(spIA, SHUT_RDWR); close(spIA); 
+        close(sockServ);
         return -5;
       }
 
@@ -326,7 +348,9 @@ int main(int argc, char **argv) {
    * fermeture de la connexion et de la socket 
    */
   shutdown(sock, SHUT_RDWR);
+  shutdown(spIA, SHUT_RDWR);
   close(sock);
+  close(sockServ);
 
   return 0;
 }

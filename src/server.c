@@ -60,6 +60,8 @@ int main(int argc, char** argv) {
   splay1 = accept(sserv, (struct sockaddr *)&addClient, (socklen_t *)&sizeAddr);
   splay2 = accept(sserv, (struct sockaddr *)&addClient, (socklen_t *)&sizeAddr);
 
+  printf("zé bartiii!\n");
+
   /*******************/
   /* DEBUT DE PARTIE */
   /*******************/
