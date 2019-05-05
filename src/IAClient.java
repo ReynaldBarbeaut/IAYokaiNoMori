@@ -35,8 +35,8 @@ public class IAClient {
 		ObjectOutputStream out;
 		TCoupReq req;
 		String[] team = {"north","south"};
-		board = new lPieces();
-		hand = new lPieces();
+		board = new lPieces(true);
+		hand = new lPieces(false);
 		ia = new IASictus("./iaYokai.pl");
 		
 		//Test du bon nombre d'arguments

@@ -16,7 +16,7 @@ public class Piece {
 	private int col; // Colonne entre 1 et 5
 	private int lig; // Ligne entre 1 et 6
 	
-	public Piece(String team, String name, char col, int lig) {
+	public Piece(String team, String name, int col, int lig) {
 		this.team = team;
 		this.name= name;
 		this.col = col;
@@ -43,6 +43,19 @@ public class Piece {
 	@Override
 	public String toString() {
 		return "piece("+team+","+name+"["+col+","+lig+"])";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+		if (!(o instanceof TCoupReq)) {
+			return false;
+		}
+		Piece piece = (Piece) o;
+		return this.name.equals(((Piece) o).getName()) && this.col == ((Piece) o).getCol() && this.lig == ((Piece) o).getLig() && this.team.equals(((Piece) o).getTeam());
+
+
 	}
 	
 	//Différent getter et setter

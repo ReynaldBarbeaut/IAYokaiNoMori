@@ -14,8 +14,6 @@
 // importation des classes utiles à Jasper
 import se.sics.jasper.*;
 
-// pour les lectures au clavier
-import java.io.*;
 
 // pour utiliser les HashMap 
 import java.util.*;
