@@ -40,6 +40,7 @@ public class IAClient {
 		//Test du bon nombre d'arguments
 		if(args.length != 2) {
 			System.out.println("usage : "+args[0]+" IPServ port");
+			return;
 		}
 		nomMachine = args[0];
 		port = Integer.parseInt(args[1]);
