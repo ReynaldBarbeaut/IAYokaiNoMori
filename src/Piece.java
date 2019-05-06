@@ -22,7 +22,11 @@ public class Piece {
 		this.col = col;
 		this.lig = lig;
 	}
-	
+
+
+	/*
+	*	Transforme le nom de la pièce en entier
+	*/
 	public int nameToInt() {
 		switch(name) {
 			case "kodama":
@@ -39,7 +43,31 @@ public class Piece {
 				return 5;
 		}
 	}
-	
+
+
+
+	/*
+	*	Rétrograde une pièce et la met à zéro
+	*/
+	public void demote(){
+		this.lig = 0;
+		this.col = 0;
+		if(this.team.equals("north")){
+			this.team = "south";
+		}else{
+			this.team = "north";
+		}
+
+
+		if(nameToInt() == 1){
+			this.name = "kodama";
+		}else if(nameToInt() == 5){
+			this.name = "oni";
+		}
+
+
+	}
+
 	@Override
 	public String toString() {
 		return "piece("+team+","+name+"["+col+","+lig+"])";

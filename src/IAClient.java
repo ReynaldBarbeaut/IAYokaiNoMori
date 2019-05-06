@@ -20,12 +20,11 @@ import java.io.ObjectOutputStream;
  */
 public class IAClient {
 	static IASictus ia;	//L'ia qui va calculer les coups
-	static lPieces board; //Le plateau de jeu
-	static lPieces hand; //La main du joueur (les pièces qu'il a capturée)
+	static lPieces jeu; //Représente le plateau de jeu et la main du jouer
 
 	public static void main(String[] args) {
 		//Déclaration et initialisation
-		int cpt = 0, sens,port, nbCoup;
+		int cpt = 0, sens,port, nbCoup, action;
 		boolean partieTermine = false;
 		String nomMachine;
 		Socket comm;
@@ -35,8 +34,7 @@ public class IAClient {
 		ObjectOutputStream out;
 		TCoupReq req;
 		String[] team = {"north","south"};
-		board = new lPieces(true);
-		hand = new lPieces(false);
+		jeu = new lPieces();
 		ia = new IASictus("./iaYokai.pl");
 		
 		//Test du bon nombre d'arguments
@@ -75,9 +73,8 @@ public class IAClient {
 			
 			while(cpt<2) {
 				//On réinitialise le plateau et la main à chaque partie
-				board.erase();
-				hand.erase();
-				board.initBoard();
+				jeu.erase();
+				jeu.initBoard();
 				nbCoup = 0;
 				
 				//Changement de sens après la première partie
@@ -98,9 +95,16 @@ public class IAClient {
 					//Une fois notre coup fait on regarde si la partie n'est pas finie
 					partieTermine = in.readBoolean();
 					if(!partieTermine) {
-						//Si ce n'est pas le cas on traite la réponse
-						
-						
+						//Si la partie continue le coup est validé alors on mets à jour
+						jeu.updateBoard(ia.getP2());
+						if(ia.getType().equals("placement")){
+							jeu.updateHand(1,ia.getP2());
+						}
+
+						action = in.readInt();
+						if(action != 2){
+							int rep = traitementReponse(action,in);
+						}
 						
 						//On joue si on est à un nombre impair de coup
 						if(nbCoup%1 == 0) {
@@ -133,11 +137,9 @@ public class IAClient {
 	 */
 	public static void jouerCoup(int sens,String[] team,ObjectOutputStream os) {
 		try {
-			
-				
 			os.flush();
 			//On cherche un mouvement
-			ia.searchSolution("bestAction("+team[sens]+","+board.toString()+","+hand.toString()+",Type,P1,P2)");
+			ia.searchSolution("bestAction("+team[sens]+","+jeu.toString(jeu.getBoard())+","+jeu.toString(jeu.getHand())+",Type,P1,P2)");
 			
 			//Si aucun mouvement ou une erreur à eu lieu on envoie au client qu'aucun mouvement n'a été fait
 			if(ia.getError()<=0) {				
@@ -154,21 +156,81 @@ public class IAClient {
 		}
 		
 	}
+
 	/*
 	 * Cette méthode s'occupe tu traitement de la réponse faite du client
 	 */
-	public void traitementReponse(DataInputStream in) {
+	public static int traitementReponse(int action, DataInputStream in) {
 		try {
-			boolean coupValide = in.readBoolean();
-			
-			
-			
-			
+			int sensPiece, typePiece, lig1, col1;
+			sensPiece = in.readInt();
+			typePiece = in.readInt();
+			col1 = in.readInt();
+			lig1 = in.readInt();
+			if(typePiece == 1){
+				Piece p = new Piece(intToTeam(sensPiece),intToName(typePiece),col1,lig1);
+				jeu.updateBoard(p);
+			}else{
+				int col2 = in.readInt();
+				int lig2 = in.readInt();
+				Piece p = new Piece(intToTeam(sensPiece),intToName(typePiece),col2,lig2);
+				int index = jeu.checkCoordinate(col1,lig1);
+				if(index >= 0){
+					jeu.getBoard().remove(index);
+				}
+				index = jeu.checkCoordinate(col2,lig2);
+				if(index >= 0){
+					jeu.getBoard().remove(index);
+				}
+
+				jeu.getBoard().add(p);
+
+			}
+
+
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return -1;
 		}
-		
+
+		return 1;
 	}
+
+
+	/*
+	 *	Transforme un entier en nom de pièce
+	 */
+	public static String intToName(int n){
+		switch(n) {
+			case 0:
+				return "kodama";
+			case 1:
+				return "kodamaSamourai";
+			case 2:
+				return "kirin";
+			case 3:
+				return "koropokkuru";
+			case 4:
+				return "oni";
+			default:
+				return "superOni";
+		}
+
+	}
+
+	/*
+	 *	Transforme un int en nom d'équipe
+	 */
+	public static String intToTeam(int n){
+		if(n == 0){
+			return "north";
+		}
+		return "south";
+	}
+
+
+
+
+
 	
 }
