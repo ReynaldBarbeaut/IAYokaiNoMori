@@ -25,7 +25,8 @@
 int main(int argc, char** argv) {
   
   struct sockaddr_in addServ;	/* adresse socket connex serveur */
-  struct sockaddr_in addClient;	/* adresse de la socket client connectee */
+  struct sockaddr_in addClient1;	/* adresse de la socket client connectee */
+  struct sockaddr_in addClient2;	/* adresse de la socket client connectee */
 
   fd_set readSet;         /* ensemble de file descriptors */
   int splay1, splay2;     /* scokets de com pour les 2 joueurs */
@@ -57,10 +58,8 @@ int main(int argc, char** argv) {
   /* 
    * attente de connexion des 2 joueurs
    */
-  splay1 = accept(sserv, (struct sockaddr *)&addClient, (socklen_t *)&sizeAddr);
-  splay2 = accept(sserv, (struct sockaddr *)&addClient, (socklen_t *)&sizeAddr);
-
-  printf("zé bartiii!\n");
+  splay1 = accept(sserv, (struct sockaddr *)&addClient1, (socklen_t *)&sizeAddr);
+  splay2 = accept(sserv, (struct sockaddr *)&addClient2, (socklen_t *)&sizeAddr);
 
   /*******************/
   /* DEBUT DE PARTIE */
@@ -137,7 +136,7 @@ int main(int argc, char** argv) {
           case 3 : printf("Match nul pour cette partie !\n"); termine = true; break;
           default : perror("(serveur) erreur traitement requete coup"); return -4; break;
         }
-        
+
         j++;
         if (j >= 60) {
           termine = 0;

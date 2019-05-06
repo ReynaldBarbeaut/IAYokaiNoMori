@@ -36,6 +36,7 @@ int main(int argc, char **argv) {
 
   int sock,                /* descripteur de la socket locale */
       port,                /* variables de lecture */
+      portS,               /* port de com IA - joueur */
       err,                 /* code d'erreur */
       sizeAddr;
   char* ipMachServ;        /* pour solution inet_aton */
@@ -57,24 +58,25 @@ int main(int argc, char **argv) {
    * creation du socket serveur
    * ce proogramme joue le role de serveur avec l'IA
    */
-  int sockServ = socketServeur(port);
+  int sockServ = socketServeur(portS);
   if (sockServ < 0) {
-      perror("(client - fctPlayer) erreur sur socketClient");
+      perror("(client) erreur sur socketServeur");
       return -1;
   }
 
   int spIA = accept(sockServ, (struct sockaddr *)&addClient, (socklen_t *)&sizeAddr);
 
   /* verification des arguments */
-  if (argc != 5) {
-    printf("usage : %s IPServ port nomJoueur sens\n", argv[0]);
+  if (argc != 6) {
+    printf("usage : %s IPServ port portS nomJoueur sens\n", argv[0]);
     return -1;
   }
   
   ipMachServ = argv[1]; nomMachServ = argv[1];
   port = atoi(argv[2]);
-  nomJoueur = argv[3];
-  sens = argv[4][0];
+  portS = atoi(argv[3]);
+  nomJoueur = argv[4];
+  sens = argv[5][0];
 
   /* 
    * creation du socket client
