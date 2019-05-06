@@ -53,6 +53,10 @@ int main(int argc, char **argv) {
   struct sockaddr_in addServ;	    /* adresse socket connex serveur */
   struct sockaddr_in addClient;	/* adresse de la socket client connectee */
 
+  /* 
+   * creation du socket serveur
+   * ce proogramme joue le role de serveur avec l'IA
+   */
   int sockServ = socketServeur(port);
   if (sockServ < 0) {
       perror("(client - fctPlayer) erreur sur socketClient");
@@ -73,7 +77,7 @@ int main(int argc, char **argv) {
   sens = argv[4][0];
 
   /* 
-   * creation du socket
+   * creation du socket client
    */
   sock = socketClient(nomMachServ, port);
   if (sock < 0) {
@@ -142,6 +146,11 @@ int main(int argc, char **argv) {
   /*****************/
   
   for (int i = 1; i < 3; i++) {
+
+    /*
+     * notif de début de partie à l'IA
+     */
+    err = debutPartie(spIA, sens);
 
     printf("(client) debut de la partie %d\n", i);
 
@@ -340,9 +349,16 @@ int main(int argc, char **argv) {
     } else if (gagne == -1) {
       printf("Partie perdue !\n");
     }
-  }
 
-  finDuJeu();
+    err = finPartie(spIA);
+    if (err < 0) {
+      perror("(client) erreur fin de partie");
+      shutdown(sock, SHUT_RDWR); close(sock); 
+      shutdown(spIA, SHUT_RDWR); close(spIA); 
+      close(sockServ);
+      return -6;
+    }
+  }
 
   /* 
    * fermeture de la connexion et de la socket 

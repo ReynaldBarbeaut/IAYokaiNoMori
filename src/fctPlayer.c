@@ -487,6 +487,45 @@ int enregCoupA(int spIA, TCoupReq *c) {
     return 0;
 }
 
-void finDuJeu() {
-    
+int debutPartie(int spIA, char sens) {
+    int err, sensI;
+
+    if (sens == 'n') {
+        sensI = 0;
+    }
+    else if (sens == 's') {
+        sensI = 1;
+    }
+    else {
+        perror("(client - fctPlayer) erreur debut partie - sens recu incorrect");
+        return -2;
+    }
+
+    sensI = htonl(sensI);
+    err = send(spIA, &sensI, sizeof(int), 0);
+    if (err <= 0) {
+        perror("(client - fctPlayer) erreur sur le send");
+        return -3;
+    }
+
+    return 0;
+}
+
+int finPartie(int spIA) {
+    int err, term;
+
+    /* 
+     * envoi boooleen partie non terminee
+     */
+    term = 1;
+    int reqN = htonl(term);
+    err = send(spIA, &term, sizeof(int), 0);
+    if (err <= 0) {
+        perror("(client - fctPlayer) erreur sur le send");
+        shutdown(spIA, SHUT_RDWR); close(spIA);
+        return -3;
+    }
+
+
+    return 0;
 }
