@@ -12,7 +12,7 @@ import java.util.Objects;
  ***********************************************************
  */
 public class TCoupReq {
-    private int partieTerm;  /* 0 : la partie doit continuer,
+    private int partieTerm;      /* 0 : la partie doit continuer,
                                     1 : la partie est terminee */
     private int action;          /* 0 : deplacer,
                                     1 : deposer,
@@ -33,7 +33,7 @@ public class TCoupReq {
     private int caseFLg;         /* 1, 2, 3, 4, 5, 6 */
 
 
-    public TCoupReq(boolean partieTerm, int action, int sensPiece, int typePiece, int caseICol, int caseILg, int caseFCol, int caseFLg) {
+    public TCoupReq(int partieTerm, int action, int sensPiece, int typePiece, int caseICol, int caseILg, int caseFCol, int caseFLg) {
         this.partieTerm = partieTerm;
         this.action = action;
         this.sensPiece = sensPiece;
@@ -44,15 +44,15 @@ public class TCoupReq {
         this.caseFLg = caseFLg;
     }
 
-    public boolean isPartieTerm() {
+    public int isPartieTerm() {
         return this.partieTerm;
     }
 
-    public boolean getPartieTerm() {
+    public int getPartieTerm() {
         return this.partieTerm;
     }
 
-    public void setPartieTerm(boolean partieTerm) {
+    public void setPartieTerm(int partieTerm) {
         this.partieTerm = partieTerm;
     }
 
@@ -112,7 +112,7 @@ public class TCoupReq {
         this.caseFLg = caseFLg;
     }
 
-    public TCoupReq partieTerm(boolean partieTerm) {
+    public TCoupReq partieTerm(int partieTerm) {
         this.partieTerm = partieTerm;
         return this;
     }

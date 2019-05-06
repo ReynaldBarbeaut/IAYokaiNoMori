@@ -115,7 +115,7 @@ Attente de 2 demandes de partie</panel_attributes>
       <h>510</h>
     </coordinates>
     <panel_attributes>loop : !vainqueur ||
-totalCout &lt; 60</panel_attributes>
+totalCoups &lt; 60</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
