@@ -44,7 +44,8 @@ public class IASictus {
 	}
 	
 	//Cette méthode prend un prédicat et choisit la meilleure action possible
-	public void searchSolution(String predicate) {	
+	public void searchSolution(String predicate) {
+		System.out.println(predicate);
 		error = 0;
 		type = "";
 		p1 = null;
@@ -58,11 +59,12 @@ public class IASictus {
 			Query qu = sp.openQuery(predicate,results);
 			//On prend la première solution
 			qu.nextSolution();
-			   
-			//results.forEach((key,value) -> System.out.println(key + " = " + value.toString()));
-			
+
+			results.forEach((key,value) -> System.out.println(key + " = " + value.toString()));
+
 			//On stocke les informations utiles
 			type = results.get("Type").toString();
+			System.out.println(type);
 			if(type.equals("placement") || type.equals("capture") || type.equals("move")) {
 				p1 = stringToPiece(results.get("P1").toString());
 				p2 = stringToPiece(results.get("P2").toString());
@@ -87,7 +89,7 @@ public class IASictus {
 	public Piece stringToPiece(String piece) {
 		String team = piece.split(",")[0].replace("piece(", "");
 		String name = piece.split(",")[1];
-		char col = (char) (Integer.parseInt(piece.split(",")[2].replace(".(", ""))+64);
+		int col = Integer.parseInt(piece.split(",")[2].replace(".(", ""));
 		int lig = Integer.parseInt(piece.split(",")[3].replace(".(", ""));
 		return new Piece(team,name,col,lig);		
 	}

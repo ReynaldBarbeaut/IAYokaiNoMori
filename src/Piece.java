@@ -70,7 +70,7 @@ public class Piece {
 
 	@Override
 	public String toString() {
-		return "piece("+team+","+name+"["+col+","+lig+"])";
+		return "piece("+team+","+name+",["+col+","+lig+"])";
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class Piece {
 		this.name = name;
 	}
 	
-	public void setCol(char col) {
+	public void setCol(int col) {
 		this.col = col;
 	}
 	
