@@ -25,7 +25,7 @@ public class IAClient {
 	public static void main(String[] args) {
 		//Déclaration et initialisation
 		int cpt = 0, sens,port, nbCoup, action;
-		boolean partieTermine = false;
+		int partieTermine = 0;
 		String nomMachine;
 		Socket comm;
 		InputStream is;
@@ -86,15 +86,15 @@ public class IAClient {
 					}
 				}
 				//Boucle de jeu
-				while(!partieTermine) {
+				while(partieTermine == 0) {
 					//Si on est un nombre paire de tour on commence à jouer
 					if(nbCoup%2 == 0) {
 						//Fonction de jeu
 						jouerCoup(sens,team,out);
 					}
 					//Une fois notre coup fait on regarde si la partie n'est pas finie
-					partieTermine = in.readBoolean();
-					if(!partieTermine) {
+					partieTermine = in.readInt();
+					if(partieTermine == 0) {
 						//Si la partie continue le coup est validé alors on mets à jour
 						jeu.updateBoard(ia.getP2());
 						if(ia.getType().equals("placement")){
