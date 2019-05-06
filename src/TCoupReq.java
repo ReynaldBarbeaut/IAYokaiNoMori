@@ -12,7 +12,7 @@ import java.util.Objects;
  ***********************************************************
  */
 public class TCoupReq {
-    private boolean partieTerm;  /* 0 : la partie doit continuer,
+    private int partieTerm;  /* 0 : la partie doit continuer,
                                     1 : la partie est terminee */
     private int action;          /* 0 : deplacer,
                                     1 : deposer,

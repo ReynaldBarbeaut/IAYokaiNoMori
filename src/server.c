@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
     /********************/
     /* BOUCLE DE PARTIE */
     /********************/
-    int j = 0;
+    int j = 0; // compteur de coups
     while (!termine) {
         if (i == 1) { // 1ere partie
           if (j % 2 == 0) { // la parité de j indique quel joueur joue
@@ -137,7 +137,11 @@ int main(int argc, char** argv) {
           case 3 : printf("Match nul pour cette partie !\n"); termine = true; break;
           default : perror("(serveur) erreur traitement requete coup"); return -4; break;
         }
+        
         j++;
+        if (j >= 60) {
+          termine = 0;
+        }
     }
   }
 
