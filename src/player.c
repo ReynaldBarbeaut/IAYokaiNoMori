@@ -54,18 +54,6 @@ int main(int argc, char **argv) {
   struct sockaddr_in addServ;	    /* adresse socket connex serveur */
   struct sockaddr_in addClient;	/* adresse de la socket client connectee */
 
-  /* 
-   * creation du socket serveur
-   * ce proogramme joue le role de serveur avec l'IA
-   */
-  int sockServ = socketServeur(portS);
-  if (sockServ < 0) {
-      perror("(client) erreur sur socketServeur");
-      return -1;
-  }
-
-  int spIA = accept(sockServ, (struct sockaddr *)&addClient, (socklen_t *)&sizeAddr);
-
   /* verification des arguments */
   if (argc != 6) {
     printf("usage : %s IPServ port portS nomJoueur sens\n", argv[0]);
@@ -77,6 +65,18 @@ int main(int argc, char **argv) {
   portS = atoi(argv[3]);
   nomJoueur = argv[4];
   sens = argv[5][0];
+
+  /* 
+   * creation du socket serveur
+   * ce proogramme joue le role de serveur avec l'IA
+   */
+  int sockServ = socketServeur(portS);
+  if (sockServ < 0) {
+      perror("(client) erreur sur socketServeur");
+      return -1;
+  }
+
+  int spIA = accept(sockServ, (struct sockaddr *)&addClient, (socklen_t *)&sizeAddr);
 
   /* 
    * creation du socket client

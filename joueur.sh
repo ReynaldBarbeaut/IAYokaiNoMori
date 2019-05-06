@@ -13,5 +13,5 @@ cd ../
 echo "coucou"
 ./bin/player $1 $2 $3 $4
 
-java -Djava.library.path="/usr/local/sicstus4.4.1/bin/jasper.jar" -classpath ./jasper/jasper.jar:. ./src/IAClient $1 $2
+java -Djava.library.path="/usr/local/sicstus4.4.1/bin/jasper.jar" -classpath ./jasper/jasper.jar:. ./src/IAClient $1 4242
 
