@@ -375,7 +375,7 @@ computePoints([NewHand,_,_,piece(Player,Name2,C2)],Hand,Board,Cost):-
 
 
 computePoints([NewHand,_,_,piece(Player,Name2,C2)],Hand,Board,Cost):-
-    NewHand == Hand,
+    NewHand = Hand,
     opponent(Player,Player2),
     getCoordinate(Player2,koropokkuru,Board,C3),
     distance(C2,C3,Distance),
@@ -420,9 +420,9 @@ bestMove(P,Hand,Board,BestMove,BestCost):-
 */
 bestSideMoveList(_,_,[],_,BestMove,BestCost,BestMove,BestCost).
 
-bestSideMoveList(Player,Hand,[piece(Player2,_,_)|LPieces],Board,_,CurrentBestCost,BestMove,BestCost):-  
+bestSideMoveList(Player,Hand,[piece(Player2,_,_)|LPieces],Board,CurrentBestMove,CurrentBestCost,BestMove,BestCost):-  
     Player \= Player2,
-    bestSideMoveList(Player,Hand,LPieces,Board,_,CurrentBestCost,BestMove,BestCost).
+    bestSideMoveList(Player,Hand,LPieces,Board,CurrentBestMove,CurrentBestCost,BestMove,BestCost).
 
 bestSideMoveList(Player,Hand,[piece(Player,Name,C)|LPieces],Board,_,CurrentBestCost,BestMove,BestCost):-  
     bestMove(piece(Player,Name,C),Hand,Board,NewBestMove,NewBestCost),
