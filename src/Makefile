@@ -17,10 +17,10 @@ SICSTUS		= IASictus.java
 all: compile1 compile2
 
 compile1:
-	$(JC) $(CLASSPATH) $(JASPER_PATH):. $(SICSTUS)
+	$(JC) -Xlint:unchecked $(CLASSPATH) $(JASPER_PATH):. $(SICSTUS)
 
 compile2: 
-	$(JC) $(JAVA_LIST)
+	$(JC) -Xlint:unchecked $(JAVA_LIST)
 
 clean:
 	rm -f *.class;

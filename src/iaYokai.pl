@@ -420,9 +420,9 @@ bestMove(P,Hand,Board,BestMove,BestCost):-
 */
 bestSideMoveList(_,_,[],_,BestMove,BestCost,BestMove,BestCost).
 
-bestSideMoveList(Player,Hand,[piece(Player2,_,_)|board],Board,_,CurrentBestCost,BestMove,BestCost):-
+bestSideMoveList(Player,Hand,[piece(Player2,_,_)|LPieces],Board,_,CurrentBestCost,BestMove,BestCost):-  
     Player \= Player2,
-    bestSideMoveList(Player,Hand,board,Board,_,CurrentBestCost,BestMove,BestCost).
+    bestSideMoveList(Player,Hand,LPieces,Board,_,CurrentBestCost,BestMove,BestCost).
 
 bestSideMoveList(Player,Hand,[piece(Player,Name,C)|LPieces],Board,_,CurrentBestCost,BestMove,BestCost):-  
     bestMove(piece(Player,Name,C),Hand,Board,NewBestMove,NewBestCost),

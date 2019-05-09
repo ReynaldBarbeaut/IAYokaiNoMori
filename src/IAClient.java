@@ -38,12 +38,14 @@ public class IAClient {
 		ia = new IASictus("./iaYokai.pl");
 		
 		//Test du bon nombre d'arguments
-		if(args.length != 2) {
+		if(args.length < 2) {
 			System.out.println("usage : "+args[0]+" IPServ port");
 			return;
 		}
 		nomMachine = args[0];
 		port = Integer.parseInt(args[1]);
+		System.out.println(nomMachine);
+		System.out.println(port);
 		
 		//On essaye de se connecter au serveur toutes les secondes
 		try {
@@ -71,6 +73,7 @@ public class IAClient {
 			
 			//On récupére le sens dans lequel on va jouer
 			sens = in.readInt();
+			System.out.println("Sens " +sens);
 			
 			while(cpt<2) {
 				//On réinitialise le plateau et la main à chaque partie
@@ -127,6 +130,7 @@ public class IAClient {
 		comm.close();
 			
 		}catch(IOException e) {
+			System.out.println("Error while connect.");
 			System.out.println(e.toString());
 		}
 		
@@ -140,14 +144,22 @@ public class IAClient {
 		try {
 			os.flush();
 			//On cherche un mouvement
-			ia.searchSolution("bestAction("+team[sens]+","+jeu.toString(jeu.getBoard())+","+jeu.toString(jeu.getHand())+",Type,P1,P2)");
-			
+			ia.searchSolution("bestAction("+team[sens]+","+jeu.toString(jeu.getBoard())+","+jeu.toString(jeu.getHand())+",Type,P1,P2).");
+			System.out.println("Success !");
+
 			//Si aucun mouvement ou une erreur à eu lieu on envoie au client qu'aucun mouvement n'a été fait
-			if(ia.getError()<=0) {				
+			if(ia.getError()<=0) {
+			        System.out.println("C parti!");
 					os.writeInt(2);
+                    System.out.println("C bon");
 					return;
 			}
 			//Sinon on envoie un objet avec toutes les informations sur le coup
+
+			System.out.println(ia.typeToInt());
+			System.out.println(ia.getP1().toString());
+			System.out.println(ia.getP2().toString());
+
 			TCoupRep rep = new TCoupRep(ia.typeToInt(),sens,ia.getP2().nameToInt(),ia.getP1().getCol(),ia.getP1().getLig(),ia.getP2().getCol(),ia.getP2().getLig());
 			os.writeObject(rep);
 			
