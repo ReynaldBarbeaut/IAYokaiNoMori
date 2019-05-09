@@ -1,13 +1,9 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
-import java.io.OutputStream;
-import java.io.InputStream;
-import java.io.ObjectOutputStream;
 
 /*
- **********************************************************
+ **********************************
+ * ************************
  *
  *  Programme : IAClient.java
  *
@@ -24,8 +20,9 @@ public class IAClient {
 
 	public static void main(String[] args) {
 		//Déclaration et initialisation
-		int cpt = 0, sens,port, nbCoup, action;
+		int cpt = 0, sens,port, action, ret = 0;
 		int partieTermine = 0;
+		boolean joue = true;
 		String nomMachine;
 		Socket comm;
 		InputStream is;
@@ -51,15 +48,6 @@ public class IAClient {
 		try {
 			System.out.println("Trying to connect ...");
 			comm = new Socket(nomMachine,port);
-			while(!comm.isConnected()) {
-				try {
-					Thread.sleep(1000);
-					comm = new Socket(nomMachine,port);
-				} catch (InterruptedException e) {
-					System.out.println("Error while sleeping.");
-					e.printStackTrace();
-				}
-			}
 			System.out.println("Connected !");
 			
 			
@@ -73,52 +61,58 @@ public class IAClient {
 			
 			//On récupére le sens dans lequel on va jouer
 			sens = in.readInt();
+			if(sens == 0){
+				joue = false;
+			}
 			System.out.println("Sens " +sens);
 			
 			while(cpt<2) {
 				//On réinitialise le plateau et la main à chaque partie
 				jeu.erase();
 				jeu.initBoard();
-				nbCoup = 0;
 				
 				//Changement de sens après la première partie
 				if(cpt == 1) {
 					if(sens == 0) {
-						sens = 1;
+						joue = false;
 					}else {
-						sens = 0;
+						joue = true;
 					}
 				}
 				//Boucle de jeu
 				while(partieTermine == 0) {
 					//Si on est un nombre paire de tour on commence à jouer
-					if(nbCoup%2 == 0) {
+					if(joue) {
 						//Fonction de jeu
-						jouerCoup(sens,team,out);
+						System.out.println("I'm playing.");
+						ret = jouerCoup(sens,team,out);
 					}
+					joue = !joue;
+
 					//Une fois notre coup fait on regarde si la partie n'est pas finie
 					partieTermine = in.readInt();
 					if(partieTermine == 0) {
+						System.out.println("Waiting for opponent.");
 						//Si la partie continue le coup est validé alors on mets à jour
-						jeu.updateBoard(ia.getP2());
-						if(ia.getType().equals("placement")){
-							jeu.updateHand(1,ia.getP2());
+
+						if(ret > 0) {
+							jeu.updateBoard(ia.getP2());
+							if(ia.getType().equals("placement")){
+								jeu.updateHand(1,ia.getP2());
+							}
 						}
 
 						action = in.readInt();
+						System.out.println("Opponent action "+ action);
 						if(action != 2){
 							int rep = traitementReponse(action,in);
 						}
-						
 						//On joue si on est à un nombre impair de coup
-						if(nbCoup%1 == 0) {
-							jouerCoup(sens,team,out);
+						if(joue) {
+							ret = jouerCoup(sens,team,out);
 						}						
 					}
-					nbCoup++;
-					
 				}
-				
 				cpt++;
 			}
 			
@@ -130,44 +124,55 @@ public class IAClient {
 		comm.close();
 			
 		}catch(IOException e) {
-			System.out.println("Error while connect.");
+			System.out.println("Error while with communication.");
 			System.out.println(e.toString());
 		}
-		
+
 	}
 	
 	/*
 	 * Cette méthode peremet de jouer un coup grâce à l'IA
 	 * elle à besoin du sens du joueur et du stream pour envoyer sa réponse
 	 */
-	public static void jouerCoup(int sens,String[] team,ObjectOutputStream os) {
+	public static int jouerCoup(int sens,String[] team,ObjectOutputStream os) {
 		try {
-			os.flush();
 			//On cherche un mouvement
 			ia.searchSolution("bestAction("+team[sens]+","+jeu.toString(jeu.getBoard())+","+jeu.toString(jeu.getHand())+",Type,P1,P2).");
 			System.out.println("Success !");
 
 			//Si aucun mouvement ou une erreur à eu lieu on envoie au client qu'aucun mouvement n'a été fait
 			if(ia.getError()<=0) {
-			        System.out.println("C parti!");
+			        System.out.println("No action done.");
 					os.writeInt(2);
-                    System.out.println("C bon");
-					return;
+					return -1;
 			}
 			//Sinon on envoie un objet avec toutes les informations sur le coup
+
 
 			System.out.println(ia.typeToInt());
 			System.out.println(ia.getP1().toString());
 			System.out.println(ia.getP2().toString());
 
+			System.out.println("Sending informations.");
+
+			os.writeInt(ia.typeToInt());
+			os.writeInt(sens);
+			os.writeInt(ia.getP1().nameToInt());
+			os.writeInt(ia.getP1().getCol());
+			os.writeInt(ia.getP1().getLig());
+			os.writeInt(ia.getP2().getCol());
+			os.writeInt(ia.getP2().getLig());
+/*
 			TCoupRep rep = new TCoupRep(ia.typeToInt(),sens,ia.getP2().nameToInt(),ia.getP1().getCol(),ia.getP1().getLig(),ia.getP2().getCol(),ia.getP2().getLig());
-			os.writeObject(rep);
+			os.writeObject(rep);*/
+			System.out.println("Informations sended.");
+			return 1;
 			
 		} catch (IOException e) {
 			System.out.println("Error because of output stream.");
 			e.printStackTrace();
+			return -2;
 		}
-		
 	}
 
 	/*

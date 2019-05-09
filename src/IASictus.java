@@ -60,8 +60,6 @@ public class IASictus {
 			//On prend la première solution
 			qu.nextSolution();
 
-			results.forEach((key,value) -> System.out.println(key + " = " + value.toString()));
-
 			//On stocke les informations utiles
 			type = results.get("Type").toString();
 			System.out.println(type);

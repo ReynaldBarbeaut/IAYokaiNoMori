@@ -35,7 +35,10 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
 	  shutdown(spIA, SHUT_RDWR);
 	  return -4;
 	}
+
+	printf("Nb receved bytes : %d \n",err);
 	action = ntohl(action);
+	printf("%d",action);
 
     r->idRequest = COUP;
     r->numPartie = numPartie;
