@@ -21,6 +21,27 @@
  ***********************************************************
  */
 
+int readInt(int spIA, int *res) {
+    char buff[sizeof(int)];
+    char *pBuff = buff;
+    int bytesLeft = sizeof(int);
+
+    int err;
+    while (bytesLeft > 0){
+        err = read(spIA, pBuff, bytesLeft);
+        if(err <= 0){
+            perror("(client) erreur sur le recv");
+            return -1;
+        }
+
+        pBuff += err;
+        bytesLeft -= err;
+    }
+
+   *res = ((buff[0]<<24)|(buff[1]<<16)|(buff[2]<<8)|(buff[3]));
+   return 0;
+}
+
 int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
 
     int err;
@@ -29,16 +50,13 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
      * reception de l'action joueur depuis l'IA
      */
     int action;
-	err = recv(spIA, &action, sizeof(int), 0);
+	/* err = recv(spIA, &action, sizeof(int), 0);
 	if (err <= 0) {
 	  perror("(client - fctPlayer) erreur sur le recv");
 	  shutdown(spIA, SHUT_RDWR);
 	  return -4;
-	}
-
-	printf("Nb receved bytes : %d \n",err);
-	action = ntohl(action);
-	printf("%d",action);
+	} */
+	readInt(spIA, &action);
 
     r->idRequest = COUP;
     r->numPartie = numPartie;

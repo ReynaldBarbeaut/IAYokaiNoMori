@@ -14,6 +14,9 @@
 
 #include "protocole.h"
 
+/* fonction utilitaire pour la réception d'un int depuis Java */
+int readInt(int spIA, int *res);
+
 /* Fonction de com avec l'IA pour la construction du coup à jouer */
 int cstrCoup(int socket, TCoupReq *r, int numPartie);
 
