@@ -56,7 +56,12 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
 	  shutdown(spIA, SHUT_RDWR);
 	  return -4;
 	} */
-	readInt(spIA, &action);
+	err = readInt(spIA, &action);
+    if (err <= 0) {
+	  perror("(client - fctPlayer) erreur recv - action");
+	  shutdown(spIA, SHUT_RDWR);
+	  return -4;
+	}
 
     r->idRequest = COUP;
     r->numPartie = numPartie;
@@ -73,13 +78,12 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          * reception du sens de la piece depuis l'IA
          */
         int sensPiece;
-        err = recv(spIA, &sensPiece, sizeof(int), 0);
+        err = readInt(spIA, &sensPiece);
         if (err <= 0) {
-        perror("(client - fctPlayer) erreur sur le recv");
-        shutdown(spIA, SHUT_RDWR);
-        return -4;
+            perror("(client - fctPlayer) erreur recv - sensPiece");
+            shutdown(spIA, SHUT_RDWR);
+            return -4;
         }
-        sensPiece = ntohl(sensPiece);
         
         if (sensPiece == 0 || sensPiece == 1) {
             r->piece.sensTetePiece = (sensPiece == 0 ? NORD : SUD);
@@ -91,13 +95,12 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          * reception du type de piece depuis l'IA
          */
         int typePiece;
-        err = recv(spIA, &typePiece, sizeof(int), 0);
+        err = readInt(spIA, &typePiece);
         if (err <= 0) {
-        perror("(client - fctPlayer) erreur sur le recv");
-        shutdown(spIA, SHUT_RDWR);
-        return -4;
+            perror("(client - fctPlayer) erreur recv - typePiece");
+            shutdown(spIA, SHUT_RDWR);
+            return -4;
         }
-        typePiece = ntohl(typePiece);
 
         switch (typePiece) {
             case 0 : r->piece.typePiece = KODAMA; break;
@@ -113,13 +116,12 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          * reception de la colonne de la case initiale depuis l'IA
          */
         int caseICol;
-        err = recv(spIA, &caseICol, sizeof(int), 0);
+        err = readInt(spIA, &caseICol);
         if (err <= 0) {
-        perror("(client - fctPlayer) erreur sur le recv");
-        shutdown(spIA, SHUT_RDWR);
-        return -4;
+            perror("(client - fctPlayer) erreur recv - caseICol");
+            shutdown(spIA, SHUT_RDWR);
+            return -4;
         }
-        caseICol = ntohl(caseICol);
 
         switch (caseICol) {
             case 0 : r->params.deplPiece.caseDep.c = 'A'; break;
@@ -134,13 +136,12 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          * reception de la ligne de la case initiale depuis l'IA
          */
         int caseILg;
-        err = recv(spIA, &caseILg, sizeof(int), 0);
+        err = readInt(spIA, &caseILg);
         if (err <= 0) {
-        perror("(client - fctPlayer) erreur sur le recv");
-        shutdown(spIA, SHUT_RDWR);
-        return -4;
+            perror("(client - fctPlayer) erreur recv - caseILg");
+            shutdown(spIA, SHUT_RDWR);
+            return -4;
         }
-        caseILg = ntohl(caseILg);
 
         if (caseILg >= 1 && caseILg <= 6) {
             r->params.deplPiece.caseDep.l = caseILg;
@@ -153,13 +154,12 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          * reception de la colonne de la case finale depuis l'IA
          */
         int caseFCol;
-        err = recv(spIA, &caseFCol, sizeof(int), 0);
+        err = readInt(spIA, &caseFCol);
         if (err <= 0) {
-        perror("(client - fctPlayer) erreur sur le recv");
-        shutdown(spIA, SHUT_RDWR);
-        return -4;
+            perror("(client - fctPlayer) erreur recv - caseFCol");
+            shutdown(spIA, SHUT_RDWR);
+            return -4;
         }
-        caseFCol = ntohl(caseFCol);
 
         switch (caseFCol) {
             case 0 : r->params.deplPiece.caseDep.c = 'A'; break;
@@ -174,13 +174,12 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          * reception de la ligne de la case finale depuis l'IA
          */
         int caseFLg;
-        err = recv(spIA, &caseFLg, sizeof(int), 0);
+        err = readInt(spIA, &caseFLg);
         if (err <= 0) {
-        perror("(client - fctPlayer) erreur sur le recv");
-        shutdown(spIA, SHUT_RDWR);
-        return -4;
+            perror("(client - fctPlayer) erreur recv - caseFLg");
+            shutdown(spIA, SHUT_RDWR);
+            return -4;
         }
-        caseFLg = ntohl(caseFLg);
 
         if (caseFLg >= 1 && caseFLg <= 6) {
             r->params.deplPiece.caseDep.l = caseFLg;
@@ -196,13 +195,12 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          * reception du sens de la piece depuis l'IA
          */
         int sensPiece;
-        err = recv(spIA, &sensPiece, sizeof(int), 0);
+        err = readInt(spIA, &sensPiece);
         if (err <= 0) {
-        perror("(client - fctPlayer) erreur sur le recv");
-        shutdown(spIA, SHUT_RDWR);
-        return -4;
+            perror("(client - fctPlayer) erreur recv - sensPiece");
+            shutdown(spIA, SHUT_RDWR);
+            return -4;
         }
-        sensPiece = ntohl(sensPiece);
         
         if (sensPiece == 0 || sensPiece == 1) {
             r->piece.sensTetePiece = (sensPiece == 0 ? NORD : SUD);
@@ -214,13 +212,12 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          * reception du type de piece depuis l'IA
          */
         int typePiece;
-        err = recv(spIA, &typePiece, sizeof(int), 0);
+        err = readInt(spIA, &typePiece);
         if (err <= 0) {
-        perror("(client - fctPlayer) erreur sur le recv");
-        shutdown(spIA, SHUT_RDWR);
-        return -4;
+            perror("(client - fctPlayer) erreur recv - typePiece");
+            shutdown(spIA, SHUT_RDWR);
+            return -4;
         }
-        typePiece = ntohl(typePiece);
 
         switch (typePiece) {
             case 0 : r->piece.typePiece = KODAMA; break;
@@ -236,13 +233,12 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          * reception de la colonne de la case depuis l'IA
          */
         int caseICol;
-        err = recv(spIA, &caseICol, sizeof(int), 0);
+        err = readInt(spIA, &caseICol);
         if (err <= 0) {
-        perror("(client - fctPlayer) erreur sur le recv");
-        shutdown(spIA, SHUT_RDWR);
-        return -4;
+            perror("(client - fctPlayer) erreur recv - caseICol");
+            shutdown(spIA, SHUT_RDWR);
+            return -4;
         }
-        caseICol = ntohl(caseICol);
 
         switch (caseICol) {
             case 0 : r->params.deposerPiece.c = 'A'; break;
@@ -257,13 +253,12 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          * reception de la ligne de la case depuis l'IA
          */
         int caseILg;
-        err = recv(spIA, &caseILg, sizeof(int), 0);
+        err = readInt(spIA, &caseILg);
         if (err <= 0) {
-        perror("(client - fctPlayer) erreur sur le recv");
-        shutdown(spIA, SHUT_RDWR);
-        return -4;
+            perror("(client - fctPlayer) erreur recv - caseILg");
+            shutdown(spIA, SHUT_RDWR);
+            return -4;
         }
-        caseILg = ntohl(caseILg);
 
         if (caseILg >= 1 && caseILg <= 6) {
             r->params.deposerPiece.l = caseILg;
