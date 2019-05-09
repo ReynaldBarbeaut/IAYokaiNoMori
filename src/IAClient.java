@@ -28,7 +28,7 @@ public class IAClient {
 		InputStream is;
 		OutputStream os;
 		DataInputStream in;
-		ObjectOutputStream out;
+		DataOutputStream out;
 		TCoupReq req;
 		String[] team = {"north","south"};
 		jeu = new lPieces();
@@ -56,7 +56,7 @@ public class IAClient {
 			in = new DataInputStream(is);
 			
 			os = comm.getOutputStream();
-			out = new ObjectOutputStream(os);
+			out = new DataOutputStream(os);
 						
 			
 			//On récupére le sens dans lequel on va jouer
@@ -134,7 +134,7 @@ public class IAClient {
 	 * Cette méthode peremet de jouer un coup grâce à l'IA
 	 * elle à besoin du sens du joueur et du stream pour envoyer sa réponse
 	 */
-	public static int jouerCoup(int sens,String[] team,ObjectOutputStream os) {
+	public static int jouerCoup(int sens,String[] team,DataOutputStream os) {
 		try {
 			//On cherche un mouvement
 			ia.searchSolution("bestAction("+team[sens]+","+jeu.toString(jeu.getBoard())+","+jeu.toString(jeu.getHand())+",Type,P1,P2).");
