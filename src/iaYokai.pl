@@ -296,7 +296,7 @@ demote(piece(Player,Name,C),piece(Player2,Name,C)):-opponent(Player,Player2).
 
 
 /*
-* Check if a piece is in a list a C coordinates
+* Check if a piece is in a list with C coordinates
 */
 compareL(piece(_,_,C2),[C|_]):-
     C2=C,!.
@@ -330,11 +330,7 @@ points(kodamaSamourai,20).
 points(oni,30).
 points(superOni,40).
 points(kirin,50).
-/*
-*Priority is given to the koropokkuru with that even if a piece has a chance to be taken,
-* it will still focus to capture the koropokkuru
-*/
-points(koropokkuru,100).
+points(koropokkuru,150).
 
 /*
 * Compute distance between two points
@@ -343,7 +339,7 @@ distance([X,Y],[X2,Y2],Dist):-
     Dist is sqrt((X2-X)*(X2-X) + (Y2-Y)*(Y2-Y)). 
 
 /*
-* Compute the risked cost of a piece (if it is captured)
+* Compute the risked cost of a piece (if it can be captured at certain coordinates)
 */
 riskedCost(piece(Player,Name,C),Board,0):-
     \+inTake(piece(Player,Name,C),Player,Board,Board),!.
@@ -353,15 +349,46 @@ riskedCost(piece(Player,Name,C),Board,Cost):-
     points(Name,Cost),!.
 
 /*
-* Return coordinate of a piece
+* Return coordinate of a piece (only used to get koropokkuru's coordinates so no need to handle duplicated pieces)
 */
 getCoordinate(Player,Name,[piece(Player,Name,Coordinate)|_],Coordinate).
 getCoordinate(Player,Name,[_|List],P):-
         getCoordinate(Player,Name,List,P).
 
 /*
+* Get all possible moves of a piece
+*/
+possibleMoves(P,Hand,Board,LMoves) :-
+    findall([NewHand,NewBoard,P,P2],movement(P,Hand,Board,NewHand,NewBoard,P2),LMoves).
+
+/*
 * Compute points for a move
 */
+computePoints([NewHand,NewBoard,_,piece(Player,Name2,C2)],Hand,Board,Cost):-
+    getCoordinate(Player,koropokkuru,Board,C),
+    getCoordinate(Player,koropokkuru,NewBoard,C1),
+    inTake(piece(Player,koropokkuru,C),Player,Board,Board),
+    \+inTake(piece(Player,koropokkuru,C1),Player,NewBoard,NewBoard),
+    NewHand \= Hand,
+    NewHand = [piece(Player,Name3,_)|_],
+    points(Name3,Point),
+    opponent(Player,Player2),
+    getCoordinate(Player2,koropokkuru,Board,C3),
+    distance(C2,C3,Distance),
+    riskedCost(piece(Player,Name2,C2),Board,RiskedCost),
+    Cost is 1000 + Point - Distance - RiskedCost,!.  
+
+computePoints([NewHand,NewBoard,_,piece(Player,Name2,C2)],Hand,Board,Cost):-
+    getCoordinate(Player,koropokkuru,Board,C),
+    getCoordinate(Player,koropokkuru,NewBoard,C1),
+    inTake(piece(Player,koropokkuru,C),Player,Board,Board),
+    \+inTake(piece(Player,koropokkuru,C1),Player,NewBoard,NewBoard),
+    NewHand = Hand,
+    opponent(Player,Player2),
+    getCoordinate(Player2,koropokkuru,Board,C3),
+    distance(C2,C3,Distance),
+    riskedCost(piece(Player,Name2,C2),Board,RiskedCost),
+    Cost is 1000 - Distance - RiskedCost,!. 
 
 computePoints([NewHand,_,_,piece(Player,Name2,C2)],Hand,Board,Cost):-
     NewHand \= Hand,
@@ -371,7 +398,7 @@ computePoints([NewHand,_,_,piece(Player,Name2,C2)],Hand,Board,Cost):-
     getCoordinate(Player2,koropokkuru,Board,C3),
     distance(C2,C3,Distance),
     riskedCost(piece(Player,Name2,C2),Board,RiskedCost),
-    Cost is Point - Distance - RiskedCost.  
+    Cost is Point - Distance - RiskedCost,!.  
 
 
 computePoints([NewHand,_,_,piece(Player,Name2,C2)],Hand,Board,Cost):-
@@ -380,7 +407,7 @@ computePoints([NewHand,_,_,piece(Player,Name2,C2)],Hand,Board,Cost):-
     getCoordinate(Player2,koropokkuru,Board,C3),
     distance(C2,C3,Distance),
     riskedCost(piece(Player,Name2,C2),Board,RiskedCost),
-    Cost is 0 - Distance - RiskedCost. 
+    Cost is 0 - Distance - RiskedCost,!.
 
 /*
 * Go through a list of moves and keep the best one
@@ -398,16 +425,11 @@ bestFromList([Move|LMove],Hand,Board,CurrentBestMove,CurrentBestCost,RecordMode,
     NewCost =< CurrentBestCost,
     bestFromList(LMove,Hand,Board,CurrentBestMove,CurrentBestCost,RecordMode,RecordCost).
 
-/*
-* Get all possible moves of a piece
-*/
-possibleMoves(P,Hand,Board,LMoves) :-
-    findall([NewHand,NewBoard,P,P2],movement(P,Hand,Board,NewHand,NewBoard,P2),LMoves).
-
 
 /*
 * Compute best move of a piece.
 */
+
 bestMove(P,Hand,Board,BestMove,BestCost):-
     possibleMoves(P,Hand,Board,LMoves),
     LMoves = [FirstMove | _],
@@ -534,20 +556,6 @@ bestPlacement(Hand,Board,NewHand,BestPlacement,BestCost):-
 /*
 * Give the best action to do with information
 */
-
-bestAction(Player,Board, Hand, capture, P, P2) :-
-    getCoordinate(Player,koropokkuru,Board,C),
-    inTake(piece(Player,koropokkuru,C),Player,Board,Board),
-    bestMove(piece(Player,koropokkuru,C),Hand,Board,BestMove,_),
-    BestMove = [NewHand,_,P,P2],
-    NewHand \= Hand,!.
-
-bestAction(Player,Board, Hand, move, P, P2) :-
-    getCoordinate(Player,koropokkuru,Board,C),
-    inTake(piece(Player,koropokkuru,C),Player,Board,Board),
-    bestMove(piece(Player,koropokkuru,C),Hand,Board,BestMove,_),
-    BestMove = [NewHand,_,P,P2],
-    NewHand == Hand,!.
 
 bestAction(Player,Board, Hand, capture, P, P2) :-
     bestSideMove(Player,Hand,Board,BestMove,BestCost),

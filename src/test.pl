@@ -3,6 +3,25 @@
 
 :- include(iaYokai).
 
+/*
+* This predicate is an alternative board which will be used for some tests
+*/
+funBoard([piece(south,koropokkuru,[3,1]),
+          piece(south,kirin,[4,1]),
+          piece(south,oni,[5,1]),
+          piece(south,kirin,[2,4]),
+          piece(south,kodama,[3,4]),
+          piece(south,kodamaSamourai,[1,6]),
+          piece(south,kodamaSamourai,[3,4]),
+          piece(north,superOni,[2,2]),
+          piece(north,oni,[1,3]),
+          piece(north,oni,[4,3]),
+          piece(north,kodama,[1,4]),
+          piece(north,kirin,[4,5]),
+          piece(north,koropokkuru,[4,6])                                      
+         ]).
+
+
 :- begin_tests(iaYokai).
 
 /*
@@ -369,10 +388,170 @@ test('demote_OK',[true(X == piece(south,kirin,[1,3]))]):-
 test('demote_OK',[true(X == piece(south,koropokkuru,[1,3]))]):-
     demote(piece(north,koropokkuru,[1,3]),X).
 
+/*
+* Tests for compareL predicate
+*/
+test('compareL_OK',[true]):-
+    compareL(piece(north,kodama,[3,3]),[[2,2],[1,3],[3,4],[3,3]]).
+
+test('compareL_OK',[fail]):-
+    compareL(piece(north,kodama,[3,3]),[[2,2],[1,3],[3,4]]).
 
 /*
-* Tests for find and return predicate
+* Tests for inScope predicate
 */
+test('inScope_OK',[true]):-
+        inScope(piece(north,kodama,[3,3]), piece(south,kodama,[3,2]),[piece(north,kodama,[3,3]), piece(south,kodama,[3,2])]),
+        inScope(piece(north,kodama,[3,3]), piece(south,kodama,[3,2]),[piece(north,kodama,[3,3]), piece(south,kodama,[3,2])]),
+        initialBoard(Board),
+        inScope(piece(north,kodama,[2,4]), piece(south,kodama,[2,3]),Board),
+        inScope(piece(south,kodama,[3,3]), piece(north,kodama,[3,4]),Board).
+
+test('inScope_KO',[fail]):-
+        inScope(piece(north,kodama,[3,3]), piece(south,kodama,[2,4]),[piece(north,kodama,[3,3]), piece(south,kodama,[2,4])]).
+
+test('inScope_KO',[fail]):-
+        initialBoard(Board),
+        inScope(piece(north,koropokkuru,[3,6]), piece(south,kodama,[3,3]),Board).
+
+test('inScope_KO',[fail]):-
+        initialBoard(Board),
+        inScope(piece(south,koropokkuru,[3,1]), piece(north,koropokkuru,[3,6]),Board).
+
+test('inScope_KO',[fail]):-
+        initialBoard(Board),
+        inScope(piece(south,koropokkuru,[3,1]), piece(north,kodama,[3,4]),Board).
+
+/*
+* Tests for inTake predicate
+*/
+test('inTake_OK',[true]):-
+        initialBoard(Board),
+        inTake(piece(north,kodama,[2,4]),north,Board,Board),
+        inTake(piece(north,kodama,[3,4]),north,Board,Board),
+        inTake(piece(north,kodama,[4,4]),north,Board,Board),
+        inTake(piece(south,kodama,[2,3]),south,Board,Board),
+        inTake(piece(south,kodama,[3,3]),south,Board,Board),
+        inTake(piece(south,kodama,[4,3]),south,Board,Board).
+
+test('inTake_KO',[fail]):-
+        initialBoard(Board),
+        inTake(piece(north,kirin,[2,6]),north,Board,Board).
+
+test('inTake_KO',[fail]):-
+        initialBoard(Board),
+        inTake(piece(north,koropokkuru,[3,6]),north,Board,Board).
+
+test('inTake_KO',[fail]):-
+        initialBoard(Board),
+        inTake(piece(north,oni,[5,6]),north,Board,Board).
+
+test('inTake_KO',[fail]):-
+        initialBoard(Board),
+        inTake(piece(south,kirin,[2,1]),south,Board,Board).
+
+test('inTake_KO',[fail]):-
+        initialBoard(Board),
+        inTake(piece(south,koropokkuru,[3,1]),south,Board,Board).
+
+test('inTake_KO',[fail]):-
+        initialBoard(Board),
+        inTake(piece(south,oni,[5,1]),south,Board,Board).
+
+/*
+* Tests for distance predicate
+*/
+test('distance_OK',[true(Dist==1.4142135623730951)]):-
+        distance([4,4],[3,3],Dist).
+
+test('distance_OK',[true(Dist==3.605551275463989)]):-
+        distance([1,5],[4,3],Dist).
+
+/*
+* Tests for riskedCost predicate
+*/
+test('riskedCost_OK',[true(Cost==40)]):-
+        funBoard(Board),
+        riskedCost(piece(north,superOni,[2,2]),Board,Cost).
+
+test('riskedCost_OK',[true(Cost==10)]):-
+        funBoard(Board),
+        riskedCost(piece(north,kodama,[1,4]),Board,Cost).
+
+test('riskedCost_OK',[true(Cost==50)]):-
+        funBoard(Board),
+        riskedCost(piece(south,kirin,[2,4]),Board,Cost).
+
+test('riskedCost_OK',[true(Cost==150)]):-
+        funBoard(Board),
+        riskedCost(piece(south,koropokkuru,[3,1]),Board,Cost).
+
+test('riskedCost_OK',[true(Cost==0)]):-
+        funBoard(Board),
+        riskedCost(piece(south,kodamaSamourai,[1,6]),Board,Cost).
+
+test('riskedCost_OK',[true(Cost==0)]):-
+        funBoard(Board),
+        riskedCost(piece(north,koropokkuru,[4,6]),Board,Cost).
+
+/*
+* Tests for getCoordinate predicate
+*/
+test('getCoordinate_OK',[true(C==[3,6])]):-
+        initialBoard(Board),
+        getCoordinate(north,koropokkuru,Board,C).
+
+test('getCoordinate_OK',[true(C==[3,1])]):-
+        initialBoard(Board),
+        getCoordinate(south,koropokkuru,Board,C).
+
+test('getCoordinate_OK',[true(C==[4,6])]):-
+        funBoard(Board),
+        getCoordinate(north,koropokkuru,Board,C).
+
+/*
+* Tests for bestMove predicate
+*/
+test('bestMove_OK',[true(BestMove==[[piece(south,kodama,[1,4])],[piece(south,kirin,[1,4]),piece(south,koropokkuru,[3,1]),piece(south,kirin,[4,1]),piece(south,oni,[5,1]),piece(south,kodama,[3,4]),piece(south,kodamaSamourai,[1,6]),piece(south,kodamaSamourai,[3,4]),piece(north,superOni,[2,2]),piece(north,oni,[1,3]),piece(north,oni,[4,3]),piece(north,kirin,[4,5]),piece(north,koropokkuru,[4,6])],piece(south,kirin,[2,4]),piece(south,kirin,[1,4])])]):-
+        funBoard(Board),
+        bestMove(piece(south,kirin,[2,4]),[],Board,BestMove,_).
+
+test('bestMove_OK',[true(BestMove==[[piece(north,kirin,[2,4])],[piece(north,oni,[2,4]),piece(south,koropokkuru,[3,1]),piece(south,kirin,[4,1]),piece(south,oni,[5,1]),piece(south,kodama,[3,4]),piece(south,kodamaSamourai,[1,6]),piece(south,kodamaSamourai,[3,4]),piece(north,superOni,[2,2]),piece(north,oni,[4,3]),piece(north,kodama,[1,4]),piece(north,kirin,[4,5]),piece(north,koropokkuru,[4,6])],piece(north,oni,[1,3]),piece(north,oni,[2,4])])]):-
+        funBoard(Board),
+        bestMove(piece(north,oni,[1,3]),[],Board,BestMove,_).
+
+
+/*
+* Tests for bestPiece predicate
+*/
+test('bestPiece_OK',[true(BestPiece==piece(north,kirin,C))]):-
+        bestPiece([piece(north,kodama,_),piece(north,kirin,C)],_,0,BestPiece).
+
+test('bestPiece_OK',[true(BestPiece==piece(north,kirin,C))]):-
+        bestPiece([piece(north,kirin,C),piece(north,kirin,_)],_,0,BestPiece).
+
+test('bestPiece_OK',[true(BestPiece==piece(south,kirin,C))]):-
+        bestPiece([piece(south,oni,_),piece(south,kirin,C)],_,0,BestPiece).
+
+test('bestPiece_OK',[true(BestPiece==piece(south,kodama,C))]):-
+        bestPiece([piece(south,kodama,C),piece(south,kodama,_)],_,0,BestPiece).
+
+test('bestPiece_OK',[true(BestPiece==piece(south,oni,C))]):-
+        bestPiece([piece(south,kodama,_),piece(south,oni,C)],_,0,BestPiece).
+
+/*
+* Tests for bestAction predicate       
+*/
+test('bestAction_Stop_Check_OK',[true(Type==capture), true(P1==piece(south,kirin,[2,2])), true(P2 == piece(south,kirin,[3,2]))]):-
+    bestAction(south,[piece(south,koropokkuru,[3,1]),piece(north,kodama,[3,2]),piece(north,kodama,[3,3]),piece(south,kirin,[2,2]),piece(north,koropokkuru,[5,5])],[],Type,P1,P2).
+
+test('bestAction_Round1_South',[true(Type==capture), true(P1==piece(south,kodama,[3,3])), true(P2 == piece(south,kodama,[3,4]))]):-
+    initialBoard(Board),
+    bestAction(south,Board,[],Type,P1,P2).
+
+test('bestAction_Round1_North',[true(Type==capture), true(P1==piece(north,kodama,[3,4])), true(P2 == piece(north,kodama,[3,3]))]):-
+    initialBoard(Board),
+    bestAction(north,Board,[],Type,P1,P2).
 
 
 :- end_tests(iaYokai).
