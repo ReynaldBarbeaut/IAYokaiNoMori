@@ -551,10 +551,10 @@ int finPartie(int spIA) {
     int err, term;
 
     /* 
-     * envoi boooleen partie non terminee
+     * envoi boooleen partie terminee
      */
     term = 1;
-    int reqN = htonl(term);
+    int term = htonl(term);
     err = send(spIA, &term, sizeof(int), 0);
     if (err <= 0) {
         perror("(client - fctPlayer) erreur sur le send");
