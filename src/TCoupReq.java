@@ -15,8 +15,9 @@ public class TCoupReq {
     private int partieTerm;      /* 0 : la partie doit continuer,
                                     1 : la partie est terminee */
     private int action;          /* 0 : deplacer,
-                                    1 : deposer,
-                                    2 : aucun */
+                                    1 : capturer
+                                    2 : deposer,
+                                    3 : aucun */
     private int sensPiece;       /* 0 : nord,
                                     1 : sud */
     private int typePiece;       /* 0 : KODAMA,

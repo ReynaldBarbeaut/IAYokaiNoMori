@@ -97,11 +97,11 @@ public class IASictus {
 		case "move":
 			return 0;
 		case "capture":
-			return 0;
-		case "placement":
 			return 1;
-		default:
+		case "placement":
 			return 2;
+		default:
+			return 3;
 		}
 	}
 	
