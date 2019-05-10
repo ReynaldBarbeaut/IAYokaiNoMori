@@ -299,7 +299,7 @@ int enregCoupA(int spIA, TCoupReq *c) {
      * envoi boooleen partie non terminee
      */
     int term = 0;
-    int reqN = htonl(term);
+    term = htonl(term);
     err = send(spIA, &term, sizeof(int), 0);
     if (err <= 0) {
         perror("(client - fctPlayer) erreur sur le send");
@@ -367,11 +367,11 @@ int enregCoupA(int spIA, TCoupReq *c) {
          */
         int caseICol;
         switch (c->params.deplPiece.caseDep.c) {
-            case 'A' : caseICol = 1; break;
-            case 'B' : caseICol = 2; break;
-            case 'C' : caseICol = 3; break;
-            case 'D' : caseICol = 4; break;
-            case 'E' : caseICol = 5; break;
+            case A : caseICol = 1; break;
+            case B : caseICol = 2; break;
+            case C : caseICol = 3; break;
+            case D : caseICol = 4; break;
+            case E : caseICol = 5; break;
             default : perror("(client - fctPlayer) enreg coup adverse : erreur colonne case init"); return -1;
         }
         caseICol = htonl(caseICol);
@@ -385,7 +385,7 @@ int enregCoupA(int spIA, TCoupReq *c) {
          * envoi ligne case init adverse à l'IA
          */
         int caseILg;
-        switch (c->params.deplPiece.caseDep.c) {
+        switch (c->params.deplPiece.caseDep.l) {
             case UN :       caseILg = 1; break;
             case DEUX :     caseILg = 2; break;
             case TROIS :    caseILg = 3; break;
@@ -406,11 +406,11 @@ int enregCoupA(int spIA, TCoupReq *c) {
          */
         int caseFCol;
         switch (c->params.deplPiece.caseArr.c) {
-            case 'A' : caseFCol = 1; break;
-            case 'B' : caseFCol = 2; break;
-            case 'C' : caseFCol = 3; break;
-            case 'D' : caseFCol = 4; break;
-            case 'E' : caseFCol = 5; break;
+            case A : caseFCol = 1; break;
+            case B : caseFCol = 2; break;
+            case C : caseFCol = 3; break;
+            case D : caseFCol = 4; break;
+            case E : caseFCol = 5; break;
             default : perror("(client - fctPlayer) enreg coup adverse : erreur colonne case finale"); return -1;
         }
         caseFCol = htonl(caseFCol);
@@ -424,7 +424,7 @@ int enregCoupA(int spIA, TCoupReq *c) {
          * envoi ligne case finale adverse à l'IA
          */
         int caseFLg;
-        switch (c->params.deplPiece.caseArr.c) {
+        switch (c->params.deplPiece.caseArr.l) {
             case UN :       caseFLg = 1; break;
             case DEUX :     caseFLg = 2; break;
             case TROIS :    caseFLg = 3; break;
@@ -482,12 +482,12 @@ int enregCoupA(int spIA, TCoupReq *c) {
          * envoi colonne case adverse à l'IA
          */
         int caseICol;
-        switch (c->params.deplPiece.caseDep.c) {
-            case 'A' : caseICol = 1; break;
-            case 'B' : caseICol = 2; break;
-            case 'C' : caseICol = 3; break;
-            case 'D' : caseICol = 4; break;
-            case 'E' : caseICol = 5; break;
+        switch (c->params.deposerPiece.c) {
+            case A : caseICol = 1; break;
+            case B : caseICol = 2; break;
+            case C : caseICol = 3; break;
+            case D : caseICol = 4; break;
+            case E : caseICol = 5; break;
             default : perror("(client - fctPlayer) enreg coup adverse : erreur colonne case depos"); return -1;
         }
         caseICol = htonl(caseICol);
@@ -501,7 +501,7 @@ int enregCoupA(int spIA, TCoupReq *c) {
          * envoi ligne case adverse à l'IA
          */
         int caseILg;
-        switch (c->params.deplPiece.caseDep.c) {
+        switch (c->params.deposerPiece.l) {
             case UN :       caseILg = 1; break;
             case DEUX :     caseILg = 2; break;
             case TROIS :    caseILg = 3; break;
@@ -551,10 +551,10 @@ int finPartie(int spIA) {
     int err, term;
 
     /* 
-     * envoi boooleen partie non terminee
+     * envoi boooleen partie terminee
      */
     term = 1;
-    int reqN = htonl(term);
+    term = htonl(term);
     err = send(spIA, &term, sizeof(int), 0);
     if (err <= 0) {
         perror("(client - fctPlayer) erreur sur le send");

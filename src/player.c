@@ -177,13 +177,13 @@ int main(int argc, char **argv) {
         printf("(client) erreur sur le coup adverse\n");
         printf("(client) code d'erreur : %d\n", coupRepA.err);
         printf("(client) fin de la partie\n");
-        continue;
+        break;
       }
       if (coupRepA.validCoup != VALID) {
         printf("(client) erreur sur la validation du coup adverse\n");
         printf("(client) code d'erreur : %d\n", coupRepA.validCoup);
         printf("(client) fin de la partie\n");
-        continue;
+        break;
       }
 
       /* 
@@ -252,13 +252,13 @@ int main(int argc, char **argv) {
         printf("(client) erreur sur le coup\n");
         printf("(client) code d'erreur : %d\n", coupRep.err);
         printf("(client) fin de la partie\n");
-        continue;
+        break;
       }
       if (coupRep.validCoup != VALID) {
         printf("(client) erreur sur la validation du coup\n");
         printf("(client) code d'erreur : %d\n", coupRep.validCoup);
         printf("(client) fin de la partie\n");
-        continue;
+        break;
       }
 
       if (coupRep.propCoup == GAGNE) {
@@ -293,13 +293,13 @@ int main(int argc, char **argv) {
         printf("(client) erreur sur le coup adverse\n");
         printf("(client) code d'erreur : %d\n", coupRepA.err);
         printf("(client) fin de la partie\n");
-        continue;
+        break;
       }
       if (coupRepA.validCoup != VALID) {
         printf("(client) erreur sur la validation du coup adverse\n");
         printf("(client) code d'erreur : %d\n", coupRepA.validCoup);
         printf("(client) fin de la partie\n");
-        continue;
+        break;
       }
 
       if (coupRepA.propCoup == GAGNE) {
