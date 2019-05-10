@@ -129,11 +129,11 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
         }
 
         switch (caseICol) {
-            case 0 : r->params.deplPiece.caseDep.c = 'A'; break;
-            case 1 : r->params.deplPiece.caseDep.c = 'B'; break;
-            case 2 : r->params.deplPiece.caseDep.c = 'C'; break;
-            case 3 : r->params.deplPiece.caseDep.c = 'D'; break;
-            case 4 : r->params.deplPiece.caseDep.c = 'E'; break;
+            case 1 : r->params.deplPiece.caseDep.c = A; break;
+            case 2 : r->params.deplPiece.caseDep.c = B; break;
+            case 3 : r->params.deplPiece.caseDep.c = C; break;
+            case 4 : r->params.deplPiece.caseDep.c = D; break;
+            case 5 : r->params.deplPiece.caseDep.c = E; break;
             default : perror("(client - fctPlayer) erreur reception colonne case initiale"); return -1;
         }
 
@@ -149,11 +149,16 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
             return -4;
         }
 
-        if (caseILg >= 1 && caseILg <= 6) {
-            r->params.deplPiece.caseDep.l = caseILg;
-        } else {
-            perror("(client - fctPlayer) erreur reception ligne case initiale"); return -1;
+        switch (caseILg) {
+            case 1 : r->params.deplPiece.caseDep.l = UN; break;
+            case 2 : r->params.deplPiece.caseDep.l = DEUX; break;
+            case 3 : r->params.deplPiece.caseDep.l = TROIS; break;
+            case 4 : r->params.deplPiece.caseDep.l = QUATRE; break;
+            case 5 : r->params.deplPiece.caseDep.l = CINQ; break;
+            case 6 : r->params.deplPiece.caseDep.l = SIX; break;
+            default : perror("(client - fctPlayer) erreur reception ligne case initiale"); return -1;
         }
+
 
 
         /* 
@@ -169,11 +174,11 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
         }
 
         switch (caseFCol) {
-            case 0 : r->params.deplPiece.caseDep.c = 'A'; break;
-            case 1 : r->params.deplPiece.caseDep.c = 'B'; break;
-            case 2 : r->params.deplPiece.caseDep.c = 'C'; break;
-            case 3 : r->params.deplPiece.caseDep.c = 'D'; break;
-            case 4 : r->params.deplPiece.caseDep.c = 'E'; break;
+            case 1 : r->params.deplPiece.caseArr.c = A; break;
+            case 2 : r->params.deplPiece.caseArr.c = B; break;
+            case 3 : r->params.deplPiece.caseArr.c = C; break;
+            case 4 : r->params.deplPiece.caseArr.c = D; break;
+            case 5 : r->params.deplPiece.caseArr.c = E; break;
             default : perror("(client - fctPlayer) erreur reception colonne case finale"); return -1;
         }
 
@@ -189,10 +194,14 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
             return -4;
         }
 
-        if (caseFLg >= 1 && caseFLg <= 6) {
-            r->params.deplPiece.caseDep.l = caseFLg;
-        } else {
-            perror("(client - fctPlayer) erreur reception ligne case finale"); return -1;
+         switch (caseFLg) {
+            case 1 : r->params.deplPiece.caseArr.l = UN; break;
+            case 2 : r->params.deplPiece.caseArr.l = DEUX; break;
+            case 3 : r->params.deplPiece.caseArr.l = TROIS; break;
+            case 4 : r->params.deplPiece.caseArr.l = QUATRE; break;
+            case 5 : r->params.deplPiece.caseArr.l = CINQ; break;
+            case 6 : r->params.deplPiece.caseArr.l = SIX; break;
+            default : perror("(client - fctPlayer) erreur reception ligne case finale"); return -1;
         }
     }
 
@@ -249,11 +258,11 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
         }
 
         switch (caseICol) {
-            case 1 : r->params.deposerPiece.c = 'A'; break;
-            case 2 : r->params.deposerPiece.c = 'B'; break;
-            case 3 : r->params.deposerPiece.c = 'C'; break;
-            case 4 : r->params.deposerPiece.c = 'D'; break;
-            case 5 : r->params.deposerPiece.c = 'E'; break;
+            case 1 : r->params.deposerPiece.c = A; break;
+            case 2 : r->params.deposerPiece.c = B; break;
+            case 3 : r->params.deposerPiece.c = C; break;
+            case 4 : r->params.deposerPiece.c = D; break;
+            case 5 : r->params.deposerPiece.c = E; break;
             default : perror("(client - fctPlayer) erreur reception colonne case depos"); return -1;
         }
 
@@ -268,14 +277,17 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
             return -4;
         }
 
-        if (caseILg >= 1 && caseILg <= 6) {
-            r->params.deposerPiece.l = caseILg;
-        } else {
-            perror("(client - fctPlayer) erreur reception ligne case depos"); return -1;
-        }
-        
-        
+         switch (caseILg) {
+            case 1 : r->params.deposerPiece.l = UN; break;
+            case 2 : r->params.deposerPiece.l = DEUX; break;
+            case 3 : r->params.deposerPiece.l = TROIS; break;
+            case 4 : r->params.deposerPiece.l = QUATRE; break;
+            case 5 : r->params.deposerPiece.l = CINQ; break;
+            case 6 : r->params.deposerPiece.l = SIX; break;
+            default : perror("(client - fctPlayer) erreur reception ligne initiale"); return -1;
+        } 
     } 
+
     return 0;
 }
 
@@ -355,11 +367,11 @@ int enregCoupA(int spIA, TCoupReq *c) {
          */
         int caseICol;
         switch (c->params.deplPiece.caseDep.c) {
-            case 'A' : caseICol = 0; break;
-            case 'B' : caseICol = 1; break;
-            case 'C' : caseICol = 2; break;
-            case 'D' : caseICol = 3; break;
-            case 'E' : caseICol = 4; break;
+            case 'A' : caseICol = 1; break;
+            case 'B' : caseICol = 2; break;
+            case 'C' : caseICol = 3; break;
+            case 'D' : caseICol = 4; break;
+            case 'E' : caseICol = 5; break;
             default : perror("(client - fctPlayer) enreg coup adverse : erreur colonne case init"); return -1;
         }
         caseICol = htonl(caseICol);
@@ -394,11 +406,11 @@ int enregCoupA(int spIA, TCoupReq *c) {
          */
         int caseFCol;
         switch (c->params.deplPiece.caseArr.c) {
-            case 'A' : caseFCol = 0; break;
-            case 'B' : caseFCol = 1; break;
-            case 'C' : caseFCol = 2; break;
-            case 'D' : caseFCol = 3; break;
-            case 'E' : caseFCol = 4; break;
+            case 'A' : caseFCol = 1; break;
+            case 'B' : caseFCol = 2; break;
+            case 'C' : caseFCol = 3; break;
+            case 'D' : caseFCol = 4; break;
+            case 'E' : caseFCol = 5; break;
             default : perror("(client - fctPlayer) enreg coup adverse : erreur colonne case finale"); return -1;
         }
         caseFCol = htonl(caseFCol);
@@ -471,11 +483,11 @@ int enregCoupA(int spIA, TCoupReq *c) {
          */
         int caseICol;
         switch (c->params.deplPiece.caseDep.c) {
-            case 'A' : caseICol = 0; break;
-            case 'B' : caseICol = 1; break;
-            case 'C' : caseICol = 2; break;
-            case 'D' : caseICol = 3; break;
-            case 'E' : caseICol = 4; break;
+            case 'A' : caseICol = 1; break;
+            case 'B' : caseICol = 2; break;
+            case 'C' : caseICol = 3; break;
+            case 'D' : caseICol = 4; break;
+            case 'E' : caseICol = 5; break;
             default : perror("(client - fctPlayer) enreg coup adverse : erreur colonne case depos"); return -1;
         }
         caseICol = htonl(caseICol);

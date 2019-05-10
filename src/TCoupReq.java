@@ -26,10 +26,10 @@ public class TCoupReq {
                                     4 : ONI,
                                     5 : SUPER_ONI */
 
-    private int caseICol;        /* 0:'A', 1:'B', 2:'C', 3:'D', 4:'E' */ 
+    private int caseICol;        /* 1:'A', 2:'B', 3:'C', 4:'D', 5:'E' */ 
     private int caseILg;         /* 1, 2, 3, 4, 5, 6 */
 
-    private int caseFCol;        /* 0:'A', 1:'B', 2:'C', 3:'D', 4:'E' */ 
+    private int caseFCol;        /* 1:'A', 2:'B', 3:'C', 4:'D', 5:'E' */ 
     private int caseFLg;         /* 1, 2, 3, 4, 5, 6 */
 
 
