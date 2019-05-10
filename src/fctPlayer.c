@@ -39,7 +39,7 @@ int readInt(int spIA, int *res) {
     }
 
    *res = ((buff[0]<<24)|(buff[1]<<16)|(buff[2]<<8)|(buff[3]));
-   return 0;
+   return 1;
 }
 
 int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
@@ -57,11 +57,13 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
 	  return -4;
 	} */
 	err = readInt(spIA, &action);
+	printf("Action : %d",action);
     if (err <= 0) {
 	  perror("(client - fctPlayer) erreur recv - action");
 	  shutdown(spIA, SHUT_RDWR);
 	  return -4;
 	}
+
 
     r->idRequest = COUP;
     r->numPartie = numPartie;
@@ -79,6 +81,7 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          */
         int sensPiece;
         err = readInt(spIA, &sensPiece);
+        printf("Sens : %d\n",sensPiece);
         if (err <= 0) {
             perror("(client - fctPlayer) erreur recv - sensPiece");
             shutdown(spIA, SHUT_RDWR);
@@ -96,6 +99,7 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          */
         int typePiece;
         err = readInt(spIA, &typePiece);
+        printf("Type pièce : %d \n",typePiece);
         if (err <= 0) {
             perror("(client - fctPlayer) erreur recv - typePiece");
             shutdown(spIA, SHUT_RDWR);
@@ -117,6 +121,7 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          */
         int caseICol;
         err = readInt(spIA, &caseICol);
+        printf("Col : %d \n",caseICol);
         if (err <= 0) {
             perror("(client - fctPlayer) erreur recv - caseICol");
             shutdown(spIA, SHUT_RDWR);
@@ -137,6 +142,7 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          */
         int caseILg;
         err = readInt(spIA, &caseILg);
+        printf("Ligne : %d \n",caseILg);
         if (err <= 0) {
             perror("(client - fctPlayer) erreur recv - caseILg");
             shutdown(spIA, SHUT_RDWR);
@@ -155,6 +161,7 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          */
         int caseFCol;
         err = readInt(spIA, &caseFCol);
+        printf("Col2 : %d \n",caseFCol);
         if (err <= 0) {
             perror("(client - fctPlayer) erreur recv - caseFCol");
             shutdown(spIA, SHUT_RDWR);
@@ -175,6 +182,7 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
          */
         int caseFLg;
         err = readInt(spIA, &caseFLg);
+        printf("Ligne2 : %d \n",caseFLg);
         if (err <= 0) {
             perror("(client - fctPlayer) erreur recv - caseFLg");
             shutdown(spIA, SHUT_RDWR);
@@ -241,11 +249,11 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
         }
 
         switch (caseICol) {
-            case 0 : r->params.deposerPiece.c = 'A'; break;
-            case 1 : r->params.deposerPiece.c = 'B'; break;
-            case 2 : r->params.deposerPiece.c = 'C'; break;
-            case 3 : r->params.deposerPiece.c = 'D'; break;
-            case 4 : r->params.deposerPiece.c = 'E'; break;
+            case 1 : r->params.deposerPiece.c = 'A'; break;
+            case 2 : r->params.deposerPiece.c = 'B'; break;
+            case 3 : r->params.deposerPiece.c = 'C'; break;
+            case 4 : r->params.deposerPiece.c = 'D'; break;
+            case 5 : r->params.deposerPiece.c = 'E'; break;
             default : perror("(client - fctPlayer) erreur reception colonne case depos"); return -1;
         }
 

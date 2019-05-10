@@ -41,8 +41,6 @@ public class IAClient {
 		}
 		nomMachine = args[0];
 		port = Integer.parseInt(args[1]);
-		System.out.println(nomMachine);
-		System.out.println(port);
 		
 		//On essaye de se connecter au serveur toutes les secondes
 		try {
