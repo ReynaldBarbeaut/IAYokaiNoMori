@@ -574,7 +574,6 @@ bestAction(Player,Board, Hand, move, P, P2) :-
 
 bestAction(Player,Board, Hand, placement, BestPlacement, BestPlacement) :-
     bestSideMove(Player,Hand,Board,_,BestCost),
-    bestPlacement(Hand,Board,NewHand,BestPlacement,BestPlacementCost),
-    BestCost < BestPlacementCost,
-    NewHand == Hand,!.
+    bestPlacement(Hand,Board,_,BestPlacement,BestPlacementCost),
+    BestCost < BestPlacementCost,!.
 
