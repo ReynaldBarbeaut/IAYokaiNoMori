@@ -80,7 +80,6 @@ public class IAClient {
 				}
 				//Boucle de jeu
 				while(partieTermine == 0) {
-					c++;
 					joue = !joue;
 
 					//Si on est un nombre paire de tour on commence à jouer
@@ -159,6 +158,7 @@ public class IAClient {
 	 */
 	public static int jouerCoup(int sens,String[] team,DataOutputStream os) {
 		try {
+			c++;
 			//On cherche un mouvement
 			ia.searchSolution("bestAction("+team[sens]+","+jeu.toString(jeu.getBoard())+","+jeu.toString(jeu.getHand())+",Type,P1,P2).");
 
@@ -170,7 +170,7 @@ public class IAClient {
 			}
 			//Sinon on envoie un objet avec toutes les informations sur le coup
 
-			System.out.println("Turn number : "+ c);
+			System.out.println("Action number : "+ c);
 			System.out.println("Our move : "+ ia.typeToInt());
 			System.out.println("From : "+ia.getP1().toString());
 			System.out.println("To : " + ia.getP2().toString());
