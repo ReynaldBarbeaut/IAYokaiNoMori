@@ -314,9 +314,9 @@ int enregCoupA(int spIA, TCoupReq *c) {
      */
     int action;
     switch (c->typeCoup) {
-        case DEPLACER : action = 0; break;
-        case DEPOSER : action = 1; break;
-        case AUCUN : action = 2; break;
+        case DEPLACER : if (c->params.deplPiece.estCapt == true) {action = 1;} else {action = 0;} break;
+        case DEPOSER : action = 2; break;
+        case AUCUN : action = 3; break;
         default : perror("(client - fctPlayer) enreg coup adverse : erreur type coup"); return -1;
     }
     action = htonl(action);
