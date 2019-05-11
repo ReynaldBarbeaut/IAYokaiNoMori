@@ -317,50 +317,6 @@ test('correctPlacement_Kodama_KO',[fail]):-
     correctPlacement(piece(north,kodama,[1,4]),[2,1],[piece(south,oni,[2,4]),piece(south,oni,[4,5])]).
 
 /*
-* Tests for place predicate
-*/
-
-test('place_OK',[true(NewLPieceTaken==[]), true(NewBoard==[piece(south,oni,[4,4])])]):-
-    place(piece(south,oni,[_,_]),[4,4],[piece(south,oni,[_,_])],[],NewLPieceTaken,NewBoard).
-
-test('place_OK',[true(NewLPieceTaken==[]), true(NewBoard==[piece(south,kodama,[4,4])])]):-
-    place(piece(south,kodama,[_,_]),[4,4],[piece(south,kodama,[_,_])],[],NewLPieceTaken,NewBoard).
-
-test('place_OK',[true(NewLPieceTaken==[]), true(NewBoard==[piece(south,kodama,[5,3])])]):-
-    place(piece(south,kodama,[_,_]),[5,3],[piece(south,kodama,[_,_])],[],NewLPieceTaken,NewBoard).
-
-
-test('place_south_KO',[fail]):-
-    place(piece(south,kodama,[_,_]),[4,4],[piece(south,kodama,[_,_])],[piece(south,kodama,[4,2])],[],[]).
-
-test('place_south_KO',[fail]):-
-    place(piece(south,kodama,[_,_]),[6,4],[piece(south,kodama,[_,_])],[piece(south,kodama,[4,2])],[],[]).
-
-test('place_north_KO',[fail]):-
-    place(piece(north,kodama,[_,_]),[4,4],[piece(north,kodama,[_,_])],[piece(north,kodama,[4,2])],[],[]).
-
-test('place_north_KO',[fail]):-
-    place(piece(north,kodama,[_,_]),[1,4],[piece(north,kodama,[_,_])],[piece(north,kodama,[4,2])],[],[]).
-
-test('place_north_KO',[fail]):-
-    place(piece(north,oni,[_,_]),[4,4],[piece(north,oni,[_,_])],[piece(north,kodama,[4,4])],[],[]).
-
-test('place_north_KO',[fail]):-
-    place(piece(north,oni,[_,_]),[4,4],[piece(north,oni,[_,_])],[piece(south,kodama,[4,4])],[],[]).
-
-
-test('place_north_KO',[fail]):-
-    place(piece(north,oni,[_,_]),[0,4],[piece(north,oni,[_,_])],[piece(south,kodama,[4,4])],[],[]).
-
-test('place_north_KO',[fail]):-
-    place(piece(north,oni,[_,_]),[8,4],[piece(north,oni,[_,_])],[piece(south,kodama,[4,4])],[],[]).
-
-
-test('place_north_KO',[fail]):-
-    place(piece(north,oni,[_,_]),[-1,2],[piece(north,oni,[_,_])],[piece(south,kodama,[4,4])],[],[]).
-
-
-/*
 * Tests for demote predicate
 */
 test('demote_OK',[true(X == piece(north,kodama,[1,3]))]):-

@@ -488,15 +488,6 @@ correctPlacement(piece(Player,kodama,_),[X,Y],Board) :-
     lastLine(Player2,LastLine),
     Y \= LastLine.
         
-/*
-* Place a piece on the board
-*/
-place(Piece,C,Hand,Board,NewHand,NewBoard) :-
-    correctPlacement(Piece,C,Board),
-    delete(Hand,Piece,NewHand),
-    Piece = piece(Player,Name,_),
-    NewBoard = [piece(Player,Name,C) | Board].
-       
 
 /*
 * Get the best piece of a hand
@@ -517,6 +508,7 @@ bestPiece([piece(Player,Name,C)|Hand],_,CurrentBestPoint,BestPiece):-
 * Placement computation
 */ 
 computePlacementPoint(piece(Player,Name,C),Board,Cost):-
+    correctPlacement(piece(Player,Name,_),C,Board),
     opponent(Player,Player2),
     getCoordinate(Player2,koropokkuru,Board,C3),
     distance(C,C3,Distance),
