@@ -59,40 +59,39 @@ public class lPieces {
 	}
 
 	/*
-	*	Met à jour le plateau de jeu en fonction d'une pièce
+	*	Retire une pièce du plateau
 	*/
-	public void updateBoard(Piece p){
-		int index = checkCoordinate(p.getCol(),p.getLig());
-		if(index >= 0){
-			updateHand(0,board.get(index));
-			board.remove(index);
-		}
+	public void removeBoard(int col, int lig){
+		board.remove(checkCoordinate(col,lig));
+	}
+
+	/*
+	*	Ajout une pièce au plateau
+	*/
+	public void addToBoard(Piece p){
 		board.add(p);
 	}
 
 	/*
-	* Mets à jour la main du joueur en fonction du type de l'action
+	*	Ajout d'une pièce à la main
 	*/
-	public void updateHand(int type, Piece p){
-		//Si c'est une capture on l'ajoute à la main
-		if(type == 0){
-			p.demote();
-			hand.add(p);
-		}else if(type == 1){
-			//Si c'est un placement on la retire de la main
-			int index = findPiece(p);
-			if(index >= 0){
-				hand.remove(index);
-			}
-		}
+	public void addHand(Piece p){
+		p.demote();
+		hand.add(p);
 	}
 
+	/*
+	*	Retire une pièce de la main
+	*/
+	public void removeHand(Piece p){
+		hand.remove(findPieceInHand(p));
+	}
 
 	/*
 	*	Regarde si une pièce est dans la main et retourne son indice si
 	* 	elle est trouvée
 	*/
-	public int findPiece(Piece p){
+	public int findPieceInHand(Piece p){
 		for(int i = 0; i < hand.size(); i++){
 			if(hand.get(i).getName() == p.getName()){
 				return i;

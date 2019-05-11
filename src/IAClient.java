@@ -20,7 +20,7 @@ public class IAClient {
 
 	public static void main(String[] args) {
 		//Déclaration et initialisation
-		int cpt = 0, sens,port, action, ret = 0;
+		int cpt = 0, sens,port, action, ret = 0,rep = 0;
 		int partieTermine = 0;
 		boolean joue = true;
 		String nomMachine;
@@ -59,7 +59,7 @@ public class IAClient {
 			
 			//On récupére le sens dans lequel on va jouer
 			sens = in.readInt();
-			if(sens == 0){
+			if(sens == 1){
 				joue = false;
 			}
 			System.out.println("Sens " +sens);
@@ -71,7 +71,7 @@ public class IAClient {
 				
 				//Changement de sens après la première partie
 				if(cpt == 1) {
-					if(sens == 0) {
+					if(sens == 1) {
 						joue = false;
 					}else {
 						joue = true;
@@ -79,14 +79,16 @@ public class IAClient {
 				}
 				//Boucle de jeu
 				while(partieTermine == 0) {
+					joue = !joue;
+
 					//Si on est un nombre paire de tour on commence à jouer
 					if(joue) {
 						//Fonction de jeu
 						System.out.println("I'm playing.");
 						ret = jouerCoup(sens,team,out);
 					}
-					joue = !joue;
 
+					joue = ! joue;
 					//Une fois notre coup fait on regarde si la partie n'est pas finie
 					partieTermine = in.readInt();
 					if(partieTermine == 0) {
@@ -94,16 +96,40 @@ public class IAClient {
 						//Si la partie continue le coup est validé alors on mets à jour
 
 						if(ret > 0) {
-							jeu.updateBoard(ia.getP2());
-							if(ia.getType().equals("placement")){
-								jeu.updateHand(1,ia.getP2());
+							System.out.println("Let's update our side.");
+
+							if(ia.getType().equals("move")){
+
+								jeu.removeBoard(ia.getP1().getCol(),ia.getP1().getLig());
+								jeu.addToBoard(ia.getP2());
+
+							}else if(ia.getType().equals("capture")){
+								jeu.removeBoard(ia.getP1().getCol(),ia.getP1().getLig());
+
+								int index = jeu.checkCoordinate(ia.getP2().getCol(),ia.getP2().getLig());
+
+								Piece p = new Piece(jeu.getBoard().get(index).getTeam(),jeu.getBoard().get(index).getName(),jeu.getBoard().get(index).getCol(),jeu.getBoard().get(index).getLig());
+
+
+								jeu.addHand(p);
+
+								jeu.removeBoard(ia.getP2().getCol(),ia.getP2().getLig());
+								jeu.addToBoard(ia.getP2());
+
+								System.out.println(jeu.getBoard().toString());
+								System.out.println(jeu.getHand().toString());
+
+							}else if(ia.getType().equals("placement")){
+								jeu.removeHand(ia.getP1());
+								jeu.addToBoard(ia.getP2());
 							}
 						}
 
 						action = in.readInt();
 						System.out.println("Opponent action "+ action);
-						if(action != 2){
-							int rep = traitementReponse(action,in);
+						if(action != 3){
+							System.out.println("we are here !");
+							rep = traitementReponse(action,in);
 						}
 						//On joue si on est à un nombre impair de coup
 						if(joue) {
@@ -141,7 +167,7 @@ public class IAClient {
 			//Si aucun mouvement ou une erreur à eu lieu on envoie au client qu'aucun mouvement n'a été fait
 			if(ia.getError()<=0) {
 			        System.out.println("No action done.");
-					os.writeInt(2);
+					os.writeInt(3);
 					return -1;
 			}
 			//Sinon on envoie un objet avec toutes les informations sur le coup
@@ -183,32 +209,38 @@ public class IAClient {
 			typePiece = in.readInt();
 			col1 = in.readInt();
 			lig1 = in.readInt();
-			if(typePiece == 1){
+			if(action == 2){
 				Piece p = new Piece(intToTeam(sensPiece),intToName(typePiece),col1,lig1);
-				jeu.updateBoard(p);
+				System.out.println("Piece receved :"+p.toString());
+				jeu.addToBoard(p);
 			}else{
 				int col2 = in.readInt();
 				int lig2 = in.readInt();
 				Piece p = new Piece(intToTeam(sensPiece),intToName(typePiece),col2,lig2);
+				System.out.println("Piece receved :"+p.toString() + " from " + col1 + " " + lig1);
+
 				int index = jeu.checkCoordinate(col1,lig1);
 				if(index >= 0){
-					jeu.getBoard().remove(index);
+					jeu.removeBoard(col1,lig1);
 				}
 				index = jeu.checkCoordinate(col2,lig2);
 				if(index >= 0){
-					jeu.getBoard().remove(index);
+					jeu.removeBoard(col2,lig2);
 				}
 
-				jeu.getBoard().add(p);
+				jeu.addToBoard(p);
 
 			}
 
 
 		} catch (IOException e) {
+			System.out.println("Error while receiving piece.");
 			e.printStackTrace();
 			return -1;
 		}
-
+		System.out.println("And we go.");
+		System.out.println(jeu.getBoard().toString());
+		System.out.println(jeu.getHand().toString());
 		return 1;
 	}
 

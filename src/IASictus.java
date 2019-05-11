@@ -45,7 +45,6 @@ public class IASictus {
 	
 	//Cette méthode prend un prédicat et choisit la meilleure action possible
 	public void searchSolution(String predicate) {
-		System.out.println(predicate);
 		error = 0;
 		type = "";
 		p1 = null;
