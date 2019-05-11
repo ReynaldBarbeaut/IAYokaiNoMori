@@ -44,6 +44,35 @@ public class Piece {
 		}
 	}
 
+	/*
+	* Fait passe une pièce d'un niveau
+	*/
+	public void promote(){
+		if(inPromoteArea()){
+			if(this.name.equals("kodama")){
+				this.name = "kodamaSamourai";
+			}
+			if(this.name.equals("oni")){
+				this.name = "superOni";
+			}
+
+		}
+	}
+
+
+	/*
+	*	Retourne la zone de promotion en fonction
+	* 	d'une équipe.
+	*/
+
+	public boolean inPromoteArea(){
+		if(team.equals("north") && (this.lig == 1 || this.lig == 2)){
+			return true;
+		}else if(team.equals("south") && (this.lig == 5 || this.lig == 6)){
+			return true;
+		}
+		return false;
+	}
 
 
 	/*

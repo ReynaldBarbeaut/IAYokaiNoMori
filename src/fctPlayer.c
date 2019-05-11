@@ -51,7 +51,10 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
      */
     int action;
 	err = readInt(spIA, &action);
-	printf("Action : %d",action);
+
+    if(numPartie == 2){
+	    printf("Action : %d",action);
+    }
     if (err <= 0) {
 	  perror("(client - fctPlayer) erreur recv - action");
 	  shutdown(spIA, SHUT_RDWR);

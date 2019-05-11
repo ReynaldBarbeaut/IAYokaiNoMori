@@ -152,7 +152,11 @@ int main(int argc, char **argv) {
     /*
      * notif de début de partie à l'IA
      */
-    err = debutPartie(spIA, sens);
+
+    if(i == 1){
+        err = debutPartie(spIA, sens);
+    }
+    termine = false;
 
     printf("(client) debut de la partie %d\n", i);
 
@@ -160,7 +164,6 @@ int main(int argc, char **argv) {
      * si on n'est pas le premier à jouer
      */
     if (i == 1 && sens == 'n' || i == 2 && sens == 's') {
-
       /* 
        * on reçoit la validation du coup adverse...
        */

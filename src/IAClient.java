@@ -62,6 +62,7 @@ public class IAClient {
 			sens = in.readInt();
 			if(sens == 1){
 				joue = false;
+				System.out.println("Je commence.");
 			}
 			
 			while(cpt<2) {
@@ -69,13 +70,19 @@ public class IAClient {
 				jeu.erase();
 				jeu.initBoard();
 				c=0;
-				
+				ia.erase();
+				System.out.println("Game number : "+cpt);
+				partieTermine = 0;
+				ret = 0;
+
 				//Changement de premier joueur après la première partie
 				if(cpt == 1) {
 					if(sens == 1) {
-						joue = false;
-					}else {
 						joue = true;
+						System.out.println("J'attends avant de jouer.");
+					}else {
+						joue = false;
+						System.out.println("Je commence maintenant.");
 					}
 				}
 				//Boucle de jeu
@@ -85,6 +92,9 @@ public class IAClient {
 					//Si on est un nombre paire de tour on commence à jouer
 					if(joue) {
 						//Fonction de jeu
+						if(cpt == 1){
+							System.out.println("Je joues.");
+						}
 						ret = jouerCoup(sens,team,out);
 					}
 
@@ -97,13 +107,10 @@ public class IAClient {
 						if(ret > 0) {
 
 							if(ia.getType().equals("move")){
-								System.out.println("UPDATE MOVE.");
-
 								jeu.removeBoard(ia.getP1().getCol(),ia.getP1().getLig());
 								jeu.addToBoard(ia.getP2());
 
 							}else if(ia.getType().equals("capture")){
-								System.out.println("UPDATE CAPTURE.");
 								jeu.removeBoard(ia.getP1().getCol(),ia.getP1().getLig());
 
 								int index = jeu.checkCoordinate(ia.getP2().getCol(),ia.getP2().getLig());
@@ -117,8 +124,6 @@ public class IAClient {
 								jeu.addToBoard(ia.getP2());
 
 							}else if(ia.getType().equals("placement")){
-								System.out.println("UPDATE PLACEMENT.");
-
 								jeu.removeHand(ia.getP1());
 								jeu.addToBoard(ia.getP2());
 							}
@@ -182,8 +187,11 @@ public class IAClient {
 			os.writeInt(ia.getP1().nameToInt());
 			os.writeInt(ia.getP1().getCol());
 			os.writeInt(ia.getP1().getLig());
-			os.writeInt(ia.getP2().getCol());
-			os.writeInt(ia.getP2().getLig());
+
+			if(ia.typeToInt() != 2){
+				os.writeInt(ia.getP2().getCol());
+				os.writeInt(ia.getP2().getLig());
+			}
 
 			System.out.println("Informations sended.");
 			return 1;
@@ -212,6 +220,7 @@ public class IAClient {
 				int col2 = in.readInt();
 				int lig2 = in.readInt();
 				Piece p = new Piece(intToTeam(sensPiece),intToName(typePiece),col2,lig2);
+				p.promote();
 				int index = jeu.checkCoordinate(col1,lig1);
 				if(index >= 0){
 					jeu.removeBoard(col1,lig1);

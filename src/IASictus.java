@@ -90,6 +90,17 @@ public class IASictus {
 		int lig = Integer.parseInt(piece.split(",")[3].replace(".(", ""));
 		return new Piece(team,name,col,lig);		
 	}
+
+
+	/*
+	*	Réinitialise les différents objets utilisés par l'IA
+	*/
+	public void erase(){
+		this.p1 = null;
+		this.p2 = null;
+		this.type = "";
+		this.error = 0;
+	}
 	
 	public int typeToInt() {
 		switch(type) {
