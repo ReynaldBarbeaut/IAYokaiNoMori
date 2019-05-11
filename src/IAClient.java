@@ -17,6 +17,7 @@ import java.net.Socket;
 public class IAClient {
 	static IASictus ia;	//L'ia qui va calculer les coups
 	static lPieces jeu; //Représente le plateau de jeu et la main du jouer
+	static int c;
 
 	public static void main(String[] args) {
 		//Déclaration et initialisation
@@ -62,14 +63,14 @@ public class IAClient {
 			if(sens == 1){
 				joue = false;
 			}
-			System.out.println("Sens " +sens);
 			
 			while(cpt<2) {
 				//On réinitialise le plateau et la main à chaque partie
 				jeu.erase();
 				jeu.initBoard();
+				c=0;
 				
-				//Changement de sens après la première partie
+				//Changement de premier joueur après la première partie
 				if(cpt == 1) {
 					if(sens == 1) {
 						joue = false;
@@ -79,12 +80,12 @@ public class IAClient {
 				}
 				//Boucle de jeu
 				while(partieTermine == 0) {
+					c++;
 					joue = !joue;
 
 					//Si on est un nombre paire de tour on commence à jouer
 					if(joue) {
 						//Fonction de jeu
-						System.out.println("I'm playing.");
 						ret = jouerCoup(sens,team,out);
 					}
 
@@ -92,18 +93,18 @@ public class IAClient {
 					//Une fois notre coup fait on regarde si la partie n'est pas finie
 					partieTermine = in.readInt();
 					if(partieTermine == 0) {
-						System.out.println("Waiting for opponent.");
 						//Si la partie continue le coup est validé alors on mets à jour
 
 						if(ret > 0) {
-							System.out.println("Let's update our side.");
 
 							if(ia.getType().equals("move")){
+								System.out.println("UPDATE MOVE.");
 
 								jeu.removeBoard(ia.getP1().getCol(),ia.getP1().getLig());
 								jeu.addToBoard(ia.getP2());
 
 							}else if(ia.getType().equals("capture")){
+								System.out.println("UPDATE CAPTURE.");
 								jeu.removeBoard(ia.getP1().getCol(),ia.getP1().getLig());
 
 								int index = jeu.checkCoordinate(ia.getP2().getCol(),ia.getP2().getLig());
@@ -116,10 +117,9 @@ public class IAClient {
 								jeu.removeBoard(ia.getP2().getCol(),ia.getP2().getLig());
 								jeu.addToBoard(ia.getP2());
 
-								System.out.println(jeu.getBoard().toString());
-								System.out.println(jeu.getHand().toString());
-
 							}else if(ia.getType().equals("placement")){
+								System.out.println("UPDATE PLACEMENT.");
+
 								jeu.removeHand(ia.getP1());
 								jeu.addToBoard(ia.getP2());
 							}
@@ -128,7 +128,6 @@ public class IAClient {
 						action = in.readInt();
 						System.out.println("Opponent action "+ action);
 						if(action != 3){
-							System.out.println("we are here !");
 							rep = traitementReponse(action,in);
 						}
 						//On joue si on est à un nombre impair de coup
@@ -162,7 +161,6 @@ public class IAClient {
 		try {
 			//On cherche un mouvement
 			ia.searchSolution("bestAction("+team[sens]+","+jeu.toString(jeu.getBoard())+","+jeu.toString(jeu.getHand())+",Type,P1,P2).");
-			System.out.println("Success !");
 
 			//Si aucun mouvement ou une erreur à eu lieu on envoie au client qu'aucun mouvement n'a été fait
 			if(ia.getError()<=0) {
@@ -172,10 +170,10 @@ public class IAClient {
 			}
 			//Sinon on envoie un objet avec toutes les informations sur le coup
 
-
-			System.out.println(ia.typeToInt());
-			System.out.println(ia.getP1().toString());
-			System.out.println(ia.getP2().toString());
+			System.out.println("Turn number : "+ c);
+			System.out.println("Our move : "+ ia.typeToInt());
+			System.out.println("From : "+ia.getP1().toString());
+			System.out.println("To : " + ia.getP2().toString());
 
 			System.out.println("Sending informations.");
 
@@ -186,9 +184,7 @@ public class IAClient {
 			os.writeInt(ia.getP1().getLig());
 			os.writeInt(ia.getP2().getCol());
 			os.writeInt(ia.getP2().getLig());
-/*
-			TCoupRep rep = new TCoupRep(ia.typeToInt(),sens,ia.getP2().nameToInt(),ia.getP1().getCol(),ia.getP1().getLig(),ia.getP2().getCol(),ia.getP2().getLig());
-			os.writeObject(rep);*/
+
 			System.out.println("Informations sended.");
 			return 1;
 			
@@ -211,14 +207,11 @@ public class IAClient {
 			lig1 = in.readInt();
 			if(action == 2){
 				Piece p = new Piece(intToTeam(sensPiece),intToName(typePiece),col1,lig1);
-				System.out.println("Piece receved :"+p.toString());
 				jeu.addToBoard(p);
 			}else{
 				int col2 = in.readInt();
 				int lig2 = in.readInt();
 				Piece p = new Piece(intToTeam(sensPiece),intToName(typePiece),col2,lig2);
-				System.out.println("Piece receved :"+p.toString() + " from " + col1 + " " + lig1);
-
 				int index = jeu.checkCoordinate(col1,lig1);
 				if(index >= 0){
 					jeu.removeBoard(col1,lig1);
@@ -238,9 +231,6 @@ public class IAClient {
 			e.printStackTrace();
 			return -1;
 		}
-		System.out.println("And we go.");
-		System.out.println(jeu.getBoard().toString());
-		System.out.println(jeu.getHand().toString());
 		return 1;
 	}
 

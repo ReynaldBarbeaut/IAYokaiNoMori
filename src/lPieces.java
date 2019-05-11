@@ -93,7 +93,7 @@ public class lPieces {
 	*/
 	public int findPieceInHand(Piece p){
 		for(int i = 0; i < hand.size(); i++){
-			if(hand.get(i).getName() == p.getName()){
+			if(hand.get(i).getName().equals(p.getName())){
 				return i;
 			}
 		}
