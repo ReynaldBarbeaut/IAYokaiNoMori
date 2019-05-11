@@ -58,14 +58,22 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
 	  return -4;
 	}
 
-
     r->idRequest = COUP;
     r->numPartie = numPartie;
     switch (action) {
-        case 0 : r->typeCoup = DEPLACER; break;
-        case 1 : r->typeCoup = DEPOSER; break;
-        case 2 : r->typeCoup = AUCUN; break; 
+        case 0 : r->typeCoup = DEPLACER; break; // déplacement sans capture
+        case 1 : r->typeCoup = DEPLACER; break; // déplacement avec capture
+        case 2 : r->typeCoup = DEPOSER; break;
+        case 3 : r->typeCoup = AUCUN; break; 
         default : perror("(client - fctPlayer) erreur reception action"); return -1;
+    }
+
+    if (r->typeCoup == DEPLACER) { // si le coup déplacement prévoit une capture
+        if (action == 1) {
+            r->params.deplPiece.estCapt = true;
+        } else {
+            r->params.deplPiece.estCapt = false;
+        }
     }
 
     if (r->typeCoup == DEPLACER) { // si le coup est un déplacement
