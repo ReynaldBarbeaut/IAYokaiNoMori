@@ -50,12 +50,6 @@ int cstrCoup(int spIA, TCoupReq *r, int numPartie) {
      * reception de l'action joueur depuis l'IA
      */
     int action;
-	/* err = recv(spIA, &action, sizeof(int), 0);
-	if (err <= 0) {
-	  perror("(client - fctPlayer) erreur sur le recv");
-	  shutdown(spIA, SHUT_RDWR);
-	  return -4;
-	} */
 	err = readInt(spIA, &action);
 	printf("Action : %d",action);
     if (err <= 0) {
