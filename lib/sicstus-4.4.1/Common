@@ -20,7 +20,7 @@ endif # .FEATURES empty
 
 ## Warnings: this section is seen also when SP_SMALL_COMMON
 
-PLATFORM=x86_64-linux-glibc2.27
+PLATFORM=x86_64-linux-glibc2.23
 OLDSICSTUS=
 WAMFILTER=
 
@@ -156,7 +156,7 @@ POSIX_SHELL=/bin/sh
 # SHELL=/bin/sh
 
 
-prefix=/home/barbeaut/sicstus4.4.1
+prefix=/home/nicolas/sicstus4.4.1
 
 SP_DIRNAME=sicstus-4.4.1
 SP_RTSYS_DIRNAME=sp-4.4.1
@@ -196,7 +196,7 @@ wam_body.o_cflags_extra=
 CC_WERROR=-Werror
 # -Wno-conversion on GCC, otherwise may be empty. 
 CC_WNO_CONVERSION_OPTION=-Wno-conversion
-CC_WNO_IMPLICIT_FALLTHROUGH_OPTION=-Wno-implicit-fallthrough
+CC_WNO_IMPLICIT_FALLTHROUGH_OPTION=
 CHARMAINOBJ=charmain.o intrpt.o 
 CHMOD=chmod
 CODETYPE=
@@ -269,19 +269,19 @@ INSTALL_RO_DATA=${INSTALL} -m 444
 ENABLE_JAVA=yes
 ENABLE_JAVA_JNI=no
 HIGH_RESOLUTION_TIME_CP=no
-JAR=/home/barbeaut/jdk-11.0.2_linux-x64_bin/jdk-11.0.2/bin/jar
+JAR=/home/nicolas/jdk1.8.0_151/bin/jar
 JASPER_MODULE=
 JASPER_SPLFR_FLAGS=
-JAVAC=/home/barbeaut/jdk-11.0.2_linux-x64_bin/jdk-11.0.2/bin/javac
+JAVAC=/home/nicolas/jdk1.8.0_151/bin/javac
 JAVACFLAGS=  -encoding ISO-8859-1
 # [PM] 3.8.6 autoconf naively looks for AC_ so this can not be JAVAC_DBGFLAGS
 JAVACDBGFLAGS=-g 
 # [PM] 4.0.2+ consider, e.g. -Xlint:all
 JAVACLINTFLAGS=
-JAVADOC=/home/barbeaut/jdk-11.0.2_linux-x64_bin/jdk-11.0.2/bin/javadoc
+JAVADOC=/home/nicolas/jdk1.8.0_151/bin/javadoc
 JAVADOCFLAGS=
-JAVAEXEC=/home/barbeaut/jdk-11.0.2_linux-x64_bin/jdk-11.0.2/bin/java
-JAVAH=/usr/bin/javah
+JAVAEXEC=/home/nicolas/jdk1.8.0_151/bin/java
+JAVAH=/home/nicolas/jdk1.8.0_151/bin/javah
 JAVAINC=
 JAVALIB=
 JAVA_CLASSPATH=
@@ -418,7 +418,7 @@ SP_AVOID_PREFIX_MINUS_ARGUMENT_BRACKETING=no
 
 SLEEP=
 SOCKETLIB=
-SP_BINAUXDIR=/home/barbeaut/sicstus4.4.1/lib/sicstus-4.4.1/bin
+SP_BINAUXDIR=/home/nicolas/sicstus4.4.1/lib/sicstus-4.4.1/bin
 SP_BIGENDIAN=no
 
 # yes if 64-bit platform, no if not.
@@ -438,7 +438,7 @@ SP_X86_64 := $(SP_X64)
 
 
 SPACEOUT_MODULE=
-SPLD_CONFIG_FILE=/home/barbeaut/sicstus4.4.1/bin/spconfig-4.4.1
+SPLD_CONFIG_FILE=/home/nicolas/sicstus4.4.1/bin/spconfig-4.4.1
 SPLD_DSFLAGS=
 SPLD_TOOLFLAGS=
 SPLD_OPT_MOVEABLE_NEEDS_WRAPPER=no
@@ -469,7 +469,7 @@ TIMEOUT_MODULE=timeout.po
 # [PM] 4.4.0 Whether library/timeout.pl needs a foreign resource. In effect "yes" prior to 4.4.0.
 TIMEOUT_MODULE_FOREIGN=no
 
-TOP_SRCDIR=/home/barbeaut/Téléchargements/sp-4.4.1-x86_64-linux-glibc2.17
+TOP_SRCDIR=/home/nicolas/Téléchargements/sp-4.4.1-x86_64-linux-glibc2.17
 ULIMIT_DATA=
 ULIMIT_CMD=ulimit
 
@@ -483,9 +483,9 @@ WINMAINOBJ=
 
 # [PM] 4.0.5 whether VALGRIND should be supported (but still not used unless explicitly on)
 
-VALGRIND=/usr/bin/valgrind
+VALGRIND=
 # [PM] 4.1.3+ valgrind_flags_extra should always be empty. It is for passing extra flags via make command line
-VALGRIND_FLAGS=--alignment=16 --smc-check=all-non-file $(valgrind_flags_extra)
+VALGRIND_FLAGS=--alignment=16 --smc-check=all $(valgrind_flags_extra)
 # [PM] 4.2.1 space separated absolute, or relative to root source dir, paths to valgrind suppression files. Used by make test_valgrind
 # Should be used as ... --suppressions=F1 --suppressions=F2 ...
 VALGRIND_SUPPRESSIONS_FILES=
@@ -505,7 +505,7 @@ CODE=cql
 endif
 
 # [PM] 3.9.1 the prolog code library directory (.../lib/sicstus-3.9.1beta1/library)
-SP_LIBRARY_DIR=/home/barbeaut/sicstus4.4.1/lib/sicstus-4.4.1/library
+SP_LIBRARY_DIR=/home/nicolas/sicstus4.4.1/lib/sicstus-4.4.1/library
 
 ifeq ($(WIN32),yes)
 SP_LIBDIR=$(prefix)
