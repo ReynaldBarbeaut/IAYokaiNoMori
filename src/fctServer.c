@@ -110,7 +110,7 @@ int traite_req_init(int splay1, int splay2, char *sens) {
 int traite_req_coup(int sCurrent, int sAdvers, int player, int partie) {
 	int err;
 	bool valid;
-	int ret = 0;			/* code de retour */
+	int ret = 0;			    /* code de retour */
 	TCoupReq req;       	/* structure requete */
 	TCoupRep rep;       	/* structure reponse */
 	TPropCoup propCoup; 	/* structure propriete du coup */
@@ -178,6 +178,9 @@ int traite_req_coup(int sCurrent, int sAdvers, int player, int partie) {
 			}
 			else if (propCoup == PERDU) {
 				ret = (player == 1 ? 2 : 1);
+			}
+			else if (propCoup == NUL) {
+				ret = 3;
 			}
 		}
 	}
