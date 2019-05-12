@@ -138,9 +138,6 @@ int main(int argc, char** argv) {
         }
 
         j++;
-        if (j >= 60) {
-          termine = true;
-        }
     }
   }
 
