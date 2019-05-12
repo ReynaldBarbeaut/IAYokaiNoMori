@@ -476,6 +476,41 @@ test('bestMove_OK',[true(BestMove==[[piece(north,kirin,[2,4])],[piece(north,oni,
         funBoard(Board),
         bestMove(piece(north,oni,[1,3]),[],Board,BestMove,_).
 
+test('bestMove_OK',[true(BestMove==[[piece(north,koropokkuru,[3,1])],[piece(north,oni,[3,1]),piece(south,kirin,[4,1]),piece(south,oni,[5,1]),piece(south,kirin,[2,4]),piece(south,kodama,[3,4]),piece(south,kodamaSamourai,[1,6]),piece(south,kodamaSamourai,[3,4]),piece(north,superOni,[2,2]),piece(north,oni,[1,3]),piece(north,oni,[4,3]),piece(north,kodama,[1,4]),piece(north,kirin,[4,5]),piece(north,koropokkuru,[4,6])],piece(north,oni,[2,2]),piece(north,superOni,[3,1])])]):-
+        funBoard(Board),
+        bestMove(piece(north,oni,[2,2]),[],Board,BestMove,_).
+
+test('bestMove_OK',[true(BestMove==[])]):-
+        funBoard(Board),
+        bestMove(piece(north,kodama,[1,4]),[],Board,BestMove,_).
+
+/*
+* Tests pour le prédicat bestSideMove
+*/
+test('bestSideMove_OK',[true(BestMove==[[piece(north,koropokkuru,[3,1])],[piece(north,superOni,[3,1]),piece(south,kirin,[4,1]),piece(south,oni,[5,1]),piece(south,kirin,[2,4]),piece(south,kodama,[3,4]),piece(south,kodamaSamourai,[1,6]),piece(south,kodamaSamourai,[3,4]),piece(north,oni,[1,3]),piece(north,oni,[4,3]),piece(north,kodama,[1,4]),piece(north,kirin,[4,5]),piece(north,koropokkuru,[4,6])],piece(north,superOni,[2,2]),piece(north,superOni,[3,1])])]):-
+        funBoard(Board),
+        bestSideMove(north,[],Board,BestMove,_). 
+
+
+test('bestSideMove_OK',[true(BestMove==[[piece(north,kodama,[3,3])],[piece(north,kodama,[3,3]),piece(south,kodama,[2,3]),piece(south,kodama,[4,3]),piece(south,oni,[1,1]),piece(south,oni,[5,1]),piece(south,kirin,[2,1]),piece(south,kirin,[4,1]),piece(south,koropokkuru,[3,1]),piece(north,kodama,[2,4]),piece(north,kodama,[4,4]),piece(north,oni,[1,6]),piece(north,oni,[5,6]),piece(north,kirin,[2,6]),piece(north,kirin,[4,6]),piece(north,koropokkuru,[3,6])],piece(north,kodama,[3,4]),piece(north,kodama,[3,3])])]):-
+        initialBoard(Board),
+        bestSideMove(north,[],Board,BestMove,_).
+
+test('bestSideMove_OK',[true(BestMove==[[piece(south,kodama,[3,4])],[piece(south,kodama,[3,4]),piece(south,kodama,[2,3]),piece(south,kodama,[4,3]),piece(south,oni,[1,1]),piece(south,oni,[5,1]),piece(south,kirin,[2,1]),piece(south,kirin,[4,1]),piece(south,koropokkuru,[3,1]),piece(north,kodama,[2,4]),piece(north,kodama,[4,4]),piece(north,oni,[1,6]),piece(north,oni,[5,6]),piece(north,kirin,[2,6]),piece(north,kirin,[4,6]),piece(north,koropokkuru,[3,6])],piece(south,kodama,[3,3]),piece(south,kodama,[3,4])])]):-
+        initialBoard(Board),
+        bestSideMove(south,[],Board,BestMove,_).
+
+/*
+* Tests pour le prédicat freeSquare
+*/
+test('freeSquare_OK',[true(LSquare==[[1,2],[1,3],[1,4],[1,5],[2,2],[2,5],[3,2],[3,5],[4,2],[4,5],[5,2],[5,3],[5,4],[5,5]])]):-
+        initialBoard(Board),
+        freeSquare(Board,LSquare).
+
+test('freeSquare_OK',[true(LSquare==[[1,1],[1,2],[1,5],[2,1],[2,3],[2,5],[2,6],[3,2],[3,3],[3,5],[3,6],[4,2],[4,4],[5,2],[5,3],[5,4],[5,5],[5,6]])]):-
+        funBoard(Board),
+        freeSquare(Board,LSquare).
+
 
 /*
 * Tests pour le prédicat bestPiece
@@ -494,6 +529,34 @@ test('bestPiece_OK',[true(BestPiece==piece(south,kodama,C))]):-
 
 test('bestPiece_OK',[true(BestPiece==piece(south,oni,C))]):-
         bestPiece([piece(south,kodama,_),piece(south,oni,C)],_,0,BestPiece).
+
+/*
+* Tests pour le prédicats computePlacementPoint
+*/
+test('computePlacementPoint_OK',[true(Cost== -51.0)]):-
+        funBoard(Board),
+        computePlacementPoint(piece(north,kirin,[2,1]),Board,Cost).
+
+test('computePlacementPoint_OK',[true(Cost== -13.16227766016838)]):-
+        funBoard(Board),
+        computePlacementPoint(piece(north,kodama,[4,4]),Board,Cost).
+
+/*
+* Tests pour le prédicat bestPlacement
+*/
+test('bestPlacement_OK',[true(BestPlacement== piece(north,kirin,[1,1]))]):-
+        funBoard(Board),
+        bestPlacement([piece(north,kodama,_),piece(north,kirin,_)],Board,_,BestPlacement,_).
+
+test('bestPlacement_OK',[true(BestPlacement== piece(north,kirin,[1,1]))]):-
+        funBoard(Board),
+        bestPlacement([piece(north,oni,_),piece(north,kirin,_)],Board,_,BestPlacement,_).
+
+test('bestPlacement_OK',[true(BestPlacement== piece(north,oni,[1,1]))]):-
+        funBoard(Board),
+        bestPlacement([piece(north,kodama,_),piece(north,oni,_)],Board,_,BestPlacement,_).
+
+
 
 /*
 * Tests pour le prédicat bestAction
