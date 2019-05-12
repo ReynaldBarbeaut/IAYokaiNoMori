@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
     /********************/
     int j = 0; // compteur de coups
     while (!termine) {
-        if (i == 1) { // 1ere partie
+        // if (i == 1) { // 1ere partie
           if (j % 2 == 0) { // la parité de j indique quel joueur joue
             if (sens == 's') {
               err = traite_req_coup(splay1, splay2, 1, i);
@@ -108,8 +108,8 @@ int main(int argc, char** argv) {
               err = traite_req_coup(splay1, splay2, 1, i);
             }
           }
-        }
-        else if (i == 2) { // 2e partie
+        // }
+       /* else if (i == 2) { // 2e partie
           if (j % 2 == 0) {
             if (sens == 's') {
               err = traite_req_coup(splay2, splay1, 2, i);
@@ -126,7 +126,7 @@ int main(int argc, char** argv) {
               err = traite_req_coup(splay2, splay1, 2, i);
             }
           }
-        }
+        } */
 
         switch (err) {
           case -1 : printf("TIMEOUT : fin de partie\n"); termine = true; break;
