@@ -112,20 +112,18 @@ int main(int argc, char** argv) {
         else if (i == 2) { // 2e partie
           if (j % 2 == 0) {
             if (sens == 's') {
-              printf("----> joueur 2 nord va jouer, tour pair, partie 2\n");
-              err = traite_req_coup(splay2, splay1, 2, i);
+              err = traite_req_coup(splay2, splay1, 1, i);
             }
             else {
-              printf("----> joueur 1 nord va jouer, tour pair, partie 2\n");
-              err = traite_req_coup(splay1, splay2, 1, i);
+              err = traite_req_coup(splay1, splay2, 2, i);
             }
           }
           else {
             if (sens == 's') {
-              err = traite_req_coup(splay1, splay2, 1, i);
+              err = traite_req_coup(splay1, splay2, 2, i);
             }
             else {
-              err = traite_req_coup(splay2, splay1, 2, i);
+              err = traite_req_coup(splay2, splay1, 1, i);
             }
           }
         }
