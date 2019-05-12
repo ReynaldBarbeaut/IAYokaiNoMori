@@ -1,7 +1,7 @@
 /*Barbeaut Reynald - Bouchard Nicolas
 *
 * Ce fichier contient les sources de notre IA,
-* cette derniÃ¨re a Ã©tÃ© dÃ©veloppÃ© dans le cadre
+* cette dernière a été développé dans le cadre
 * d'un projet d'IA de l'UE MOIA
 *
 *
@@ -22,8 +22,8 @@
 */
 
 /*
-* Une piÃ¨ce est dÃ©finie par son
-* Ã©quipe son nom et ses coordonnÃ©es
+* Une pièce est définie par son
+* équipe son nom et ses coordonnées
 */
 
 /*
@@ -57,7 +57,7 @@ initial(piece(north,kirin,[4,6])).
 initial(piece(north,koropokkuru,[3,6])).
 
 /*
-* CrÃ©ation du plateau initial
+* Création du plateau initial
 */
 initialBoard(Board) :-
     findall(Piece, initial(Piece), Board).
@@ -68,7 +68,7 @@ opponent(north,south).
 opponent(south,north).
 
 /*
-* Retourne la derniÃ¨re ligne d'un cÃ´tÃ©
+* Retourne la dernière ligne d'un côté
 */
 lastLine(south,1).
 lastLine(north,6).
@@ -96,11 +96,11 @@ hasEnnemy(Player, C,Board) :-
     member(piece(Player2,_,C),Board).
 
 /*
-*  PrÃ©dicats pour dÃ©placer une piÃ¨ce
+*  Prédicats pour déplacer une pièce
 */
 
 /*
-* DÃ©placement sur les cÃ´tÃ©s (commun aux 2 camps)
+* Déplacement sur les côtés (commun aux 2 camps)
 */
 movePiece(piece(Player,Name,[X,Y]),piece(Player,Name2,[X2,Y]),Board) :-
     Name \= kodama,
@@ -117,11 +117,11 @@ movePiece(piece(Player,Name,[X,Y]),piece(Player,Name2,[X2,Y]),Board) :-
     promote(piece(Player,Name,[X2,Y]),piece(_,Name2,_)).
 
 /*
-* DÃ©placement pour une piÃ¨ce qui regarde le sud
+* Déplacement pour une pièce qui regarde le sud
 */
 
 /*
-* DÃ©placement avant
+* Déplacement avant
 */
 movePiece(piece(south,Name,[X,Y]),piece(south,Name2,[X,Y2]),Board) :-
     Y2 is Y + 1,
@@ -129,7 +129,7 @@ movePiece(piece(south,Name,[X,Y]),piece(south,Name2,[X,Y2]),Board) :-
     promote(piece(south,Name,[X,Y2]),piece(_,Name2,_)).
 
 /*
-* DÃ©placement avant-gauche et avant-droite
+* Déplacement avant-gauche et avant-droite
 */
 movePiece(piece(south,Name,[X,Y]),piece(south,Name2,[X2,Y2]),Board) :-
     Name \= kodama,
@@ -146,7 +146,7 @@ movePiece(piece(south,Name,[X,Y]),piece(south,Name2,[X2,Y2]),Board) :-
     promote(piece(south,Name,[X2,Y2]),piece(_,Name2,_)).
 
 /*
-* DÃ©placement arriÃ¨re
+* Déplacement arrière
 */
 movePiece(piece(south,Name,[X,Y]),piece(south,Name2,[X,Y2]),Board) :-
     Name \= kodama,
@@ -157,7 +157,7 @@ movePiece(piece(south,Name,[X,Y]),piece(south,Name2,[X,Y2]),Board) :-
 
 
 /*
-* DÃ©placement arriÃ¨re-gauche et arriÃ¨re-droite
+* Déplacement arrière-gauche et arrière-droite
 */
 movePiece(piece(south,Name,[X,Y]),piece(south,Name2,[X2,Y2]),Board) :-
     (Name=oni;Name=koropokkuru),
@@ -174,11 +174,11 @@ movePiece(piece(south,Name,[X,Y]),piece(south,Name2,[X2,Y2]),Board) :-
     promote(piece(south,Name,[X2,Y2]),piece(_,Name2,_)).
 
 /*
-* DÃ©placement pour une piÃ¨ce qui regarde le nord
+* Déplacement pour une pièce qui regarde le nord
 */
 
 /*
-* DÃ©placement avant
+* Déplacement avant
 */
 movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X,Y2]),Board) :-
     Y2 is Y - 1,
@@ -186,7 +186,7 @@ movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X,Y2]),Board) :-
     promote(piece(north,Name,[X,Y2]),piece(_,Name2,_)).
 
 /*
-* DÃ©placement avant-gauche et avant-droite
+* Déplacement avant-gauche et avant-droite
 */
 movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X2,Y2]),Board) :-
     Name \= kodama,
@@ -203,7 +203,7 @@ movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X2,Y2]),Board) :-
     promote(piece(north,Name,[X2,Y2]),piece(_,Name2,_)).
 
 /*
-* DÃ©placement arriÃ¨re
+* Déplacement arrière
 */
 movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X,Y2]),Board) :-
     Name \= kodama,
@@ -214,7 +214,7 @@ movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X,Y2]),Board) :-
 
 
 /*
-* DÃ©placement arriÃ¨re-gauche et arriÃ¨re-droite
+* Déplacement arrière-gauche et arrière-droite
 */
 movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X2,Y2]),Board) :-
     (Name=oni;Name=koropokkuru),
@@ -232,7 +232,7 @@ movePiece(piece(north,Name,[X,Y]),piece(north,Name2,[X2,Y2]),Board) :-
 
 
 /*
-* Trouve un piÃ¨ce en fonction de son Ã©quipe et de ses coordonnÃ©es
+* Trouve un pièce en fonction de son équipe et de ses coordonnées
 */
 
 findAndReturn(Player,Coordinate,[piece(Player,Name,Coordinate)|_],piece(Player,Name,Coordinate)).
@@ -251,7 +251,7 @@ capture(Player,C,Hand,Board,NewHand,NewBoard):-
 
 
 /*
-* DÃ©place et capture s'il y a un ennemi
+* Déplace et capture s'il y a un ennemi
 */
 movement(piece(Player,Name,C1),Hand,Board,NewHand,NewBoard3,piece(Player,Name2,C2)):-
     movePiece(piece(Player,Name,C1),piece(Player,Name2,C2),Board),
@@ -268,14 +268,14 @@ movement(piece(Player,Name,C1),Hand,Board,Hand,NewBoard2,piece(Player,Name2,C2))
     NewBoard2 = [piece(Player,Name,C2)|NewBoard].
 
 /*
-* Regarde si une piÃ¨ce est dans la zone de promotion
+* Regarde si une pièce est dans la zone de promotion
 */
 inPromoteArea(north,Y) :- (Y=1;Y=2).
 
 inPromoteArea(south,Y) :- (Y=5;Y=6).
 
 /*
-* Passe une piÃ¨ce au niveau supÃ©rieur
+* Passe une pièce au niveau supérieur
 */
 promote(piece(Player,kodama,[X,Y]),piece(Player,kodamaSamourai,[X,Y])) :-
    inPromoteArea(Player,Y),!. 
@@ -287,7 +287,7 @@ promote(Piece,Piece).
 
 
 /*
-* RÃ©trograde une piÃ¨ce
+* Rétrograde une pièce
 */
 demote(piece(Player,kodamaSamourai,C),piece(Player2,kodama,C)):-opponent(Player,Player2),!.
 
@@ -297,7 +297,7 @@ demote(piece(Player,Name,C),piece(Player2,Name,C)):-opponent(Player,Player2).
 
 
 /*
-* Regarde si les coordonnÃ©es d'une piÃ¨ce sont prÃ©sentes dans une liste de coordonnÃ©es
+* Regarde si les coordonnées d'une pièce sont présentes dans une liste de coordonnées
 */
 compareL(piece(_,_,C2),[C|_]):-
     C2=C,!.
@@ -305,7 +305,7 @@ compareL(Piece,[_|L]):-
     compareL(Piece,L).
 
 /*
-* Regarde si une piÃ¨ce est juste Ã  cÃ´tÃ© d'une autre piÃ¨ce
+* Regarde si une pièce est juste à  côté d'une autre pièce
 */
 inScope(Piece, piece(Player,Name,C),Board):-
     findall(C2,
@@ -314,7 +314,7 @@ inScope(Piece, piece(Player,Name,C),Board):-
     compareL(Piece,LC).
 
 /*
-* Regarde si une piÃ¨ce est Ã  cÃ´tÃ© d'une des piÃ¨ces de l'ennemi
+* Regarde si une pièce est à  côté d'une des pièces de l'ennemi
 */
 inTake(Piece,Player,Board,[piece(Player2,Name,C)|_]):-
     opponent(Player,Player3),
@@ -324,14 +324,14 @@ inTake(Piece,Player,Board,[_|L]):-
     inTake(Piece,Player,Board,L).
 
 /*
-* Points pour chaque piÃ¨ce
+* Points pour chaque pièce
 */
 points(kodama,10).
 points(kodamaSamourai,20).
 points(oni,30).
 points(superOni,40).
 points(kirin,50).
-points(koropokkuru,1500).
+points(koropokkuru,150).
 
 /*
 * Calcul la distance entre 2 points
@@ -340,7 +340,7 @@ distance([X,Y],[X2,Y2],Dist):-
     Dist is sqrt((X2-X)*(X2-X) + (Y2-Y)*(Y2-Y)). 
 
 /*
-* Calcul le coÃ»t risquÃ© d'une piÃ¨ce
+* Calcul le coût risqué d'une pièce
 */
 riskedCost(piece(Player,Name,C),Board,0):-
     \+inTake(piece(Player,Name,C),Player,Board,Board),!.
@@ -350,15 +350,15 @@ riskedCost(piece(Player,Name,C),Board,Cost):-
     points(Name,Cost),!.
 
 /*
-* Retourne les coordonnÃ©es d'une piÃ¨ce (utilisÃ© dans cette IA uniquement pour le koropokkuru
-*   c'est pour cela que les doublons ne sont pas vÃ©rifiÃ©s)
+* Retourne les coordonnées d'une pièce (utilisé dans cette IA uniquement pour le koropokkuru
+*   c'est pour cela que les doublons ne sont pas vérifiés)
 */
 getCoordinate(Player,Name,[piece(Player,Name,Coordinate)|_],Coordinate).
 getCoordinate(Player,Name,[_|List],P):-
         getCoordinate(Player,Name,List,P).
 
 /*
-* Trouve tous les mouvements possibles pour une piÃ¨ce
+* Trouve tous les mouvements possibles pour une pièce
 */
 possibleMoves(P,Hand,Board,LMoves) :-
     findall([NewHand,NewBoard,P,P2],movement(P,Hand,Board,NewHand,NewBoard,P2),LMoves).
@@ -414,7 +414,7 @@ computePoints([NewHand,_,_,piece(Player,Name2,C2)],Hand,Board,Cost):-
 /*
 * Traverse une liste de coups et garde le meilleur
 */     
-bestFromList([],_,_,RecordMove,RecordCost,RecordMove,RecordCost):-!.
+bestFromList([],_,_,RecordMove,RecordCost,RecordMove,RecordCost).
 
 bestFromList([Move|LMove],Hand,Board,_,CurrentBestCost,RecordMode,RecordCost):-
     computePoints(Move,Hand,Board,NewCost),
@@ -431,22 +431,28 @@ bestFromList([Move|LMove],Hand,Board,CurrentBestMove,CurrentBestCost,RecordMode,
 /*
 * Calcul le meilleur coup d'une liste
 */
+bestMove(P,Hand,Board,[],-10000):-
+    possibleMoves(P,Hand,Board,LMoves),
+    LMoves = [].
+
+
 
 bestMove(P,Hand,Board,BestMove,BestCost):-
     possibleMoves(P,Hand,Board,LMoves),
+    LMoves \= [],
     LMoves = [FirstMove | _],
     computePoints(FirstMove,Hand,Board,FirstCost),
     bestFromList(LMoves,Hand,Board,FirstMove,FirstCost,BestMove,BestCost).
 
 
 /*
-* Traverse une liste de piÃ¨ce pour un cÃ´tÃ© et retourne le meilleur coup de chacune d'entre elle
+* Traverse une liste de pièce pour un côté et retourne le meilleur coup de chacune d'entre elle
 */
-bestSideMoveList(_,_,[],_,BestMove,BestCost,BestMove,BestCost).
+bestSideMoveList(_,_,[],_,BestMove,BestCost,BestMove,BestCost):-!.
 
 bestSideMoveList(Player,Hand,[piece(Player2,_,_)|LPieces],Board,CurrentBestMove,CurrentBestCost,BestMove,BestCost):-  
     Player \= Player2,
-    bestSideMoveList(Player,Hand,LPieces,Board,CurrentBestMove,CurrentBestCost,BestMove,BestCost).
+    bestSideMoveList(Player,Hand,LPieces,Board,CurrentBestMove,CurrentBestCost,BestMove,BestCost),!.
 
 bestSideMoveList(Player,Hand,[piece(Player,Name,C)|LPieces],Board,_,CurrentBestCost,BestMove,BestCost):-  
     bestMove(piece(Player,Name,C),Hand,Board,NewBestMove,NewBestCost),
@@ -459,7 +465,7 @@ bestSideMoveList(Player,Hand,[piece(Player,Name,C)|LPieces],Board,CurrentBestMov
     bestSideMoveList(Player,Hand,LPieces,Board,CurrentBestMove,CurrentBestCost,BestMove,BestCost).
 
 /*
-* Calcul le meilleur coup parmis les meilleurs coups de toutes les piÃ¨ces d'un cÃ´tÃ©
+* Calcul le meilleur coup parmis les meilleurs coups de toutes les pièces d'un côté
 */
 bestSideMove(Player,Hand,Board,BestMove,BestCost) :-
     bestSideMoveList(Player,Hand,Board,Board,[],-1000,BestMove,BestCost).   
@@ -472,7 +478,7 @@ freeSquare(Board,LSquare):-
     findall([X,Y],(between(1,5,X),between(1,6,Y),\+member(piece(_,_,[X,Y]),Board)),LSquare).
 
 /*
-* VÃ©rifie si le placement d'une piÃ¨ce diffÃ©rente qu'un kodama est correcte
+* Vérifie si le placement d'une pièce différente qu'un kodama est correcte
 */
 correctPlacement(piece(_,Name,_),C2,Board) :-
     Name \= kodama,
@@ -480,7 +486,7 @@ correctPlacement(piece(_,Name,_),C2,Board) :-
     correctSquare(C2).
 
 /*
-* VÃ©rifie si le placement d'un kodama est correct
+* Vérifie si le placement d'un kodama est correct
 */
 correctPlacement(piece(Player,kodama,_),[X,Y],Board) :-
     \+(member(piece(_, _, [X,Y]), Board)),
@@ -492,7 +498,7 @@ correctPlacement(piece(Player,kodama,_),[X,Y],Board) :-
         
 
 /*
-* Prend la meilleure piÃ¨ce d'une main
+* Prend la meilleure pièce d'une main
 */
 bestPiece([],CurrentBestPiece,_,CurrentBestPiece).
 
@@ -507,7 +513,7 @@ bestPiece([piece(Player,Name,C)|Hand],_,CurrentBestPoint,BestPiece):-
         bestPiece(Hand,piece(Player,Name,C),Point,BestPiece).  
 
 /*
-* Calcule du coÃ»t d'un placement
+* Calcule du coût d'un placement
 */ 
 computePlacementPoint(piece(Player,Name,C),Board,Cost):-
     opponent(Player,Player2),
@@ -542,7 +548,7 @@ bestPlacementComputation([C | LSquare],piece(Player,Name,_),Board,_,CurrentBestC
     bestPlacementComputation(LSquare,piece(Player,Name,_),Board,piece(Player,Name,C),Cost,BestPlacement,BestCost).
 
 /*
-* Donne le meilleur placement avec la meilleur piÃ¨ce
+* Donne le meilleur placement avec la meilleur pièce
 */
 bestPlacement([],_,_,_,-1000):-!.
 
@@ -555,7 +561,7 @@ bestPlacement(Hand,Board,NewHand,BestPlacement,BestCost):-
 
 
 /*
-* Donne la meilleure action Ã  faire
+* Donne la meilleure action à faire
 */
 
 bestAction(Player,Board, Hand, capture, P, P2) :-
