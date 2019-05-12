@@ -4,7 +4,7 @@
 :- include(iaYokai).
 
 /*
-* This predicate is an alternative board which will be used for some tests
+* Ce prédicat est un plateau alternatif utilisés pour les futurs tests
 */
 funBoard([piece(south,koropokkuru,[3,1]),
           piece(south,kirin,[4,1]),
@@ -25,7 +25,7 @@ funBoard([piece(south,koropokkuru,[3,1]),
 :- begin_tests(iaYokai).
 
 /*
-* Tests for the opponent predicate
+* Tests pour le prédicat opponent
 */
 test('opponent_OK',[true(X == south)]):-
     opponent(north,X).
@@ -38,7 +38,7 @@ test('opponent_KO',[fail]):-
 
 
 /*
-* Tests for the lastLine predicate
+* Tests pour le prédicat lastLine
 */
 test('lastLine_OK',[true(X == 1)]):-
     lastLine(south,X).
@@ -50,7 +50,7 @@ test('lastLine_KO',[fail]):-
     lastLine(test,_).
 
 /*
-* Test for correctSquare predicate
+* Tests pour le prédicats correctSquare
 */
 test('correctSquare_OK',[true]):-
     correctSquare([1,5]),
@@ -76,7 +76,7 @@ test('correctSquare_KO',[fail]):-
     correctSquare([2,7]).
 
 /*
-* Tests for the correctMove predicate
+* Tests pour le prédicat correctMove
 */
 test('correctMove_OK',[true]):-
     correctMove(piece(south,kodama,[4,4]),[4,5],[]),
@@ -101,7 +101,7 @@ test('correctMove_KO',[fail]):-
     correctMove(piece(south,kodama,[4,4]),[3,5],[piece(south,kodama,[3,5])]).
 
 /*
-* Tests for the hasEnnemy predicate
+* Tests pour le prédicat hasEnnemy
 */
 test('hasEnnemy_OK',[true]):-
     hasEnnemy(south, [1,3],[piece(north,kodama,[1,3])]),
@@ -130,7 +130,7 @@ test('hasEnnemy_KO',[fail]):-
     hasEnnemy(north, [1,3],[piece(north,koropokkuru,[4,3]),piece(north,kodama,[2,3]),piece(north,kodama,[1,3]),piece(north,kirin,[1,5])]).
 
 /*
-* Tests for the promote predicate
+* Tests pour le prédicat promote
 */
 test('promote_OK',[true(X == piece(south,kodamaSamourai,[1,5]))]):-
     promote(piece(south,kodama,[1,5]),X).
@@ -165,7 +165,7 @@ test('promote_OK',[true(X == piece(north,koropokkuru,[1,3]))]):-
 
 
 /*
-* Tests for the correctPlacement predicate
+* Tests pour le prédicat correctPlacement
 */
 test('correctPlacement_OK',[true]):-
     correctPlacement(piece(south,kirin,[3,3]),[3,4],[piece(south,kirin,[3,3])]),
@@ -187,9 +187,9 @@ test('correctPlacement_KO',[fail]):-
     correctPlacement(piece(north,kodama,[3,3]),[3,1],[piece(south,kodama,[3,1])]).
 
 /*
-* Test for the movePiece predicate
+* Tests pour le prédicats movePiece
 */
-%Test for kodama
+%Tests pour kodama
 test('movePiece_kodama_OK',[all(C2==[[3,3]])]):-
     movePiece(piece(north,kodama,[3,4]),piece(north,kodama,C2),[]).
 
@@ -209,7 +209,7 @@ test('movePiece_kodama_KO',[all(C2==[])]):-
     movePiece(piece(south,kodama,[3,4]),piece(south,kodama,C2),[piece(south,kodama,[3,5])]).
 
 
-%Test for kirin, kodama samourai and super oni since they have the same movement
+%Tests pour kirin, kodama samourai and super oni since they have the same movement
 test('movePiece_several_pieces_OK',[all(C2==[[4,4],[2,4],[3,3],[4,3],[2,3],[3,5]])]):-
     movePiece(piece(north,kodamaSamourai,[3,4]),piece(north,kodamaSamourai,C2),[]).
 
@@ -238,7 +238,7 @@ test('movePiece_several_pieces_KO',[all(C2==[])]):-
                                                                                 piece(north,kodama,[2,3]),
                                                                                 piece(north,kodama,[3,5])]).
 
-%Tests for koropokkuru
+%Tests pour le prédicat koropokkuru
 test('movePiece_koropokkuru_OK',[all(C2==[[4,4],[2,4],[3,3],[4,3],[2,3],[3,5],[4,5],[2,5]])]):-
     movePiece(piece(north,koropokkuru,[3,4]),piece(north,koropokkuru,C2),[]).
 
@@ -261,7 +261,7 @@ test('movePiece_koropokkuru_KO',[all(C2==[])]):-
                                                                                 piece(north,kodama,[4,5]),
                                                                                 piece(north,kodama,[2,5])]).
 
-%Tests for oni
+%Tests pour le prédicat oni
 test('movePiece_oni_OK',[all(C2==[[3,3],[4,3],[2,3],[4,5],[2,5]])]):-
     movePiece(piece(north,oni,[3,4]),piece(north,oni,C2),[]).
 
@@ -279,7 +279,7 @@ test('movePiece_oni_KO',[all(C2==[])]):-
                                                                                 piece(north,kodama,[2,5])]).
 
 
-%Tests for correctPlacement predicate
+%Tests pour le prédicat correctPlacement
 test('correctPlacement_OK',[true]):-
     correctPlacement(piece(south,oni,[1,4]),[2,3],[piece(south,oni,[2,4]),piece(south,oni,[4,3])]),
     correctPlacement(piece(south,kodama,[3,2]),[2,3],[piece(south,oni,[2,4]),piece(south,oni,[4,3])]),
@@ -317,7 +317,7 @@ test('correctPlacement_Kodama_KO',[fail]):-
     correctPlacement(piece(north,kodama,[1,4]),[2,1],[piece(south,oni,[2,4]),piece(south,oni,[4,5])]).
 
 /*
-* Tests for demote predicate
+* Tests pour le prédicat demote
 */
 test('demote_OK',[true(X == piece(north,kodama,[1,3]))]):-
     demote(piece(south,kodamaSamourai,[1,3]),X).
@@ -345,7 +345,7 @@ test('demote_OK',[true(X == piece(south,koropokkuru,[1,3]))]):-
     demote(piece(north,koropokkuru,[1,3]),X).
 
 /*
-* Tests for compareL predicate
+* Tests pour le prédicat compareL
 */
 test('compareL_OK',[true]):-
     compareL(piece(north,kodama,[3,3]),[[2,2],[1,3],[3,4],[3,3]]).
@@ -354,7 +354,7 @@ test('compareL_OK',[fail]):-
     compareL(piece(north,kodama,[3,3]),[[2,2],[1,3],[3,4]]).
 
 /*
-* Tests for inScope predicate
+* Tests pour le prédicat inScope
 */
 test('inScope_OK',[true]):-
         inScope(piece(north,kodama,[3,3]), piece(south,kodama,[3,2]),[piece(north,kodama,[3,3]), piece(south,kodama,[3,2])]),
@@ -379,7 +379,7 @@ test('inScope_KO',[fail]):-
         inScope(piece(south,koropokkuru,[3,1]), piece(north,kodama,[3,4]),Board).
 
 /*
-* Tests for inTake predicate
+* Tests pour le prédicat inTake
 */
 test('inTake_OK',[true]):-
         initialBoard(Board),
@@ -415,7 +415,7 @@ test('inTake_KO',[fail]):-
         inTake(piece(south,oni,[5,1]),south,Board,Board).
 
 /*
-* Tests for distance predicate
+* Tests pour le prédicat distance
 */
 test('distance_OK',[true(Dist==1.4142135623730951)]):-
         distance([4,4],[3,3],Dist).
@@ -424,7 +424,7 @@ test('distance_OK',[true(Dist==3.605551275463989)]):-
         distance([1,5],[4,3],Dist).
 
 /*
-* Tests for riskedCost predicate
+* Tests pour le prédicat riskedCost
 */
 test('riskedCost_OK',[true(Cost==40)]):-
         funBoard(Board),
@@ -451,7 +451,7 @@ test('riskedCost_OK',[true(Cost==0)]):-
         riskedCost(piece(north,koropokkuru,[4,6]),Board,Cost).
 
 /*
-* Tests for getCoordinate predicate
+* Tests pour le prédicat getCoordinate
 */
 test('getCoordinate_OK',[true(C==[3,6])]):-
         initialBoard(Board),
@@ -466,7 +466,7 @@ test('getCoordinate_OK',[true(C==[4,6])]):-
         getCoordinate(north,koropokkuru,Board,C).
 
 /*
-* Tests for bestMove predicate
+* Tests pour le prédicat bestMove
 */
 test('bestMove_OK',[true(BestMove==[[piece(south,kodama,[1,4])],[piece(south,kirin,[1,4]),piece(south,koropokkuru,[3,1]),piece(south,kirin,[4,1]),piece(south,oni,[5,1]),piece(south,kodama,[3,4]),piece(south,kodamaSamourai,[1,6]),piece(south,kodamaSamourai,[3,4]),piece(north,superOni,[2,2]),piece(north,oni,[1,3]),piece(north,oni,[4,3]),piece(north,kirin,[4,5]),piece(north,koropokkuru,[4,6])],piece(south,kirin,[2,4]),piece(south,kirin,[1,4])])]):-
         funBoard(Board),
@@ -478,7 +478,7 @@ test('bestMove_OK',[true(BestMove==[[piece(north,kirin,[2,4])],[piece(north,oni,
 
 
 /*
-* Tests for bestPiece predicate
+* Tests pour le prédicat bestPiece
 */
 test('bestPiece_OK',[true(BestPiece==piece(north,kirin,C))]):-
         bestPiece([piece(north,kodama,_),piece(north,kirin,C)],_,0,BestPiece).
@@ -496,7 +496,7 @@ test('bestPiece_OK',[true(BestPiece==piece(south,oni,C))]):-
         bestPiece([piece(south,kodama,_),piece(south,oni,C)],_,0,BestPiece).
 
 /*
-* Tests for bestAction predicate       
+* Tests pour le prédicat bestAction
 */
 test('bestAction_Stop_Check_OK',[true(Type==capture), true(P1==piece(south,kirin,[2,2])), true(P2 == piece(south,kirin,[3,2]))]):-
     bestAction(south,[piece(south,koropokkuru,[3,1]),piece(north,kodama,[3,2]),piece(north,kodama,[3,3]),piece(south,kirin,[2,2]),piece(north,koropokkuru,[5,5])],[],Type,P1,P2).
