@@ -35,6 +35,8 @@ int main(int argc, char** argv) {
   bool termine;           /* indique si une partie est terminee */
   char sens;              /* sens de la tête du joueur dont la demande de partie
                              est recue en premier */
+  int nbg1 = 0;           /* nombre de parties gagnées pour le joueur 1 */
+  int nbg2 = 0;           /* nombre de parties gagnées pour le joueur 2 */
   
   /*
    * verification des arguments
@@ -131,12 +133,22 @@ int main(int argc, char** argv) {
         switch (err) {
           case -1 : printf("TIMEOUT : fin de partie\n"); termine = true; break;
           case 0 : termine = false; j++; break;
-          case 1 : printf("Le joueur 1 gagne la partie !\n"); termine = true; break;
-          case 2 : printf("Le joueur 2 gagne la partie !\n"); termine = true; break;
+          case 1 : printf("Le joueur 1 gagne la partie !\n"); termine = true; nbg1++; break;
+          case 2 : printf("Le joueur 2 gagne la partie !\n"); termine = true; nbg2++; break;
           case 3 : printf("Match nul pour cette partie !\n"); termine = true; break;
           default : perror("(serveur) erreur traitement requete coup"); return -4; break;
         }
     }
+  }
+
+  if (nbg1 == nbg2) {
+    printf("\nRESULTAT FINAL : MATCH NUL !\n");
+  }
+  else if (nbg1 > nbg2) {
+    printf("\nRESULTAT FINAL : LE JOUEUR 1 GAGNE !\n");
+  }
+  else if (nbg2 > nbg1) {
+    printf("\nRESULTAT FINAL : LE JOUEUR 2 GAGNE !\n");
   }
 
   /* 
