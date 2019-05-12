@@ -9,4 +9,4 @@ fi
 make
 cd ./src
 make
-../bin/player $1 $2 3708 $3 & java -Djava.library.path="../lib" -classpath ../jasper/jasper.jar:. IAClient $1 3708 && fg
+../bin/player $1 $2 3708 $3 & java -Djava.library.path="../lib" -classpath ../lib/sicstus-4.4.1/bin/jasper.jar:. IAClient $1 3708 && fg

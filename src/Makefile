@@ -7,9 +7,9 @@
 JC			= javac
 CLASSPATH	= -classpath	
 
-JASPER_DIR	= ../jasper
-SICSTUS_LIB = ../lib
-JASPER_PATH = $(JASPER_DIR)/jasper.jar
+JASPER_DIR	= ../lib/sicstus-4.4.1/bin
+SICSTUS_LIB 	= ../lib
+JASPER_PATH	= $(JASPER_DIR)/jasper.jar
 JAVA_LIST	= IAClient.java lPieces.java Piece.java TCoupReq.java TCoupRep.java
 SICSTUS		= IASictus.java
 

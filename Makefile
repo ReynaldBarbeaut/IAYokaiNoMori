@@ -34,7 +34,7 @@ $(PROG_NAME1): compile1 move1
 	$(CC) $(CFLAG) $(OBJ_LIST1) -o $(BIN_DIR)/$@
 
 $(PROG_NAME2): compile2 move2
-	$(CC) $(CFLAG) $(OBJ_LIST2) $(BUILD_DIR)/yokai.o -o $(BIN_DIR)/$@ 
+	$(CC) $(CFLAG) $(OBJ_LIST2) $(BUILD_DIR)/yokai-fPIC.o -o $(BIN_DIR)/$@ 
 
 move1:
 	mv *.o $(BUILD_DIR)
