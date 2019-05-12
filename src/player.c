@@ -55,8 +55,8 @@ int main(int argc, char **argv) {
   struct sockaddr_in addClient;	/* adresse de la socket client connectee */
 
   /* verification des arguments */
-  if (argc != 6) {
-    printf("usage : %s IPServ port portS nomJoueur sens\n", argv[0]);
+  if (argc != 5) {
+    printf("usage : %s IPServ port portS nomJoueur\n", argv[0]);
     return -1;
   }
   
@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
   port = atoi(argv[2]);
   portS = atoi(argv[3]);
   nomJoueur = argv[4];
-  sens = argv[5][0];
+  sens = 's';
 
   /* 
    * creation du socket serveur

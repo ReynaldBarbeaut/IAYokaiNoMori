@@ -109,7 +109,7 @@ int main(int argc, char** argv) {
             }
           }
         }
-        if (i == 2) { // 2e partie
+        else if (i == 2) { // 2e partie
           if (j % 2 == 0) {
             if (sens == 's') {
               err = traite_req_coup(splay2, splay1, 2, i);
@@ -139,7 +139,7 @@ int main(int argc, char** argv) {
 
         j++;
         if (j >= 60) {
-          termine = 0;
+          termine = true;
         }
     }
   }
