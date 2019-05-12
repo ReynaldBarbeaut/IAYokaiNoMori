@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
     /********************/
     int j = 0; // compteur de coups
     while (!termine) {
-        // if (i == 1) { // 1ere partie
+        if (i == 1) { // 1ere partie
           if (j % 2 == 0) { // la parité de j indique quel joueur joue
             if (sens == 's') {
               err = traite_req_coup(splay1, splay2, 1, i);
@@ -108,13 +108,15 @@ int main(int argc, char** argv) {
               err = traite_req_coup(splay1, splay2, 1, i);
             }
           }
-        // }
-       /* else if (i == 2) { // 2e partie
+        }
+        else if (i == 2) { // 2e partie
           if (j % 2 == 0) {
             if (sens == 's') {
+              printf("----> joueur 2 nord va jouer, tour pair, partie 2\n");
               err = traite_req_coup(splay2, splay1, 2, i);
             }
             else {
+              printf("----> joueur 1 nord va jouer, tour pair, partie 2\n");
               err = traite_req_coup(splay1, splay2, 1, i);
             }
           }
@@ -126,18 +128,16 @@ int main(int argc, char** argv) {
               err = traite_req_coup(splay2, splay1, 2, i);
             }
           }
-        } */
+        }
 
         switch (err) {
           case -1 : printf("TIMEOUT : fin de partie\n"); termine = true; break;
-          case 0 : termine = false; break;
+          case 0 : termine = false; j++; break;
           case 1 : printf("Le joueur 1 gagne la partie !\n"); termine = true; break;
           case 2 : printf("Le joueur 2 gagne la partie !\n"); termine = true; break;
           case 3 : printf("Match nul pour cette partie !\n"); termine = true; break;
           default : perror("(serveur) erreur traitement requete coup"); return -4; break;
         }
-
-        j++;
     }
   }
 
